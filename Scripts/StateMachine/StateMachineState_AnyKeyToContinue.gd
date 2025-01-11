@@ -40,6 +40,11 @@ func leave_state() -> void:
 		self.modulate = Color(Color.WHITE, 1)
 		var destination_color : Color = Color(Color.WHITE, 0)
 		leave_tween.tween_property(self, "modulate", destination_color, fade_time)
+		for child in get_children():
+			if child is CanvasLayer:
+				child.scale = Vector2(1, 1)
+				leave_tween.parallel()
+				leave_tween.tween_property(child, "scale", Vector2(0.01, 0.01), fade_time)
 		await leave_tween.finished
 		our_state_machine.switch_state_internal(next_state)
 	else:
@@ -53,4 +58,9 @@ func enter_state() -> void:
 		var tween : Tween = get_tree().create_tween()
 		var destination_color : Color = Color(Color.WHITE, 1)
 		tween.tween_property(self, "modulate", destination_color, fade_time)
+		for child in get_children():
+			if child is CanvasLayer:
+				child.scale = Vector2(0.01, 0.01)
+				tween.parallel()
+				tween.tween_property(child, "scale", Vector2(1,1), fade_time)
 	

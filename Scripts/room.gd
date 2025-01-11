@@ -1,4 +1,4 @@
-extends Node
+extends Object
 
 class_name Room
 
@@ -9,10 +9,10 @@ var west : Room = null
 var x : int
 var y : int
 var size : int = 15
-var source_id : int = 0
+var source_id : int = 1
 var atlas_coords : Vector2i = Vector2i(0, 0)
 
-func ApplyToMaps(terrain : TileMapLayer, objects : TileMapLayer) -> void:
+func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 	var baseX : int = x * size
 	var baseY : int = y * size
 	for i in range(0, size):
@@ -22,15 +22,16 @@ func ApplyToMaps(terrain : TileMapLayer, objects : TileMapLayer) -> void:
 			terrain.set_cell(Vector2i(baseX, baseY + i), source_id, atlas_coords)
 			terrain.set_cell(Vector2i(baseX + size - 1, baseY + i), source_id, atlas_coords)
 	if north != null:
-		terrain.set_cell(Vector2i(baseX + 7, baseY + size - 1))
+		terrain.set_cell(Vector2i(baseX + 7, baseY))
 	if west != null:
 		terrain.set_cell(Vector2i(baseX, baseY + 7))
 	if south != null:
-		terrain.set_cell(Vector2i(baseX + 7, baseY))
+		terrain.set_cell(Vector2i(baseX + 7, baseY + size - 1))
 	if east != null:
 		terrain.set_cell(Vector2i(baseX + size - 1, baseY + 7))
+	print("Applied to maps, complete")
 
-func ClearFromMaps(terrain : TileMapLayer, objects : TileMapLayer) -> void:
+func ClearFromMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 	var baseX : int = x * size
 	var baseY : int = y * size
 	for ox in range(baseX, baseX + size):
