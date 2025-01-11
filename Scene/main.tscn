@@ -1,0 +1,219 @@
+[gd_scene load_steps=12 format=3 uid="uid://bjmkbjlquesr5"]
+
+[ext_resource type="Shader" path="res://Art/background.gdshader" id="1_kmdog"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachine.gd" id="2_fbjv7"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_AnyKeyToContinue.gd" id="3_7fknr"]
+[ext_resource type="FontFile" uid="uid://byymlkrvwrvqy" path="res://Fonts/Vintage Propagandist.ttf" id="4_rbybo"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState.gd" id="5_ku58m"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_MainMenu.gd" id="5_r1cm3"]
+[ext_resource type="FontFile" uid="uid://cw5poiupa2paf" path="res://Fonts/Destroya.ttf" id="6_1qfmw"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_k3dey"]
+noise_type = 3
+frequency = 0.002
+offset = Vector3(1, 1, -1)
+fractal_type = 2
+domain_warp_enabled = true
+domain_warp_fractal_type = 2
+domain_warp_fractal_octaves = 2
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_xst5d"]
+width = 32
+height = 32
+depth = 32
+noise = SubResource("FastNoiseLite_k3dey")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y2c8r"]
+shader = ExtResource("1_kmdog")
+shader_parameter/zoom = 10.0
+shader_parameter/timeScale = 0.01
+shader_parameter/color_a = Color(0.101961, 0.619608, 0.666667, 1)
+shader_parameter/color_b = Color(0.666667, 0.666667, 0.498039, 1)
+shader_parameter/noiseImage = SubResource("NoiseTexture3D_xst5d")
+
+[sub_resource type="LabelSettings" id="LabelSettings_vam3j"]
+font = ExtResource("4_rbybo")
+font_size = 98
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_y2c8r")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="MenuStateMachine" type="Control" parent="MarginContainer" node_paths=PackedStringArray("initial_state")]
+layout_mode = 2
+script = ExtResource("2_fbjv7")
+initial_state = NodePath("State_Splash")
+
+[node name="State_Splash" type="Control" parent="MarginContainer/MenuStateMachine" node_paths=PackedStringArray("next_state")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_7fknr")
+next_state = NodePath("../State_MainMenu")
+time_out_in_seconds = 3.0
+fade_out = true
+
+[node name="Title" type="Label" parent="MarginContainer/MenuStateMachine/State_Splash"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+text = "Iteration Ambush"
+label_settings = SubResource("LabelSettings_vam3j")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="State_MainMenu" type="Control" parent="MarginContainer/MenuStateMachine"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_r1cm3")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_MainMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.5
+offset_top = -15.5
+offset_right = 20.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="MarginContainer/MenuStateMachine/State_MainMenu/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 64
+text = "Play"
+flat = true
+
+[node name="State_Play" type="Control" parent="MarginContainer/MenuStateMachine"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_ku58m")
+
+[node name="TerrainMap" type="TileMapLayer" parent="MarginContainer/MenuStateMachine/State_Play"]
+
+[node name="ObjectMap" type="TileMapLayer" parent="MarginContainer/MenuStateMachine/State_Play"]
+
+[node name="PlayStateMachine" type="Control" parent="MarginContainer/MenuStateMachine/State_Play" node_paths=PackedStringArray("initial_state")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_fbjv7")
+initial_state = NodePath("PlayState_LevelSetup")
+
+[node name="PlayState_LevelSetup" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_ku58m")
+
+[node name="PlayState_Active" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_ku58m")
+
+[node name="PlayState_Dead" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_ku58m")
+
+[node name="Label" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Dead"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0, 0, 1)
+theme_override_fonts/font = ExtResource("6_1qfmw")
+theme_override_font_sizes/font_size = 64
+text = "TERMINATED"
+
+[node name="PlayState_Victory" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_ku58m")
+
+[connection signal="button_up" from="MarginContainer/MenuStateMachine/State_MainMenu/VBoxContainer/Button" to="MarginContainer/MenuStateMachine/State_MainMenu" method="_on_button_button_up"]

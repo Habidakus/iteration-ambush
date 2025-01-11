@@ -1,0 +1,3 @@
+Fonts (using the MIT license):
+	https://fontlibrary.org/en/font/vintage-propagandist
+	https://fontlibrary.org/en/font/destroya
