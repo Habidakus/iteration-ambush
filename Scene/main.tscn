@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bjmkbjlquesr5"]
+[gd_scene load_steps=16 format=3 uid="uid://bjmkbjlquesr5"]
 
 [ext_resource type="Shader" path="res://Art/background.gdshader" id="1_kmdog"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachine.gd" id="2_fbjv7"]
@@ -7,6 +7,10 @@
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState.gd" id="5_ku58m"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_MainMenu.gd" id="5_r1cm3"]
 [ext_resource type="FontFile" uid="uid://cw5poiupa2paf" path="res://Fonts/Destroya.ttf" id="6_1qfmw"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_Play.gd" id="6_q716x"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_LevelSetup.gd" id="7_8xsm8"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_LevelAdvance.gd" id="8_m3tch"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayAsleep.gd" id="11_c5r5p"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_k3dey"]
 noise_type = 3
@@ -139,19 +143,23 @@ text = "Play"
 flat = true
 
 [node name="State_Play" type="Control" parent="MarginContainer/MenuStateMachine"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("5_ku58m")
+script = ExtResource("6_q716x")
 
 [node name="TerrainMap" type="TileMapLayer" parent="MarginContainer/MenuStateMachine/State_Play"]
+unique_name_in_owner = true
 
 [node name="ObjectMap" type="TileMapLayer" parent="MarginContainer/MenuStateMachine/State_Play"]
+unique_name_in_owner = true
 
 [node name="PlayStateMachine" type="Control" parent="MarginContainer/MenuStateMachine/State_Play" node_paths=PackedStringArray("initial_state")]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -159,7 +167,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_fbjv7")
-initial_state = NodePath("PlayState_LevelSetup")
+initial_state = NodePath("PlayState_Asleep")
 
 [node name="PlayState_LevelSetup" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
 layout_mode = 1
@@ -168,7 +176,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("5_ku58m")
+script = ExtResource("7_8xsm8")
+
+[node name="PlayState_LevelAdvance" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_m3tch")
 
 [node name="PlayState_Active" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
 layout_mode = 1
@@ -215,5 +232,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("5_ku58m")
+
+[node name="PlayState_Asleep" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("11_c5r5p")
 
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_MainMenu/VBoxContainer/Button" to="MarginContainer/MenuStateMachine/State_MainMenu" method="_on_button_button_up"]
