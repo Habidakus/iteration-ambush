@@ -29,7 +29,6 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 		terrain.set_cell(Vector2i(baseX + 7, baseY + size - 1))
 	if east != null:
 		terrain.set_cell(Vector2i(baseX + size - 1, baseY + 7))
-	print("Applied to maps, complete")
 
 func ClearFromMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 	var baseX : int = x * size

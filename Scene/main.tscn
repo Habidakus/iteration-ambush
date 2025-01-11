@@ -260,6 +260,6 @@ offset_bottom = 40.0
 script = ExtResource("11_c5r5p")
 
 [node name="Camera2D" type="Camera2D" parent="MarginContainer/MenuStateMachine/State_Play"]
-zoom = Vector2(0.4, 0.4)
+zoom = Vector2(0.3, 0.3)
 
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button" to="MarginContainer/MenuStateMachine/State_MainMenu" method="_on_button_button_up"]
