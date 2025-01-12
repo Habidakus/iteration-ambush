@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bjmkbjlquesr5"]
+[gd_scene load_steps=22 format=3 uid="uid://bjmkbjlquesr5"]
 
 [ext_resource type="Shader" path="res://Art/background.gdshader" id="1_kmdog"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachine.gd" id="2_fbjv7"]
@@ -12,6 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://bj750ideyhkgn" path="res://Art/fiveTiles.png" id="7_n5lrl"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_LevelAdvance.gd" id="8_m3tch"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayAsleep.gd" id="11_c5r5p"]
+[ext_resource type="Texture2D" uid="uid://b6njpasxeckbc" path="res://Art/redCircle.png" id="13_htf4p"]
+[ext_resource type="Script" path="res://Scripts/player.gd" id="13_ikns1"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_k3dey"]
 noise_type = 3
@@ -46,6 +48,7 @@ outline_color = Color(0, 0, 0, 1)
 texture = ExtResource("7_n5lrl")
 texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
 1:0/0 = 0
 2:0/0 = 0
 3:0/0 = 0
@@ -53,7 +56,12 @@ texture_region_size = Vector2i(64, 64)
 
 [sub_resource type="TileSet" id="TileSet_efjmm"]
 tile_size = Vector2i(64, 64)
+physics_layer_0/collision_layer = 1
 sources/1 = SubResource("TileSetAtlasSource_qvyo6")
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lijbc"]
+radius = 27.0
+height = 54.0
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -260,7 +268,18 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("11_c5r5p")
 
-[node name="Camera2D" type="Camera2D" parent="MarginContainer/MenuStateMachine/State_Play"]
-zoom = Vector2(0.25, 0.25)
+[node name="Player" type="CharacterBody2D" parent="MarginContainer/MenuStateMachine/State_Play"]
+unique_name_in_owner = true
+motion_mode = 1
+script = ExtResource("13_ikns1")
+
+[node name="Camera2D" type="Camera2D" parent="MarginContainer/MenuStateMachine/State_Play/Player"]
+zoom = Vector2(0.7, 0.7)
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer/MenuStateMachine/State_Play/Player"]
+texture = ExtResource("13_htf4p")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/MenuStateMachine/State_Play/Player"]
+shape = SubResource("CapsuleShape2D_lijbc")
 
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button" to="MarginContainer/MenuStateMachine/State_MainMenu" method="_on_button_button_up"]

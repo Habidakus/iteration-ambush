@@ -11,8 +11,14 @@ var y : int
 var id : int
 var size : int = 15
 var source_id : int = 1
+var has_entered : bool = false
+var play_state : PlayState
+
+# TODO: Make global
 var atlas_coords_wall : Vector2i = Vector2i(0, 0)
 var atlas_coords_firepit : Vector2i = Vector2i(2, 0)
+var atlas_coords_lastroom : Vector2i = Vector2i(1, 0)
+
 # TODO: No, repalce with enum
 var has_firepit : bool = false
 var has_many_firepit : bool = false
@@ -20,15 +26,18 @@ var is_narrow : bool = false
 var is_diamond : bool = false
 var is_pilars : bool = false
 var is_many_pilars : bool = false
+var is_last_room : bool = false
 
 static var global_id : int = 0
 
-static func CreateRoom(cx : int, cy : int) -> Room:
+static func CreateRoom(cx : int, cy : int, cplay_state : PlayState) -> Room:
 	global_id += 1
+	
 	var room : Room = Room.new()
 	room.x = cx
 	room.y = cy
 	room.id = global_id
+	room.play_state = cplay_state
 	if room.id % 13 == 0:
 		room.has_many_firepit = true
 	elif room.id % 11 == 0:
@@ -42,6 +51,21 @@ static func CreateRoom(cx : int, cy : int) -> Room:
 	elif room.id % 2 == 0:
 		room.is_pilars = true
 	return room
+
+func ResetRoom() -> void:
+	has_entered = false
+
+func SetAsLastRoom() -> void:
+	is_last_room = true
+
+func UpdatePlayerInRoom() -> void:
+	if has_entered == true:
+		return
+	
+	print("Room ID: " + str(id))
+
+	play_state.player_entered_room_for_first_time(self)
+	has_entered = true
 
 func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 	var baseX : int = x * size
@@ -69,6 +93,10 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 				terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + dy), source_id, atlas_coords_wall)
 				terrain.set_cell(Vector2i(baseX + dx, baseY + size - (1 + dy)), source_id, atlas_coords_wall)
 				terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + size - (1 + dy)), source_id, atlas_coords_wall)
+	if is_last_room:
+		for ox in range(baseX + 5, baseX + size - 5):
+			for oy in range(baseY + 5, baseY + size - 5):
+				terrain.set_cell(Vector2i(ox, oy), source_id, atlas_coords_lastroom)
 	if is_pilars:
 		apply_pillar(terrain, baseX + 4, baseY + 4)
 		apply_pillar(terrain, baseX + 9, baseY + 4)

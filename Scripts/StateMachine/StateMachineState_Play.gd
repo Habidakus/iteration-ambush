@@ -1,30 +1,55 @@
 extends StateMachineState
 
-var rooms : Array[Room]
-var can_expand : float = -1
-var go_active : bool = false
-var per_wait : int = 3
+class_name PlayState
 
-func _process(delta : float) -> void:
-	if can_expand > 0:
-		can_expand -= delta
-		if can_expand <= 0:
-			%PlayStateMachine.switch_state("PlayState_LevelAdvance")
-		return
+var rooms : Array[Room]
+var go_active : bool = false
+
+var first_room : Room
+var last_room : Room
+
+# TODO: Make global
+var last_room_atlas : Vector2i = Vector2i(1, 0)
+
+func _process(_delta : float) -> void:
 	if go_active:
 		go_active = false
-		can_expand = per_wait
 		%PlayStateMachine.switch_state("PlayState_Active")
+
+func apply_tile(terrain_atlas_pos : Vector2i) -> void:
+	if terrain_atlas_pos == last_room_atlas:
+		%PlayStateMachine.switch_state("PlayState_LevelAdvance")
+
+func trigger_player_location_events(player_loc : Vector2) -> void:
+	var map_pos : Vector2i = (%TerrainMap as TileMapLayer).local_to_map(player_loc)
+	var atlas = (%TerrainMap as TileMapLayer).get_cell_atlas_coords(map_pos)
+	if atlas.x != -1:
+		apply_tile(atlas)
+		#var tile_data : TileData = (%TerrainMap as TileMapLayer).get_cell_tile_data(map_pos)
+		#print(str(atlas) + " " + str(tile_data))
+	
+	var grid_fx : float = (map_pos.x / 15.0)
+	var grid_fy : float = (map_pos.y / 15.0)
+	var grid_x : int = floor(grid_fx)
+	var grid_y : int = floor(grid_fy)
+	for room : Room in rooms:
+		if room.x == grid_x && room.y == grid_y:
+			room.UpdatePlayerInRoom()
+			return
+
+func player_entered_room_for_first_time(_room : Room) -> void:
+	pass
 
 func enter_state() -> void:
 	super.enter_state()
 	%PlayStateMachine.switch_state("PlayState_LevelSetup")
 
 func init_map() -> void:
-	var r1 = Room.CreateRoom(0, 0)
-	var r2 = Room.CreateRoom(0, -1)
-	var r3 = Room.CreateRoom(-1, -1)
-	var r4 = Room.CreateRoom(-1, 0)
+	var r1 = Room.CreateRoom(0, 0, self)
+	var r2 = Room.CreateRoom(0, -1, self)
+	var r3 = Room.CreateRoom(-1, -1, self)
+	var r4 = Room.CreateRoom(-1, 0, self)
+	r4.SetAsLastRoom()
 
 	connect_rooms(r1, r2)
 	connect_rooms(r2, r3)
@@ -39,6 +64,9 @@ func init_map() -> void:
 	r2.ApplyToMaps(%TerrainMap, %ObjectMap)
 	r3.ApplyToMaps(%TerrainMap, %ObjectMap)
 	r4.ApplyToMaps(%TerrainMap, %ObjectMap)
+	
+	first_room = r1
+	last_room = r4
 
 func connect_rooms(left : Room, right : Room) -> void:
 	if left.x + 1 == right.x:
@@ -57,7 +85,8 @@ func connect_rooms(left : Room, right : Room) -> void:
 		assert(false)
 
 func clean_map() -> void:
-	print("TODO: CLEAN MAP")
+	for room : Room in rooms:
+		room.ResetRoom()
 
 func move(rooms_to_move : Array[Room], dir : Vector2i) -> DirectionRoomCollection:
 	for room : Room in rooms_to_move:
@@ -155,9 +184,9 @@ func mutate_map_extrude() -> bool:
 	
 func extrude_map(room_a : Room, room_b : Room, dir : Vector2i) -> void:
 	print("Extruding " + str(room_a.x) + "," + str(room_a.y) + " towards " + str(dir))
-	var new_room_a : Room = Room.CreateRoom(room_a.x + dir.x, room_a.y + dir.y)
+	var new_room_a : Room = Room.CreateRoom(room_a.x + dir.x, room_a.y + dir.y, self)
 	print("Extruding " + str(room_b.x) + "," + str(room_b.y) + " towards " + str(dir))
-	var new_room_b : Room = Room.CreateRoom(room_b.x + dir.x, room_b.y + dir.y)
+	var new_room_b : Room = Room.CreateRoom(room_b.x + dir.x, room_b.y + dir.y, self)
 	if room_a.north == room_b:
 		new_room_a.north = new_room_b
 		new_room_b.south = new_room_a
@@ -219,7 +248,7 @@ func mutate_map_extend() -> void:
 
 	for room : Room in pre_empty_rooms:
 		#var old_dest : Room = room.east
-		var new_room : Room = Room.CreateRoom(room.x + move_direction.x, room.y + move_direction.y)
+		var new_room : Room = Room.CreateRoom(room.x + move_direction.x, room.y + move_direction.y, self)
 		print("Adding at " + str(new_room.x) + "," + str(new_room.y))
 		if move_direction.x > 0:
 			var old_dest : Room = room.east
@@ -253,3 +282,4 @@ func mutate_map_extend() -> void:
 func spawn_map() -> void:
 	print("TODO: SPAWN ENEMIES")
 	go_active = true
+	%Player.position = Vector2((first_room.x * 15 + 7.5) * 64, (first_room.y * 15 + 7.5) * 64)
