@@ -3,6 +3,7 @@ extends StateMachineState
 var rooms : Array[Room]
 var can_expand : float = -1
 var go_active : bool = false
+var per_wait : int = 3
 
 func _process(delta : float) -> void:
 	if can_expand > 0:
@@ -12,7 +13,7 @@ func _process(delta : float) -> void:
 		return
 	if go_active:
 		go_active = false
-		can_expand = 1
+		can_expand = per_wait
 		%PlayStateMachine.switch_state("PlayState_Active")
 
 func enter_state() -> void:
@@ -20,18 +21,10 @@ func enter_state() -> void:
 	%PlayStateMachine.switch_state("PlayState_LevelSetup")
 
 func init_map() -> void:
-	var r1 = Room.new()
-	r1.x = 0
-	r1.y = 0
-	var r2 = Room.new()
-	r2.x = 0
-	r2.y = -1
-	var r3 = Room.new()
-	r3.x = -1
-	r3.y = -1
-	var r4 = Room.new()
-	r4.x = -1
-	r4.y = 0
+	var r1 = Room.CreateRoom(0, 0)
+	var r2 = Room.CreateRoom(0, -1)
+	var r3 = Room.CreateRoom(-1, -1)
+	var r4 = Room.CreateRoom(-1, 0)
 
 	connect_rooms(r1, r2)
 	connect_rooms(r2, r3)
@@ -162,13 +155,9 @@ func mutate_map_extrude() -> bool:
 	
 func extrude_map(room_a : Room, room_b : Room, dir : Vector2i) -> void:
 	print("Extruding " + str(room_a.x) + "," + str(room_a.y) + " towards " + str(dir))
-	var new_room_a : Room = Room.new()
-	new_room_a.x = room_a.x + dir.x
-	new_room_a.y = room_a.y + dir.y
+	var new_room_a : Room = Room.CreateRoom(room_a.x + dir.x, room_a.y + dir.y)
 	print("Extruding " + str(room_b.x) + "," + str(room_b.y) + " towards " + str(dir))
-	var new_room_b : Room = Room.new()
-	new_room_b.x = room_b.x + dir.x
-	new_room_b.y = room_b.y + dir.y
+	var new_room_b : Room = Room.CreateRoom(room_b.x + dir.x, room_b.y + dir.y)
 	if room_a.north == room_b:
 		new_room_a.north = new_room_b
 		new_room_b.south = new_room_a
@@ -230,9 +219,7 @@ func mutate_map_extend() -> void:
 
 	for room : Room in pre_empty_rooms:
 		#var old_dest : Room = room.east
-		var new_room : Room = Room.new()
-		new_room.x = room.x + move_direction.x
-		new_room.y = room.y + move_direction.y
+		var new_room : Room = Room.CreateRoom(room.x + move_direction.x, room.y + move_direction.y)
 		print("Adding at " + str(new_room.x) + "," + str(new_room.y))
 		if move_direction.x > 0:
 			var old_dest : Room = room.east

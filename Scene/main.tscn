@@ -103,6 +103,7 @@ script = ExtResource("3_7fknr")
 next_state = NodePath("../State_MainMenu")
 time_out_in_seconds = 3.0
 fade_out = true
+fade_time = 0.5
 
 [node name="CanvasLayer" type="CanvasLayer" parent="MarginContainer/MenuStateMachine/State_Splash"]
 
@@ -260,6 +261,6 @@ offset_bottom = 40.0
 script = ExtResource("11_c5r5p")
 
 [node name="Camera2D" type="Camera2D" parent="MarginContainer/MenuStateMachine/State_Play"]
-zoom = Vector2(0.05, 0.05)
+zoom = Vector2(0.25, 0.25)
 
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button" to="MarginContainer/MenuStateMachine/State_MainMenu" method="_on_button_button_up"]
