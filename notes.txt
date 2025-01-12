@@ -1,3 +1,5 @@
 Fonts (using the MIT license):
 	https://fontlibrary.org/en/font/vintage-propagandist
 	https://fontlibrary.org/en/font/destroya
+Location of some MIT notes:
+	https://github.com/gleitz/midi-js-soundfonts/tree/gh-pages/MusyngKite
