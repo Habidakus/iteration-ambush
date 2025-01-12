@@ -12,6 +12,10 @@ var id : int
 var size : int = 15
 var source_id : int = 1
 var play_state : PlayState
+var enemy : Enemy = null
+
+var enemy_scene : Resource = preload("res://Scene/enemy.tscn")
+var has_enemy : bool = true
 
 var has_entered : bool = false
 var has_woken : bool = false
@@ -59,6 +63,9 @@ func ResetRoom() -> void:
 	has_entered = false
 	has_woken = false
 	has_spawned = false
+	if enemy:
+		enemy.queue_free()
+		enemy = null
 
 func SetAsLastRoom() -> void:
 	is_last_room = true
@@ -91,6 +98,10 @@ func WakeUp() -> void:
 	has_woken = true
 	
 	Spawn()
+
+	if enemy:
+		enemy.wake(play_state.get_player())
+
 	if north:
 		north.Spawn()
 	if south:
@@ -104,6 +115,11 @@ func Spawn() -> void:
 	if has_spawned:
 		return
 
+	if has_enemy:
+		enemy = enemy_scene.instantiate()
+		enemy.position = play_state.get_room_central_pos(x, y)
+		play_state.add_child(enemy)
+	
 	print("Spawn room ID: " + str(id))
 	has_spawned = true
 

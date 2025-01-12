@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://ciimtinkcteoe"]
+
+[ext_resource type="Script" path="res://Scripts/enemy.gd" id="1_sjov5"]
+[ext_resource type="Texture2D" uid="uid://r1366n0giu0i" path="res://Art/Enemy01.png" id="1_umrod"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_50c7h"]
+size = Vector2(60, 61)
+
+[node name="Enemy" type="CharacterBody2D"]
+motion_mode = 1
+wall_min_slide_angle = 0.0
+script = ExtResource("1_sjov5")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_umrod")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_50c7h")
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="Node2D"]
+unique_name_in_owner = true
+path_desired_distance = 32.0
+target_desired_distance = 32.0
+debug_enabled = true
+debug_path_custom_color = Color(0, 1, 1, 1)
+
+[node name="Timer" type="Timer" parent="Node2D"]
+wait_time = 0.2
+
+[connection signal="timeout" from="Node2D/Timer" to="." method="tick"]

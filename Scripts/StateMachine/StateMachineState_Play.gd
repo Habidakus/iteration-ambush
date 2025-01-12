@@ -20,6 +20,13 @@ func apply_tile(terrain_atlas_pos : Vector2i) -> void:
 	if terrain_atlas_pos == last_room_atlas:
 		%PlayStateMachine.switch_state("PlayState_LevelAdvance")
 
+func get_room_central_pos(grid_x : int, grid_y : int) -> Vector2:
+	var local_pos = (%TerrainMap as TileMapLayer).map_to_local(Vector2i(grid_x * 15 + 7, grid_y * 15 + 7))
+	return local_pos
+
+func get_player() -> Player:
+	return %Player
+
 func trigger_player_location_events(player_loc : Vector2) -> void:
 	var map_pos : Vector2i = (%TerrainMap as TileMapLayer).local_to_map(player_loc)
 	var atlas = (%TerrainMap as TileMapLayer).get_cell_atlas_coords(map_pos)
@@ -49,6 +56,8 @@ func init_map() -> void:
 	var r2 = Room.CreateRoom(0, -1, self)
 	var r3 = Room.CreateRoom(-1, -1, self)
 	var r4 = Room.CreateRoom(-1, 0, self)
+	r1.has_enemy = false
+	r4.has_enemy = false
 	r4.SetAsLastRoom()
 
 	connect_rooms(r1, r2)
