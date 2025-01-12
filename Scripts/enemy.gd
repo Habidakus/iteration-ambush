@@ -40,7 +40,7 @@ func _physics_process(_delta: float) -> void:
 		return
 	
 	var axis : Vector2 = to_local(nav_agent.get_next_path_position()).normalized()
-	print("enemy moving " + str(axis))
+	#print("enemy moving " + str(axis))
 	velocity = axis * SPEED
 	
 	move_and_slide()

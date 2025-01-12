@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://bjmkbjlquesr5"]
+[gd_scene load_steps=27 format=3 uid="uid://bjmkbjlquesr5"]
 
 [ext_resource type="Shader" path="res://Art/background.gdshader" id="1_kmdog"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachine.gd" id="2_fbjv7"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_LevelSetup.gd" id="7_8xsm8"]
 [ext_resource type="Texture2D" uid="uid://bj750ideyhkgn" path="res://Art/fiveTiles.png" id="7_n5lrl"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_LevelAdvance.gd" id="8_m3tch"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_GameplayActive.gd" id="10_kgdqs"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayAsleep.gd" id="11_c5r5p"]
 [ext_resource type="Texture2D" uid="uid://b6njpasxeckbc" path="res://Art/redCircle.png" id="13_htf4p"]
 [ext_resource type="Script" path="res://Scripts/player.gd" id="13_ikns1"]
@@ -251,7 +252,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("5_ku58m")
+script = ExtResource("10_kgdqs")
 
 [node name="PlayState_Dead" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
 layout_mode = 1

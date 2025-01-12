@@ -4,6 +4,7 @@ class_name PlayState
 
 var rooms : Array[Room]
 var go_active : bool = false
+var is_gameplay_active : bool = false
 
 var first_room : Room
 var last_room : Room
@@ -28,6 +29,9 @@ func get_player() -> Player:
 	return %Player
 
 func trigger_player_location_events(player_loc : Vector2) -> void:
+	if is_gameplay_active == false:
+		return
+		
 	var map_pos : Vector2i = (%TerrainMap as TileMapLayer).local_to_map(player_loc)
 	var atlas = (%TerrainMap as TileMapLayer).get_cell_atlas_coords(map_pos)
 	if atlas.x != -1:
@@ -100,7 +104,7 @@ func clean_map() -> void:
 func move(rooms_to_move : Array[Room], dir : Vector2i) -> DirectionRoomCollection:
 	for room : Room in rooms_to_move:
 		room.ClearFromMaps(%TerrainMap, %ObjectMap)
-		print("Moving " + str(room.x) + "," + str(room.y) + " by " + str(dir))
+		#print("Moving " + str(room.x) + "," + str(room.y) + " by " + str(dir))
 		room.x += dir.x
 		room.y += dir.y
 	var ret_val : DirectionRoomCollection = DirectionRoomCollection.new()
@@ -238,22 +242,18 @@ func mutate_map_extend() -> void:
 		move_direction = Vector2i(1, 0)
 		result = move(drc.easts, move_direction)
 		pre_empty_rooms = result.easts
-		print("MUTATING MAP: East " + str(pre_empty_rooms.size()))
 	elif drc.is_north_least():
 		move_direction = Vector2i(0, -1)
 		result = move(drc.norths, move_direction)
 		pre_empty_rooms = result.norths
-		print("MUTATING MAP: North " + str(pre_empty_rooms.size()))
 	elif drc.is_west_least():
 		move_direction = Vector2i(-1, 0)
 		result = move(drc.wests, move_direction)
 		pre_empty_rooms = result.wests
-		print("MUTATING MAP: West " + str(pre_empty_rooms.size()))
 	else: # south
 		move_direction = Vector2i(0, 1)
 		result = move(drc.souths, move_direction)
 		pre_empty_rooms = result.souths
-		print("MUTATING MAP: South " + str(pre_empty_rooms.size()))
 
 	for room : Room in pre_empty_rooms:
 		#var old_dest : Room = room.east
@@ -291,4 +291,5 @@ func mutate_map_extend() -> void:
 func spawn_map() -> void:
 	print("TODO: SPAWN ENEMIES")
 	go_active = true
+	assert(is_gameplay_active == false)
 	%Player.position = Vector2((first_room.x * 15 + 7.5) * 64, (first_room.y * 15 + 7.5) * 64)

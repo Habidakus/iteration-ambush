@@ -25,6 +25,7 @@ var has_spawned : bool = false
 var atlas_coords_wall : Vector2i = Vector2i(0, 0)
 var atlas_coords_firepit : Vector2i = Vector2i(2, 0)
 var atlas_coords_lastroom : Vector2i = Vector2i(1, 0)
+var atlas_coords_floor : Vector2i = Vector2i(3, 0)
 
 # TODO: No, repalce with enum
 var has_firepit : bool = false
@@ -65,6 +66,7 @@ func ResetRoom() -> void:
 	has_spawned = false
 	if enemy:
 		enemy.queue_free()
+		print("Queuing free for room #" + str(id) + " enemy")
 		enemy = null
 
 func SetAsLastRoom() -> void:
@@ -100,6 +102,7 @@ func WakeUp() -> void:
 	Spawn()
 
 	if enemy:
+		print("Waking enemy in room " + str(id))
 		enemy.wake(play_state.get_player())
 
 	if north:
@@ -114,19 +117,25 @@ func WakeUp() -> void:
 func Spawn() -> void:
 	if has_spawned:
 		return
+		
+	print("Spawn room ID: " + str(id))
 
 	if has_enemy:
+		assert(enemy == null)
+		print("Spawning enemy for room ID: " + str(id))
 		enemy = enemy_scene.instantiate()
 		enemy.position = play_state.get_room_central_pos(x, y)
 		play_state.add_child(enemy)
 	
-	print("Spawn room ID: " + str(id))
 	has_spawned = true
 
 func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 	var baseX : int = x * size
 	var baseY : int = y * size
 	var width : int = 4 if is_narrow else 1
+	for dx in range(0, size):
+		for dy in range(0, size):
+			terrain.set_cell(Vector2i(baseX + dx, baseY + dy), source_id, atlas_coords_floor)
 	for w in range(0, width):
 		for i in range(0, size):
 			terrain.set_cell(Vector2i(baseX + i, baseY + w), source_id, atlas_coords_wall)
@@ -135,13 +144,13 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 				terrain.set_cell(Vector2i(baseX + w, baseY + i), source_id, atlas_coords_wall)
 				terrain.set_cell(Vector2i(baseX + size - (1 + w), baseY + i), source_id, atlas_coords_wall)
 		if north != null:
-			terrain.set_cell(Vector2i(baseX + 7, baseY + w))
+			terrain.set_cell(Vector2i(baseX + 7, baseY + w), source_id, atlas_coords_floor)
 		if west != null:
-			terrain.set_cell(Vector2i(baseX + w, baseY + 7))
+			terrain.set_cell(Vector2i(baseX + w, baseY + 7), source_id, atlas_coords_floor)
 		if south != null:
-			terrain.set_cell(Vector2i(baseX + 7, baseY + size - (1 + w)))
+			terrain.set_cell(Vector2i(baseX + 7, baseY + size - (1 + w)), source_id, atlas_coords_floor)
 		if east != null:
-			terrain.set_cell(Vector2i(baseX + size - (1 + w), baseY + 7))
+			terrain.set_cell(Vector2i(baseX + size - (1 + w), baseY + 7), source_id, atlas_coords_floor)
 	if is_diamond:
 		for dx in range(1, 6):
 			for dy in range(1, 7 - dx):
