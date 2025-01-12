@@ -11,8 +11,11 @@ var y : int
 var id : int
 var size : int = 15
 var source_id : int = 1
-var has_entered : bool = false
 var play_state : PlayState
+
+var has_entered : bool = false
+var has_woken : bool = false
+var has_spawned : bool = false
 
 # TODO: Make global
 var atlas_coords_wall : Vector2i = Vector2i(0, 0)
@@ -54,6 +57,8 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState) -> Room:
 
 func ResetRoom() -> void:
 	has_entered = false
+	has_woken = false
+	has_spawned = false
 
 func SetAsLastRoom() -> void:
 	is_last_room = true
@@ -62,10 +67,45 @@ func UpdatePlayerInRoom() -> void:
 	if has_entered == true:
 		return
 	
-	print("Room ID: " + str(id))
+	print("Entered room ID: " + str(id))
 
 	play_state.player_entered_room_for_first_time(self)
 	has_entered = true
+
+	Spawn()
+	WakeUp()
+	if north:
+		north.WakeUp()
+	if south:
+		south.WakeUp()
+	if east:
+		east.WakeUp()
+	if west:
+		west.WakeUp()
+
+func WakeUp() -> void:
+	if has_woken:
+		return
+
+	print("Woke room ID: " + str(id))
+	has_woken = true
+	
+	Spawn()
+	if north:
+		north.Spawn()
+	if south:
+		south.Spawn()
+	if east:
+		east.Spawn()
+	if west:
+		west.Spawn()
+
+func Spawn() -> void:
+	if has_spawned:
+		return
+
+	print("Spawn room ID: " + str(id))
+	has_spawned = true
 
 func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 	var baseX : int = x * size

@@ -21,7 +21,9 @@ func _physics_process(_delta: float) -> void:
 	
 	var acc_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	if acc_dir == Vector2.ZERO:
-		velocity = our_momentum * (1 - _delta)
+		var slow = (1 - _delta)
+		slow = slow * slow
+		velocity = our_momentum * slow
 	else:
 		velocity = (acc_dir * SPEED + our_momentum).normalized() * SPEED
 
