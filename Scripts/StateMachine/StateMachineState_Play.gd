@@ -12,7 +12,7 @@ func _process(delta : float) -> void:
 		return
 	if go_active:
 		go_active = false
-		can_expand = 5
+		can_expand = 1
 		%PlayStateMachine.switch_state("PlayState_Active")
 
 func enter_state() -> void:
@@ -33,14 +33,9 @@ func init_map() -> void:
 	r4.x = -1
 	r4.y = 0
 
-	r1.north = r2
-	r2.south = r1
-	
-	r2.west = r3
-	r3.east = r2
-	
-	r3.south = r4
-	r4.north = r3
+	connect_rooms(r1, r2)
+	connect_rooms(r2, r3)
+	connect_rooms(r3, r4)
 
 	rooms.append(r1)
 	rooms.append(r2)
@@ -52,22 +47,24 @@ func init_map() -> void:
 	r3.ApplyToMaps(%TerrainMap, %ObjectMap)
 	r4.ApplyToMaps(%TerrainMap, %ObjectMap)
 
+func connect_rooms(left : Room, right : Room) -> void:
+	if left.x + 1 == right.x:
+		left.east = right
+		right.west = left
+	elif left.x - 1 == right.x:
+		left.west = right
+		right.east = left
+	elif left.y - 1 == right.y:
+		left.north = right
+		right.south = left
+	elif left.y + 1 == right.y:
+		left.south = right
+		right.north = left
+	else:
+		assert(false)
+
 func clean_map() -> void:
 	print("TODO: CLEAN MAP")
-
-#func count_east(minX : int) -> int:
-	#var ret_val : int = 0
-	#for room : Room in rooms:
-		#if room.x >= minX:
-			#ret_val += 1
-	#return ret_val
-#
-#func count_north(maxY : int) -> int:
-	#var ret_val : int = 0
-	#for room : Room in rooms:
-		#if room.y < maxY:
-			#ret_val += 1
-	#return ret_val
 
 func move(rooms_to_move : Array[Room], dir : Vector2i) -> DirectionRoomCollection:
 	for room : Room in rooms_to_move:
@@ -92,31 +89,6 @@ func move(rooms_to_move : Array[Room], dir : Vector2i) -> DirectionRoomCollectio
 			ret_val.easts.append(room.west)
 	return ret_val
 
-#func get_pre_empty_rooms() -> Array[Room]:
-	#var ret_north : Array[Room]
-	#var ret_south : Array[Room]
-	#var ret_east : Array[Room]
-	#var ret_west : Array[Room]
-	#for room : Room in rooms:
-		#if room.north != null:
-			#if room.north.y != room.y - 1:
-				#ret_north.append(room)
-		#if room.east != null:
-			#if room.east.x != room.x + 1:
-				#ret_east.append(room)
-		#if room.south != null:
-			#if room.south.y != room.y + 1:
-				#ret_south.append(room)
-		#if room.west != null:
-			#if room.west.x != room.x - 1:
-				#ret_west.append(room)
-	#assert(ret_north.size() == ret_south.size())
-	#assert(ret_west.size() == ret_east.size())
-	#if ret_north.size() > ret_east.size():
-		#return ret_north
-	#else:
-		#return ret_east
-
 func generate_direction_room_collection(loc : Vector2i) -> DirectionRoomCollection:
 	var ret_val : DirectionRoomCollection = DirectionRoomCollection.new()
 	for room : Room in rooms:
@@ -129,8 +101,108 @@ func generate_direction_room_collection(loc : Vector2i) -> DirectionRoomCollecti
 		else:
 			ret_val.norths.append(room)
 	return ret_val
-		
+
+var mutate_count : int = 0
 func mutate_map() -> void:
+	mutate_count += 1
+	if mutate_count % 2 == 0:
+		if mutate_map_extrude():
+			return
+	mutate_map_extend()
+
+func is_empty_room(x : int, y : int) -> bool:
+	for room : Room in rooms:
+		if room.x == x and room.y == y:
+			return false
+	return true
+
+func mutate_map_extrude() -> bool:
+	var potential_east : Array[Room]
+	var potential_west : Array[Room]
+	var potential_north : Array[Room]
+	var potential_south : Array[Room]
+	for room : Room in rooms:
+		if room.north != null:
+			if is_empty_room(room.x + 1, room.y) && is_empty_room(room.north.x + 1, room.north.y):
+				potential_east.append(room)
+			if is_empty_room(room.x - 1, room.y) && is_empty_room(room.north.x - 1, room.north.y):
+				potential_west.append(room)
+		if room.east != null:
+			if is_empty_room(room.x, room.y - 1) && is_empty_room(room.east.x, room.east.y - 1):
+				potential_north.append(room)
+			if is_empty_room(room.x, room.y + 1) && is_empty_room(room.east.x, room.east.y + 1):
+				potential_south.append(room)
+	var count : int = potential_east.size() + potential_west.size() + potential_north.size() + potential_south.size()
+	if count == 0:
+		print("Failed to extrude")
+		return false
+	print("TODO: mutate_map_extrude() should be random")
+	var index : int = mutate_count % count
+	if index < potential_east.size():
+		extrude_map(potential_east[index], potential_east[index].north, Vector2i(1, 0))
+		return true
+	index -= potential_east.size()
+	
+	if index < potential_west.size():
+		extrude_map(potential_west[index], potential_west[index].north, Vector2i(-1, 0))
+		return true
+	index -= potential_west.size()
+	
+	if index < potential_north.size():
+		extrude_map(potential_north[index], potential_north[index].east, Vector2i(0, -1))
+		return true
+	index -= potential_north.size()
+		
+	if index < potential_south.size():
+		extrude_map(potential_south[index], potential_south[index].east, Vector2i(0, 1))
+		return true
+		
+	assert(false)
+	return false
+	
+func extrude_map(room_a : Room, room_b : Room, dir : Vector2i) -> void:
+	print("Extruding " + str(room_a.x) + "," + str(room_a.y) + " towards " + str(dir))
+	var new_room_a : Room = Room.new()
+	new_room_a.x = room_a.x + dir.x
+	new_room_a.y = room_a.y + dir.y
+	print("Extruding " + str(room_b.x) + "," + str(room_b.y) + " towards " + str(dir))
+	var new_room_b : Room = Room.new()
+	new_room_b.x = room_b.x + dir.x
+	new_room_b.y = room_b.y + dir.y
+	if room_a.north == room_b:
+		new_room_a.north = new_room_b
+		new_room_b.south = new_room_a
+		room_a.north = null
+		room_b.south = null
+	elif room_a.south == room_b:
+		new_room_a.south = new_room_b
+		new_room_b.north = new_room_a
+		room_a.south = null
+		room_b.north = null
+	elif room_a.east == room_b:
+		new_room_a.east = new_room_b
+		new_room_b.west = new_room_a
+		room_a.east = null
+		room_b.west = null
+	elif room_a.west == room_b:
+		new_room_a.west = new_room_b
+		new_room_b.east = new_room_a
+		room_a.west = null
+		room_b.east = null
+	else:
+		assert(false)
+	rooms.append(new_room_a)
+	rooms.append(new_room_b)
+	connect_rooms(room_a, new_room_a)
+	connect_rooms(room_b, new_room_b)
+	room_a.ClearFromMaps(%TerrainMap, %ObjectMap)
+	room_b.ClearFromMaps(%TerrainMap, %ObjectMap)
+	room_a.ApplyToMaps(%TerrainMap, %ObjectMap)
+	room_b.ApplyToMaps(%TerrainMap, %ObjectMap)
+	new_room_a.ApplyToMaps(%TerrainMap, %ObjectMap)
+	new_room_b.ApplyToMaps(%TerrainMap, %ObjectMap)
+
+func mutate_map_extend() -> void:
 	var drc : DirectionRoomCollection = generate_direction_room_collection(Vector2i.ZERO)
 	var pre_empty_rooms : Array[Room]
 	var result : DirectionRoomCollection
