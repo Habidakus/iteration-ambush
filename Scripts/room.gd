@@ -72,11 +72,16 @@ func ResetRoom() -> void:
 func SetAsLastRoom() -> void:
 	is_last_room = true
 
+func DrawRoomNumber() -> void:
+	var pos = play_state.get_room_central_pos(x, y)
+	var font = ThemeDB.fallback_font
+	play_state.draw_string(font, pos, str(id), HORIZONTAL_ALIGNMENT_CENTER, 64, 64)
+
 func UpdatePlayerInRoom() -> void:
 	if has_entered == true:
 		return
 	
-	print("Entered room ID: " + str(id))
+	#print("Entered room ID: " + str(id))
 
 	play_state.player_entered_room_for_first_time(self)
 	has_entered = true
@@ -96,13 +101,13 @@ func WakeUp() -> void:
 	if has_woken:
 		return
 
-	print("Woke room ID: " + str(id))
+	#print("Woke room ID: " + str(id))
 	has_woken = true
 	
 	Spawn()
 
 	if enemy:
-		print("Waking enemy in room " + str(id))
+		#print("Waking enemy in room " + str(id))
 		enemy.wake(play_state.get_player())
 
 	if north:
@@ -118,11 +123,11 @@ func Spawn() -> void:
 	if has_spawned:
 		return
 		
-	print("Spawn room ID: " + str(id))
+	#print("Spawn room ID: " + str(id))
 
 	if has_enemy:
 		assert(enemy == null)
-		print("Spawning enemy for room ID: " + str(id))
+		#print("Spawning enemy for room ID: " + str(id))
 		enemy = enemy_scene.instantiate()
 		enemy.position = play_state.get_room_central_pos(x, y)
 		play_state.add_child(enemy)

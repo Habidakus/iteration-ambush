@@ -16,6 +16,12 @@ func _process(_delta : float) -> void:
 	if go_active:
 		go_active = false
 		%PlayStateMachine.switch_state("PlayState_Active")
+	#if is_gameplay_active:
+		#queue_redraw()
+
+#func _draw() -> void:
+	#for room : Room in rooms:
+		#room.DrawRoomNumber()
 
 func apply_tile(terrain_atlas_pos : Vector2i) -> void:
 	if terrain_atlas_pos == last_room_atlas:
@@ -29,8 +35,6 @@ func get_player() -> Player:
 	return %Player
 
 func trigger_player_location_events(player_loc : Vector2) -> void:
-	if is_gameplay_active == false:
-		return
 		
 	var map_pos : Vector2i = (%TerrainMap as TileMapLayer).local_to_map(player_loc)
 	var atlas = (%TerrainMap as TileMapLayer).get_cell_atlas_coords(map_pos)
@@ -38,6 +42,9 @@ func trigger_player_location_events(player_loc : Vector2) -> void:
 		apply_tile(atlas)
 		#var tile_data : TileData = (%TerrainMap as TileMapLayer).get_cell_tile_data(map_pos)
 		#print(str(atlas) + " " + str(tile_data))
+	
+	if is_gameplay_active == false:
+		return
 	
 	var grid_fx : float = (map_pos.x / 15.0)
 	var grid_fy : float = (map_pos.y / 15.0)
@@ -196,9 +203,9 @@ func mutate_map_extrude() -> bool:
 	return false
 	
 func extrude_map(room_a : Room, room_b : Room, dir : Vector2i) -> void:
-	print("Extruding " + str(room_a.x) + "," + str(room_a.y) + " towards " + str(dir))
+	#print("Extruding " + str(room_a.x) + "," + str(room_a.y) + " towards " + str(dir))
 	var new_room_a : Room = Room.CreateRoom(room_a.x + dir.x, room_a.y + dir.y, self)
-	print("Extruding " + str(room_b.x) + "," + str(room_b.y) + " towards " + str(dir))
+	#print("Extruding " + str(room_b.x) + "," + str(room_b.y) + " towards " + str(dir))
 	var new_room_b : Room = Room.CreateRoom(room_b.x + dir.x, room_b.y + dir.y, self)
 	if room_a.north == room_b:
 		new_room_a.north = new_room_b
