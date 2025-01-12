@@ -60,8 +60,8 @@ physics_layer_0/collision_layer = 1
 sources/1 = SubResource("TileSetAtlasSource_qvyo6")
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lijbc"]
-radius = 27.0
-height = 54.0
+radius = 24.3
+height = 48.6
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -271,6 +271,7 @@ script = ExtResource("11_c5r5p")
 [node name="Player" type="CharacterBody2D" parent="MarginContainer/MenuStateMachine/State_Play"]
 unique_name_in_owner = true
 motion_mode = 1
+platform_on_leave = 2
 script = ExtResource("13_ikns1")
 
 [node name="Camera2D" type="Camera2D" parent="MarginContainer/MenuStateMachine/State_Play/Player"]
