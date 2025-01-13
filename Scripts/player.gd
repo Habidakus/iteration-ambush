@@ -7,6 +7,26 @@ const SPEED = 300.0
 var save_vel : Vector2
 var acc : Vector2
 var our_momentum : Vector2
+var fire_cooldown : float = 0
+
+var bullet_simple_scene : Resource = preload("res://Scene/simple_bullet.tscn")
+
+func fire_bullet() -> void:
+	var bullet : StaticBody2D = bullet_simple_scene.instantiate()
+	#bullet.global_position = self.global_position
+	bullet.global_position = to_global(to_local(global_position)) #- Vector2(20,20)
+	#print("b=" + str(bullet.global_position) + "  p=" + str(global_position))
+	bullet.look_at(get_global_mouse_position())
+	bullet.position -= Vector2(20,20)
+	bullet.position += Vector2.RIGHT.rotated(bullet.rotation) * 32.0
+	%State_Play.add_child(bullet)
+	fire_cooldown = .4
+	
+#func _process(_delta: float) -> void:
+	#queue_redraw()
+#
+#func _draw() -> void:
+	#draw_line(to_local(global_position), get_local_mouse_position(), Color.REBECCA_PURPLE, 3)
 
 func _physics_process(_delta: float) -> void:
 	#Input.is_action_just_pressed("ui_accept"):
@@ -19,6 +39,11 @@ func _physics_process(_delta: float) -> void:
 		#acc = (acc + 0) / 2.0
 
 	#velocity = save_vel
+	
+	fire_cooldown -= _delta
+	if Input.is_action_pressed("ui_accept"):
+		if fire_cooldown <= 0:
+			fire_bullet()
 	
 	var acc_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	if acc_dir == Vector2.ZERO:

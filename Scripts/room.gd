@@ -108,7 +108,7 @@ func WakeUp() -> void:
 
 	if enemy:
 		#print("Waking enemy in room " + str(id))
-		enemy.wake(play_state.get_player())
+		enemy.wake(play_state.get_player(), self)
 
 	if north:
 		north.Spawn()

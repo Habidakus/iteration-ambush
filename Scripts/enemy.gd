@@ -5,6 +5,7 @@ class_name Enemy
 var nav_agent : NavigationAgent2D = null
 var timer : Timer = null
 var player : Player = null
+var room : Room = null
 var start_timer : bool = false
 
 const SPEED = 300.0
@@ -12,13 +13,18 @@ const SPEED = 300.0
 func _ready() -> void:
 	pass
 
+func take_damage() -> void:
+	room.enemy = null
+	queue_free()
+
 func tick() -> void:
 	if nav_agent:
 		if player:
 			nav_agent.target_position = player.global_position
 
-func wake(_player : Player) -> void:
+func wake(_player : Player, _room : Room) -> void:
 	player = _player
+	room = _room
 	start_timer = true
 
 func _process(_delta : float) -> void:

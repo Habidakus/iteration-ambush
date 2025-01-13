@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bjmkbjlquesr5"]
+[gd_scene load_steps=25 format=3 uid="uid://bjmkbjlquesr5"]
 
 [ext_resource type="Shader" path="res://Art/background.gdshader" id="1_kmdog"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachine.gd" id="2_fbjv7"]
@@ -13,8 +13,7 @@
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_LevelAdvance.gd" id="8_m3tch"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_GameplayActive.gd" id="10_kgdqs"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayAsleep.gd" id="11_c5r5p"]
-[ext_resource type="Texture2D" uid="uid://b6njpasxeckbc" path="res://Art/redCircle.png" id="13_htf4p"]
-[ext_resource type="Script" path="res://Scripts/player.gd" id="13_ikns1"]
+[ext_resource type="PackedScene" uid="uid://cb6e0fesdu8rd" path="res://Scene/player.tscn" id="14_blx2k"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_k3dey"]
 noise_type = 3
@@ -89,10 +88,6 @@ physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 271
 navigation_layer_0/layers = 1
 sources/1 = SubResource("TileSetAtlasSource_qvyo6")
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lijbc"]
-radius = 24.3
-height = 48.6
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -299,21 +294,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("11_c5r5p")
 
-[node name="Player" type="CharacterBody2D" parent="MarginContainer/MenuStateMachine/State_Play"]
+[node name="Player" parent="MarginContainer/MenuStateMachine/State_Play" instance=ExtResource("14_blx2k")]
 unique_name_in_owner = true
-collision_layer = 4
-collision_mask = 11
-motion_mode = 1
-platform_on_leave = 2
-script = ExtResource("13_ikns1")
-
-[node name="Camera2D" type="Camera2D" parent="MarginContainer/MenuStateMachine/State_Play/Player"]
-zoom = Vector2(0.7, 0.7)
-
-[node name="Sprite2D" type="Sprite2D" parent="MarginContainer/MenuStateMachine/State_Play/Player"]
-texture = ExtResource("13_htf4p")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/MenuStateMachine/State_Play/Player"]
-shape = SubResource("CapsuleShape2D_lijbc")
 
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button" to="MarginContainer/MenuStateMachine/State_MainMenu" method="_on_button_button_up"]
