@@ -13,9 +13,6 @@ const SPEED = 300.0
 
 var explosion_scene : Resource = preload("res://Scene/explosion.tscn")
 
-func _ready() -> void:
-	pass
-
 func take_damage() -> void:
 	room.enemy = null
 	var explosion : CPUParticles2D = explosion_scene.instantiate()
@@ -56,7 +53,7 @@ func get_ram_damage() -> float:
 	return ram_damage
 
 func _physics_process(delta: float) -> void:
-	if nav_agent.is_navigation_finished():
+	if nav_agent == null || nav_agent.is_navigation_finished():
 		return
 	
 	var axis : Vector2 = to_local(nav_agent.get_next_path_position()).normalized()
