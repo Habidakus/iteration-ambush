@@ -7,6 +7,7 @@ var timer : Timer = null
 var player : Player = null
 var room : Room = null
 var start_timer : bool = false
+var ram_damage : float = 33
 
 const SPEED = 300.0
 
@@ -51,7 +52,10 @@ func _process(_delta : float) -> void:
 		tick()
 		timer.start()
 
-func _physics_process(_delta: float) -> void:
+func get_ram_damage() -> float:
+	return ram_damage
+
+func _physics_process(delta: float) -> void:
 	if nav_agent.is_navigation_finished():
 		return
 	
@@ -60,3 +64,9 @@ func _physics_process(_delta: float) -> void:
 	velocity = axis * SPEED
 	
 	move_and_slide()
+	
+	var collision : KinematicCollision2D = get_last_slide_collision()
+	if collision:
+		var player : Player = collision.get_collider() as Player
+		if player:
+			player.take_damage(get_ram_damage() * delta)

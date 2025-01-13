@@ -13,6 +13,7 @@ var size : int = 15
 var source_id : int = 1
 var play_state : PlayState
 var enemy : Enemy = null
+var fire_damage : float = 20.0
 
 var enemy_scene : Resource = preload("res://Scene/enemy.tscn")
 var has_enemy : bool = true

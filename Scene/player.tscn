@@ -48,14 +48,14 @@ offset_bottom = 35.0
 color = Color(0.975664, 4.57242e-06, 1.54018e-06, 1)
 
 [node name="CurrentHealth" type="ColorRect" parent="UI/HealthBar"]
-custom_minimum_size = Vector2(200, 30)
+custom_minimum_size = Vector2(0, 30)
 offset_left = 5.0
 offset_top = 5.0
 offset_right = 205.0
 offset_bottom = 35.0
 color = Color(0, 1, 0.233333, 1)
 
-[node name="Label" type="Label" parent="UI/HealthBar"]
+[node name="HealthLabel" type="Label" parent="UI/HealthBar"]
 custom_minimum_size = Vector2(200, 30)
 offset_left = 5.0
 offset_top = 5.0
