@@ -1,6 +1,7 @@
 extends StaticBody2D
 
 var lifetime : float = 4
+var damage : float = 101
 const SPEED : float = 400
 
 var explosion_scene : Resource = preload("res://Scene/wall_hit_vfx.tscn")
@@ -40,7 +41,7 @@ func _physics_process(delta : float) -> void:
 		col_glob_pos -= Vector2(20,20)
 		var enemy : Enemy = collider as Enemy
 		if enemy != null:
-			enemy.take_damage()
+			enemy.take_damage(damage)
 			die(col_glob_pos)
 			return
 

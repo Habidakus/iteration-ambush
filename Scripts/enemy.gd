@@ -8,12 +8,20 @@ var player : Player = null
 var room : Room = null
 var start_timer : bool = false
 var ram_damage : float = 33
+var speed_multiple : float = 1
+var health : float = 100.0
 
-const SPEED = 300.0
+const BASE_HEALTH = 100.0
+const BASE_SPEED = 300.0
+const BASE_RAM_DAMAGE = 33
 
 var explosion_scene : Resource = preload("res://Scene/explosion.tscn")
 
-func take_damage() -> void:
+func take_damage(dmg : float) -> void:
+	health -= dmg
+	if health > 0:
+		return
+		
 	room.enemy = null
 	var explosion : CPUParticles2D = explosion_scene.instantiate()
 	explosion.position = position
@@ -25,10 +33,33 @@ func take_damage() -> void:
 	tween.tween_callback(explosion.queue_free)
 	queue_free()
 
+func init(_seed : int, difficulty : int) -> void:
+	ram_damage = BASE_RAM_DAMAGE
+	health = BASE_HEALTH
+	var rnd : RandomNumberGenerator = RandomNumberGenerator.new()
+	rnd.seed = _seed
+	var scale_mod : float = 1
+	for i in range(0, difficulty):
+		match rnd.randi() % 4:
+			0: speed_multiple *= 1.25
+			1: health *= 1.25
+			2: scale_mod *= 1.25
+			3: ram_damage *= 1.25
+	self.scale /= scale_mod
+	if health > BASE_HEALTH:
+		(find_child("HealthSprite") as Sprite2D).visible = true
+	if ram_damage > BASE_RAM_DAMAGE:
+		(find_child("DamageSprite") as Sprite2D).visible = true
+
 func tick() -> void:
 	if nav_agent:
 		if player:
-			nav_agent.target_position = player.global_position
+			var vec_to_player = player.global_position - global_position
+			if vec_to_player.length_squared() > 84 * 84:
+				nav_agent.target_position = player.global_position
+			else:
+				var past_player : Vector2 = player.global_position + vec_to_player.normalized() * 64.0
+				nav_agent.target_position = past_player
 
 func wake(_player : Player, _room : Room) -> void:
 	player = _player
@@ -58,7 +89,7 @@ func _physics_process(delta: float) -> void:
 	
 	var axis : Vector2 = to_local(nav_agent.get_next_path_position()).normalized()
 	#print("enemy moving " + str(axis))
-	velocity = axis * SPEED
+	velocity = axis * BASE_SPEED * speed_multiple
 	
 	move_and_slide()
 	

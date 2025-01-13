@@ -14,6 +14,8 @@ var source_id : int = 1
 var play_state : PlayState
 var enemy : Enemy = null
 var fire_damage : float = 20.0
+var difficulty : int = 1
+var difficulty_increase_per_reset : int = 2
 
 var enemy_scene : Resource = preload("res://Scene/enemy.tscn")
 var has_enemy : bool = true
@@ -49,10 +51,12 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState) -> Room:
 	room.play_state = cplay_state
 	if room.id % 13 == 0:
 		room.has_many_firepit = true
+		room.difficulty -= 1
 	elif room.id % 11 == 0:
 		room.is_many_pilars = true
 	elif room.id % 7 == 0:
 		room.has_firepit = true
+		room.difficulty -= 1
 	elif room.id % 5 == 0:
 		room.is_diamond = true
 	elif room.id % 3 == 0:
@@ -65,6 +69,7 @@ func ResetRoom() -> void:
 	has_entered = false
 	has_woken = false
 	has_spawned = false
+	difficulty += difficulty_increase_per_reset
 	if enemy:
 		enemy.queue_free()
 		print("Queuing free for room #" + str(id) + " enemy")
@@ -131,6 +136,7 @@ func Spawn() -> void:
 		#print("Spawning enemy for room ID: " + str(id))
 		enemy = enemy_scene.instantiate()
 		enemy.position = play_state.get_room_central_pos(x, y)
+		enemy.init(id, difficulty)
 		play_state.add_child(enemy)
 	
 	has_spawned = true

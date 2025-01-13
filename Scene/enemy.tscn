@@ -1,24 +1,26 @@
-[gd_scene load_steps=4 format=3 uid="uid://ciimtinkcteoe"]
+[gd_scene load_steps=6 format=3 uid="uid://ciimtinkcteoe"]
 
 [ext_resource type="Script" path="res://Scripts/enemy.gd" id="1_sjov5"]
 [ext_resource type="Texture2D" uid="uid://r1366n0giu0i" path="res://Art/Enemy01.png" id="1_umrod"]
+[ext_resource type="Texture2D" uid="uid://dkr02uppikpf" path="res://Art/Enemy01_armor.png" id="3_w84m4"]
+[ext_resource type="Texture2D" uid="uid://c1jt23rw2f70f" path="res://Art/Enemy01_spike.png" id="4_1s007"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_50c7h"]
-size = Vector2(44, 45)
+size = Vector2(56, 57.3333)
 
 [node name="Enemy" type="CharacterBody2D"]
+scale = Vector2(0.75, 0.75)
 collision_layer = 2
 collision_mask = 23
 motion_mode = 1
 wall_min_slide_angle = 0.0
 script = ExtResource("1_sjov5")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.75, 0.75)
+[node name="BodySprite" type="Sprite2D" parent="."]
 texture = ExtResource("1_umrod")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 0.5)
+position = Vector2(0, 0.666667)
 shape = SubResource("RectangleShape2D_50c7h")
 
 [node name="Node2D" type="Node2D" parent="."]
@@ -32,5 +34,13 @@ debug_path_custom_color = Color(0, 1, 1, 1)
 
 [node name="Timer" type="Timer" parent="Node2D"]
 wait_time = 0.2
+
+[node name="HealthSprite" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("3_w84m4")
+
+[node name="DamageSprite" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("4_1s007")
 
 [connection signal="timeout" from="Node2D/Timer" to="." method="tick"]
