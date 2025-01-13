@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7cd8bbkov45c"]
+
+[ext_resource type="Texture2D" uid="uid://cyp7p7mv87e1u" path="res://Art/ExplosionPoing_01.png" id="1_4y8tt"]
+
+[sub_resource type="Curve" id="Curve_w8vvb"]
+_data = [Vector2(0, 0.252747), 0.0, 0.0, 0, 0, Vector2(0.248663, 0.252747), 0.0, 0.0, 0, 0, Vector2(0.395722, 0.133781), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Gradient" id="Gradient_8gx8m"]
+offsets = PackedFloat32Array(0, 0.424856, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.608663, 0.00381234, 0.951895, 1, 1, 1, 1, 0)
+
+[node name="WallHitVFX" type="CPUParticles2D"]
+amount = 7
+lifetime = 0.2
+explosiveness = 1.0
+randomness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource("1_4y8tt")
+emission_shape = 1
+emission_sphere_radius = 8.0
+gravity = Vector2(0, 0)
+angle_max = 90.0
+scale_amount_curve = SubResource("Curve_w8vvb")
+color_ramp = SubResource("Gradient_8gx8m")

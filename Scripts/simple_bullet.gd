@@ -3,8 +3,21 @@ extends StaticBody2D
 var lifetime : float = 4
 const SPEED : float = 400
 
+var explosion_scene : Resource = preload("res://Scene/wall_hit_vfx.tscn")
+
 func _ready() -> void:
 	pass # Replace with function body.
+
+func die(global_pos : Vector2) -> void:
+	var explosion : CPUParticles2D = explosion_scene.instantiate()
+	explosion.global_position = global_pos
+	explosion.emitting = true
+	explosion.one_shot = true
+	get_parent().add_child(explosion)
+	var tween = get_parent().create_tween()
+	tween.tween_interval(0.5)
+	tween.tween_callback(explosion.queue_free)
+	queue_free()
 
 func _process(_delta: float) -> void:
 	pass
@@ -23,24 +36,25 @@ func _physics_process(delta : float) -> void:
 	var result : Dictionary = space_state.intersect_ray(query)
 	if !result.is_empty():
 		var collider = result["collider"]
+		var col_glob_pos : Vector2 = result["position"]
+		col_glob_pos -= Vector2(20,20)
 		var enemy : Enemy = collider as Enemy
 		if enemy != null:
 			enemy.take_damage()
-			queue_free()
+			die(col_glob_pos)
 			return
 
 		var tml : TileMapLayer = collider as TileMapLayer
 		if tml != null:
-			queue_free()
+			die(col_glob_pos)
 			return
 
 		var o : Object = collider as Object
 		if o != null:
 			print(str(collider) + " class=" + o.get_class())
-			o.get_class()
 		else:
 			print(str(collider) + " type=" + type_string(typeof(collider)))
-		queue_free()
+		die(col_glob_pos)
 		return
 
 	position += move_delta

@@ -8,6 +8,7 @@ var save_vel : Vector2
 var acc : Vector2
 var our_momentum : Vector2
 var fire_cooldown : float = 0
+var fire_cooldown_max : float = 1.5
 
 var bullet_simple_scene : Resource = preload("res://Scene/simple_bullet.tscn")
 
@@ -20,7 +21,7 @@ func fire_bullet() -> void:
 	bullet.position -= Vector2(20,20)
 	bullet.position += Vector2.RIGHT.rotated(bullet.rotation) * 32.0
 	%State_Play.add_child(bullet)
-	fire_cooldown = .4
+	fire_cooldown = fire_cooldown_max
 	
 #func _process(_delta: float) -> void:
 	#queue_redraw()
@@ -39,6 +40,8 @@ func _physics_process(_delta: float) -> void:
 		#acc = (acc + 0) / 2.0
 
 	#velocity = save_vel
+	
+	look_at(get_global_mouse_position())
 	
 	fire_cooldown -= _delta
 	if Input.is_action_pressed("ui_accept"):
