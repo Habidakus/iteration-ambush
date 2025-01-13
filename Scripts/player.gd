@@ -9,8 +9,15 @@ var acc : Vector2
 var our_momentum : Vector2
 var fire_cooldown : float = 0
 var fire_cooldown_max : float = 1.5
+var current_health : float = 100.0
+var max_health : float = 100.0
+var ui_layer : CanvasLayer = null
 
 var bullet_simple_scene : Resource = preload("res://Scene/simple_bullet.tscn")
+
+func _ready() -> void:
+	ui_layer = find_child("UI") as CanvasLayer
+	assert(ui_layer)
 
 func fire_bullet() -> void:
 	var bullet : StaticBody2D = bullet_simple_scene.instantiate()
@@ -22,6 +29,9 @@ func fire_bullet() -> void:
 	bullet.position += Vector2.RIGHT.rotated(bullet.rotation) * 32.0
 	%State_Play.add_child(bullet)
 	fire_cooldown = fire_cooldown_max
+
+func set_ui_visibility(_visible : bool) -> void:
+	ui_layer.visible = _visible
 	
 #func _process(_delta: float) -> void:
 	#queue_redraw()

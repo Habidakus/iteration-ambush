@@ -295,6 +295,10 @@ func mutate_map_extend() -> void:
 		new_room.ApplyToMaps(%TerrainMap, %ObjectMap)
 		rooms.append(new_room)
 
+func set_gameplay_active(active : bool) -> void:
+	is_gameplay_active = active
+	%Player.set_ui_visibility(active)
+
 func spawn_map() -> void:
 	print("TODO: SPAWN ENEMIES")
 	go_active = true
