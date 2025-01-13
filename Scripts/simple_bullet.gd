@@ -26,11 +26,14 @@ func _physics_process(delta : float) -> void:
 		var enemy : Enemy = collider as Enemy
 		if enemy != null:
 			enemy.take_damage()
+			queue_free()
 			return
+
 		var tml : TileMapLayer = collider as TileMapLayer
 		if tml != null:
 			queue_free()
 			return
+
 		var o : Object = collider as Object
 		if o != null:
 			print(str(collider) + " class=" + o.get_class())

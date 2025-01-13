@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://cly3y50f78a8j"]
+
+[ext_resource type="Texture2D" uid="uid://bk12funri32vp" path="res://Art/ExplosionCross_01.png" id="1_a1p2a"]
+
+[sub_resource type="Curve" id="Curve_w8vvb"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.639037, 0.905992), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_8gx8m"]
+offsets = PackedFloat32Array(0, 0.424856, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.554407, 0.426922, 0.0733755, 1, 1, 1, 1, 0)
+
+[node name="Explosion" type="CPUParticles2D"]
+amount = 50
+lifetime = 0.75
+explosiveness = 1.0
+randomness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource("1_a1p2a")
+emission_shape = 1
+emission_sphere_radius = 34.78
+gravity = Vector2(0, 0)
+radial_accel_max = 100.0
+angle_max = 90.0
+scale_amount_curve = SubResource("Curve_w8vvb")
+color_ramp = SubResource("Gradient_8gx8m")

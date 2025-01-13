@@ -10,11 +10,21 @@ var start_timer : bool = false
 
 const SPEED = 300.0
 
+var explosion_scene : Resource = preload("res://Scene/explosion.tscn")
+
 func _ready() -> void:
 	pass
 
 func take_damage() -> void:
 	room.enemy = null
+	var explosion : CPUParticles2D = explosion_scene.instantiate()
+	explosion.position = position
+	explosion.emitting = true
+	explosion.one_shot = true
+	room.play_state.add_child(explosion)
+	var tween = room.play_state.create_tween()
+	tween.tween_interval(1.0)
+	tween.tween_callback(explosion.queue_free)
 	queue_free()
 
 func tick() -> void:
