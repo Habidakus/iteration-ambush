@@ -67,6 +67,6 @@ func _physics_process(delta: float) -> void:
 	
 	var collision : KinematicCollision2D = get_last_slide_collision()
 	if collision:
-		var player : Player = collision.get_collider() as Player
-		if player:
-			player.take_damage(get_ram_damage() * delta)
+		var col_player : Player = collision.get_collider() as Player
+		if col_player:
+			col_player.take_damage(get_ram_damage() * delta)
