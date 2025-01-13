@@ -86,6 +86,7 @@ texture_region_size = Vector2i(64, 64)
 [sub_resource type="TileSet" id="TileSet_efjmm"]
 tile_size = Vector2i(64, 64)
 physics_layer_0/collision_layer = 1
+physics_layer_0/collision_mask = 271
 navigation_layer_0/layers = 1
 sources/1 = SubResource("TileSetAtlasSource_qvyo6")
 
@@ -300,6 +301,8 @@ script = ExtResource("11_c5r5p")
 
 [node name="Player" type="CharacterBody2D" parent="MarginContainer/MenuStateMachine/State_Play"]
 unique_name_in_owner = true
+collision_layer = 4
+collision_mask = 11
 motion_mode = 1
 platform_on_leave = 2
 script = ExtResource("13_ikns1")
