@@ -10,9 +10,10 @@ var start_timer : bool = false
 var ram_damage : float = 33
 var speed_multiple : float = 1
 var health : float = 100.0
+var player_shot_damage : float = 101
 
-const BASE_HEALTH = 100.0
-const BASE_SPEED = 300.0
+const BASE_HEALTH = 100.0 / 1.25
+const BASE_SPEED = 300.0 / 1.25
 const BASE_RAM_DAMAGE = 33
 
 var explosion_scene : Resource = preload("res://Scene/explosion.tscn")
@@ -20,6 +21,8 @@ var explosion_scene : Resource = preload("res://Scene/explosion.tscn")
 func take_damage(dmg : float) -> void:
 	health -= dmg
 	if health > 0:
+		if health < player_shot_damage:
+			(find_child("HealthSprite") as Sprite2D).visible = false
 		return
 		
 	room.enemy = null
@@ -33,8 +36,9 @@ func take_damage(dmg : float) -> void:
 	tween.tween_callback(explosion.queue_free)
 	queue_free()
 
-func init(_seed : int, difficulty : int) -> void:
+func init(_seed : int, difficulty : int, _player_shot_damage : float) -> void:
 	ram_damage = BASE_RAM_DAMAGE
+	player_shot_damage = _player_shot_damage
 	health = BASE_HEALTH
 	var rnd : RandomNumberGenerator = RandomNumberGenerator.new()
 	rnd.seed = _seed
@@ -46,7 +50,7 @@ func init(_seed : int, difficulty : int) -> void:
 			2: scale_mod *= 1.25
 			3: ram_damage *= 1.25
 	self.scale /= scale_mod
-	if health > BASE_HEALTH:
+	if health > player_shot_damage:
 		(find_child("HealthSprite") as Sprite2D).visible = true
 	if ram_damage > BASE_RAM_DAMAGE:
 		(find_child("DamageSprite") as Sprite2D).visible = true
@@ -88,7 +92,6 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	var axis : Vector2 = to_local(nav_agent.get_next_path_position()).normalized()
-	#print("enemy moving " + str(axis))
 	velocity = axis * BASE_SPEED * speed_multiple
 	
 	move_and_slide()

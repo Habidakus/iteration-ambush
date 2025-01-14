@@ -9,6 +9,9 @@ var explosion_scene : Resource = preload("res://Scene/wall_hit_vfx.tscn")
 func _ready() -> void:
 	pass # Replace with function body.
 
+func set_damage(_damage : float) -> void:
+	damage = _damage
+
 func die(global_pos : Vector2) -> void:
 	var explosion : CPUParticles2D = explosion_scene.instantiate()
 	explosion.global_position = global_pos

@@ -136,7 +136,7 @@ func Spawn() -> void:
 		#print("Spawning enemy for room ID: " + str(id))
 		enemy = enemy_scene.instantiate()
 		enemy.position = play_state.get_room_central_pos(x, y)
-		enemy.init(id, difficulty)
+		enemy.init(id, difficulty, play_state.get_player().get_shot_damage())
 		play_state.add_child(enemy)
 	
 	has_spawned = true
