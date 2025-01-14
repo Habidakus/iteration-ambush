@@ -3,3 +3,27 @@ Fonts (using the MIT license):
 	https://fontlibrary.org/en/font/destroya
 Location of some MIT notes:
 	https://github.com/gleitz/midi-js-soundfonts/tree/gh-pages/MusyngKite
+
+Potential power ups:
+	- switch room hazards to boons
+	- lava immunity
+	- faster
+	- better handling
+	- higher max health (if at full health)
+	- healing (if not at full health)
+	- regen at lap completion
+	- faster fire rate
+	- more damage
+
+TODO:
+	- Swap floor (bricks) and walls (black)
+	- sound effects
+	- music
+	- credits & thanks
+	- highscore
+	- other enemies
+	- player power ups
+	- better player artwork
+	- better enemy artwork
+	- lava shader
+
