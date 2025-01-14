@@ -10,8 +10,10 @@ var first_room : Room
 var last_room : Room
 
 # TODO: Make global
-var last_room_atlas : Vector2i = Vector2i(1, 0)
-var fire_pit_atlas : Vector2i = Vector2i(2, 0)
+var atlas_floor_source_id : int = 0
+var atlas_other_source_id : int = 1
+var last_room_atlas_other : Vector2i = Vector2i(1, 0)
+var fire_pit_atlas_other : Vector2i = Vector2i(2, 0)
 
 func _process(_delta : float) -> void:
 	if go_active:
@@ -27,11 +29,12 @@ func _process(_delta : float) -> void:
 func player_died() -> void:
 	%PlayStateMachine.switch_state("PlayState_Dead")
 
-func apply_tile(terrain_atlas_pos : Vector2i, delta : float) -> void:
-	if terrain_atlas_pos == last_room_atlas:
-		%PlayStateMachine.switch_state("PlayState_LevelAdvance")
-	elif terrain_atlas_pos == fire_pit_atlas:
-		%Player.apply_fire_pit(last_room_player_was_in, delta)
+func apply_tile(terrain_atlas_pos : Vector2i, source_id : int, delta : float) -> void:
+	if source_id == atlas_other_source_id:
+		if terrain_atlas_pos == last_room_atlas_other:
+			%PlayStateMachine.switch_state("PlayState_LevelAdvance")
+		elif terrain_atlas_pos == fire_pit_atlas_other:
+			%Player.apply_fire_pit(last_room_player_was_in, delta)
 
 func get_room_central_pos(grid_x : int, grid_y : int) -> Vector2:
 	var local_pos = (%TerrainMap as TileMapLayer).map_to_local(Vector2i(grid_x * 15 + 7, grid_y * 15 + 7))
@@ -42,11 +45,13 @@ func get_player() -> Player:
 
 var last_room_player_was_in : Room = null
 func trigger_player_location_events(player_loc : Vector2, delta : float) -> void:
-		
-	var map_pos : Vector2i = (%TerrainMap as TileMapLayer).local_to_map(player_loc)
-	var atlas = (%TerrainMap as TileMapLayer).get_cell_atlas_coords(map_pos)
+	
+	var tml : TileMapLayer = %TerrainMap as TileMapLayer
+	var map_pos : Vector2i = tml.local_to_map(player_loc)
+	var atlas = tml.get_cell_atlas_coords(map_pos)
 	if atlas.x != -1:
-		apply_tile(atlas, delta)
+		var source_id : int = tml.get_cell_source_id(map_pos)
+		apply_tile(atlas, source_id, delta)
 		#var tile_data : TileData = (%TerrainMap as TileMapLayer).get_cell_tile_data(map_pos)
 		#print(str(atlas) + " " + str(tile_data))
 	
