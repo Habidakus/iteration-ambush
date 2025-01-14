@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://bjmkbjlquesr5"]
+[gd_scene load_steps=29 format=3 uid="uid://bjmkbjlquesr5"]
 
 [ext_resource type="Shader" path="res://Art/background.gdshader" id="1_kmdog"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachine.gd" id="2_fbjv7"]
@@ -9,9 +9,10 @@
 [ext_resource type="FontFile" uid="uid://cw5poiupa2paf" path="res://Fonts/Destroya.ttf" id="6_1qfmw"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_Play.gd" id="6_q716x"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_LevelSetup.gd" id="7_8xsm8"]
+[ext_resource type="Texture2D" uid="uid://dy08jjydudgff" path="res://Art/brickstrip_bw.png" id="7_ckmgf"]
 [ext_resource type="Texture2D" uid="uid://bj750ideyhkgn" path="res://Art/fiveTiles.png" id="7_n5lrl"]
-[ext_resource type="Texture2D" uid="uid://g7gjad0cp51n" path="res://Art/brickstrip.png" id="7_x8bj6"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_LevelAdvance.gd" id="8_m3tch"]
+[ext_resource type="Material" uid="uid://bnwh5kt343rlu" path="res://Scene/fire_pit_material.tres" id="8_vm7es"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_GameplayActive.gd" id="10_kgdqs"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayAsleep.gd" id="11_c5r5p"]
 [ext_resource type="PackedScene" uid="uid://cb6e0fesdu8rd" path="res://Scene/player.tscn" id="14_blx2k"]
@@ -52,7 +53,7 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(-32, -32, 32, -32, 32, 
 agent_radius = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_w1igq"]
-texture = ExtResource("7_x8bj6")
+texture = ExtResource("7_ckmgf")
 texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
 0:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_r1a1s")
@@ -119,6 +120,7 @@ texture_region_size = Vector2i(64, 64)
 1:0/0 = 0
 1:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_7ihkm")
 2:0/0 = 0
+2:0/0/material = ExtResource("8_vm7es")
 2:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_hpxhh")
 3:0/0 = 0
 3:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_u2iua")

@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://bnwh5kt343rlu"]
+
+[ext_resource type="Shader" path="res://Art/firepit.gdshader" id="1_ni2re"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_3f5t3"]
+fractal_octaves = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_x0ray"]
+seamless = true
+noise = SubResource("FastNoiseLite_3f5t3")
+
+[resource]
+shader = ExtResource("1_ni2re")
+shader_parameter/speed = 0.033
+shader_parameter/noise = SubResource("NoiseTexture2D_x0ray")
