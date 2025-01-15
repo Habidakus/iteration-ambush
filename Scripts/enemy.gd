@@ -11,7 +11,7 @@ var ram_damage : float = 33
 var speed_multiple : float = 1
 var health : float = 100.0
 var player_shot_damage : float = 101
-var self_damage_multiple : float = 10.0
+var self_damage_multiple : float = 5.0
 
 const BASE_HEALTH = 100.0 / 1.25
 const BASE_SPEED = 300.0 / 1.25
