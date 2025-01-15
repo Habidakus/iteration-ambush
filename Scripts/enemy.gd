@@ -45,9 +45,9 @@ func init(_seed : int, difficulty : int, _player_shot_damage : float) -> void:
 	var scale_mod : float = 1
 	for i in range(0, difficulty):
 		match rnd.randi() % 4:
-			0: speed_multiple *= 1.25
+			0: speed_multiple *= 1.15
 			1: health *= 1.25
-			2: scale_mod *= 1.25
+			2: scale_mod *= 1.15
 			3: ram_damage *= 1.25
 	self.scale /= scale_mod
 	if health > player_shot_damage:

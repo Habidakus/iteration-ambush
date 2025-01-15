@@ -166,7 +166,7 @@ func generate_direction_room_collection(loc : Vector2i) -> DirectionRoomCollecti
 var mutate_count : int = 0
 func mutate_map() -> void:
 	mutate_count += 1
-	if mutate_count % 5 == 2:
+	if mutate_count % 5 == 3:
 		if mutate_map_key_lock():
 			return
 	if mutate_count % 2 == 0:
