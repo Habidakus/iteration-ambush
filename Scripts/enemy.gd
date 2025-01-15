@@ -11,6 +11,7 @@ var ram_damage : float = 33
 var speed_multiple : float = 1
 var health : float = 100.0
 var player_shot_damage : float = 101
+var self_damage_multiple : float = 10.0
 
 const BASE_HEALTH = 100.0 / 1.25
 const BASE_SPEED = 300.0 / 1.25
@@ -49,6 +50,7 @@ func init(_seed : int, difficulty : int, _player_shot_damage : float) -> void:
 			1: health *= 1.25
 			2: scale_mod *= 1.15
 			3: ram_damage *= 1.25
+			4: self_damage_multiple /= 1.25
 	self.scale /= scale_mod
 	if health > player_shot_damage:
 		(find_child("HealthSprite") as Sprite2D).visible = true
@@ -88,6 +90,11 @@ func _process(_delta : float) -> void:
 func get_ram_damage() -> float:
 	return ram_damage
 
+func handle_player_collision(p : Player, delta: float) -> void:
+	var damage : float = get_ram_damage() * delta
+	p.take_damage(damage)
+	take_damage(damage * self_damage_multiple)
+
 func _physics_process(delta: float) -> void:
 	if nav_agent == null || nav_agent.is_navigation_finished():
 		return
@@ -101,7 +108,7 @@ func _physics_process(delta: float) -> void:
 	if collision:
 		var col_player : Player = collision.get_collider() as Player
 		if col_player:
-			col_player.take_damage(get_ram_damage() * delta)
+			handle_player_collision(col_player, delta)
 		var col_bullet : SimpleBullet = collision.get_collider() as SimpleBullet
 		if col_bullet:
 			col_bullet.collide_with_enemy(self, collision.get_position())

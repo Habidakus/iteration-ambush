@@ -109,7 +109,7 @@ func _physics_process(delta: float) -> void:
 	if collision:
 		var enemy : Enemy = collision.get_collider() as Enemy
 		if enemy:
-			self.take_damage(enemy.get_ram_damage() * delta)
+			enemy.handle_player_collision(self, delta)
 		var key : Key = collision.get_collider() as Key
 		if key:
 			owned_keys.append(key.lock_id)
