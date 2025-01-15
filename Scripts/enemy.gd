@@ -53,7 +53,8 @@ func init(_seed : int, difficulty : int, _player_shot_damage : float) -> void:
 	if health > player_shot_damage:
 		(find_child("HealthSprite") as Sprite2D).visible = true
 	if ram_damage > BASE_RAM_DAMAGE:
-		(find_child("DamageSprite") as Sprite2D).visible = true
+		var v : float = BASE_RAM_DAMAGE / ram_damage
+		modulate = Color(1, v, v)
 
 func tick() -> void:
 	if nav_agent:
