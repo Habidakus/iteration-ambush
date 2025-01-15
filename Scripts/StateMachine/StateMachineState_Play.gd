@@ -5,6 +5,9 @@ class_name PlayState
 var rooms : Array[Room]
 var go_active : bool = false
 var is_gameplay_active : bool = false
+var build_seed : int = 0
+var build_rnd : RandomNumberGenerator = null
+var last_room_player_was_in : Room = null
 
 var first_room : Room
 var last_room : Room
@@ -29,7 +32,24 @@ func _process(_delta : float) -> void:
 func player_died() -> void:
 	%PlayStateMachine.switch_state("PlayState_Dead")
 
+func restart() -> void:
+	%PlayStateMachine.switch_state("PlayState_Asleep")
+	for room : Room in rooms:
+		room.ClearFromMaps(%TerrainMap, %ObjectMap)
+		room.ResetRoom()
+		
+	rooms.clear()
+	%Player.init()
+	go_active = false
+	is_gameplay_active = false
+	first_room = null
+	last_room = null
+	last_room_player_was_in = null
+	our_state_machine.switch_state("State_MainMenu")
+
 func apply_tile(terrain_atlas_pos : Vector2i, source_id : int, delta : float) -> void:
+	if last_room_player_was_in == null:
+		return
 	if source_id == atlas_other_source_id:
 		if terrain_atlas_pos == last_room_atlas_other:
 			%PlayStateMachine.switch_state("PlayState_LevelAdvance")
@@ -43,7 +63,6 @@ func get_room_central_pos(grid_x : int, grid_y : int) -> Vector2:
 func get_player() -> Player:
 	return %Player
 
-var last_room_player_was_in : Room = null
 func trigger_player_location_events(player_loc : Vector2, delta : float) -> void:
 	
 	var tml : TileMapLayer = %TerrainMap as TileMapLayer
@@ -82,12 +101,14 @@ func enter_state() -> void:
 	%PlayStateMachine.switch_state("PlayState_LevelSetup")
 
 func init_map() -> void:
+	build_rnd = RandomNumberGenerator.new()
+	build_rnd.seed = build_seed
 	var r1 = Room.CreateRoom(0, 0, self, null)
 	var r2 = Room.CreateRoom(0, -1, self, r1)
 	var r3 = Room.CreateRoom(-1, -1, self, r2)
 	var r4 = Room.CreateRoom(-1, 0, self, r3)
-	r1.has_enemy = false
-	r4.has_enemy = false
+	r1.MakePlayerSafe()
+	r4.MakePlayerSafe()
 	r4.SetAsLastRoom()
 
 	connect_rooms(r1, r2)
@@ -163,14 +184,12 @@ func generate_direction_room_collection(loc : Vector2i) -> DirectionRoomCollecti
 			ret_val.norths.append(room)
 	return ret_val
 
-var mutate_count : int = 0
 func mutate_map() -> void:
-	mutate_count += 1
-	if mutate_count % 5 == 3:
-		if mutate_map_key_lock():
+	if build_rnd.randi_range(0, 4) == 0:
+		if mutate_map_key_lock(build_rnd):
 			return
-	if mutate_count % 2 == 0:
-		if mutate_map_extrude():
+	if build_rnd.randi_range(0, 1) == 0:
+		if mutate_map_extrude(build_rnd):
 			return
 	mutate_map_extend()
 
@@ -180,13 +199,12 @@ func is_empty_room(x : int, y : int) -> bool:
 			return false
 	return true
 
-func mutate_map_key_lock() -> bool:
+func mutate_map_key_lock(rnd : RandomNumberGenerator) -> bool:
 	var potential_east : Array[Room]
 	var potential_west : Array[Room]
 	var potential_north : Array[Room]
 	var potential_south : Array[Room]
 	for room : Room in rooms:
-		# TODO: We should just make sure this room has 2 and only 2 doors
 		if room != first_room && room != last_room && room.CanAddLock():
 			if is_empty_room(room.x + 1, room.y):
 				potential_east.append(room)
@@ -200,8 +218,7 @@ func mutate_map_key_lock() -> bool:
 	if count == 0:
 		print("Failed to add lock and key")
 		return false
-	print("TODO: mutate_map_key_lock() should be random")
-	var index : int = mutate_count % count
+	var index : int = rnd.randi_range(0, count - 1)
 	if index < potential_east.size():
 		lock_key_map(potential_east[index], Vector2i(1, 0))
 		return true
@@ -224,7 +241,7 @@ func mutate_map_key_lock() -> bool:
 	assert(false)
 	return false
 
-func mutate_map_extrude() -> bool:
+func mutate_map_extrude(rnd : RandomNumberGenerator) -> bool:
 	var potential_east : Array[Room]
 	var potential_west : Array[Room]
 	var potential_north : Array[Room]
@@ -244,8 +261,7 @@ func mutate_map_extrude() -> bool:
 	if count == 0:
 		print("Failed to extrude")
 		return false
-	print("TODO: mutate_map_extrude() should be random")
-	var index : int = mutate_count % count
+	var index : int = rnd.randi_range(0, count - 1)
 	if index < potential_east.size():
 		extrude_map(potential_east[index], potential_east[index].north, Vector2i(1, 0))
 		return true

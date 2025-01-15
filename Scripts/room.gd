@@ -63,17 +63,19 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 	room.key_id = clock_room.id
 	room.parent_room = clock_room
 
-	if room.id % 13 == 0:
-		room.has_many_firepit = true
-		room.difficulty -= 1
-	elif room.id % 11 == 0:
-		room.is_many_pilars = true
-	elif room.id % 5 == 0:
-		room.is_diamond = true
-	elif room.id % 3 == 0:
-		room.is_narrow = true
-	elif room.id % 2 == 0:
-		room.is_pilars = true
+	match cplay_state.build_rnd.randi_range(0,10):
+		0:
+			room.has_many_firepit = true
+			room.difficulty -= 1
+		1:
+			room.is_many_pilars = true
+		2,3:
+			room.is_diamond = true
+		4,5:
+			room.is_narrow = true
+		6,7:
+			room.is_pilars = true
+	
 	return room
 
 static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Room) -> Room:
@@ -85,20 +87,23 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 	room.id = global_id
 	room.play_state = cplay_state
 	room.parent_room = parent
-	if room.id % 13 == 0:
-		room.has_many_firepit = true
-		room.difficulty -= 1
-	elif room.id % 11 == 0:
-		room.is_many_pilars = true
-	elif room.id % 7 == 0:
-		room.has_firepit = true
-		room.difficulty -= 1
-	elif room.id % 5 == 0:
-		room.is_diamond = true
-	elif room.id % 3 == 0:
-		room.is_narrow = true
-	elif room.id % 2 == 0:
-		room.is_pilars = true
+
+	match cplay_state.build_rnd.randi_range(0,11):
+		0:
+			room.has_many_firepit = true
+			room.difficulty -= 1
+		1:
+			room.is_many_pilars = true
+		2,3:
+			room.is_diamond = true
+		4,5:
+			room.is_narrow = true
+		6,7:
+			room.is_pilars = true
+		8,9:
+			room.has_firepit = true
+			room.difficulty -= 1
+
 	return room
 
 func GetParentRoom() -> Room:
@@ -154,6 +159,11 @@ func ResetRoom() -> void:
 
 func SetAsLastRoom() -> void:
 	is_last_room = true
+
+func MakePlayerSafe() -> void:
+	has_enemy = false
+	has_firepit = false
+	has_many_firepit = false
 
 func DrawRoomNumber() -> void:
 	var pos = play_state.get_room_central_pos(x, y)

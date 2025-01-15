@@ -33,6 +33,15 @@ func defered_init() -> void:
 	ui_current_health_max_width = (find_child("MaxHealth") as ColorRect).custom_minimum_size.x
 	set_health_bar()
 
+func init() -> void:
+	owned_keys.clear()
+	fire_cooldown = 0
+	fire_cooldown_max = 1.5
+	max_health = 100.0
+	current_health = max_health
+	shot_damage = 101.0
+	set_health_bar()
+
 func spawn(_room: Room, pos : Vector2) -> void:
 	owned_keys.clear()
 	position = pos # Vector2((room.x * 15 + 7.5) * 64, (room.y * 15 + 7.5) * 64)
