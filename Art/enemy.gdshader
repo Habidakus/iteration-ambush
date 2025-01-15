@@ -8,27 +8,26 @@ uniform vec4 color = vec4(0.4, 0.4, 0.01, 1.0);
 
 void fragment() {
 	vec4 pixel = texture(TEXTURE, UV);
-	if (pixel.a == 0.0)
+	bool c = pixel.a > 0.0;
+
+	for (float x = -radius; c && x <= radius; x += 1.0)
 	{
-		COLOR = pixel;
-	}
-	else
-	{
-		float count = 0.0;
-		vec4 glow = vec4(0.0);
-		for (float x = -radius; x <= radius; x += 1.0)
+		for (float y = -radius; c && y <= radius; y += 1.0)
 		{
-			for (float y = -radius; y <= radius; y += 1.0)
+			vec2 offset = vec2(x, y) * stride * TEXTURE_PIXEL_SIZE;
+			if (texture(TEXTURE, UV + offset).a == 0.0)
 			{
-				count += 1.0;
-				vec2 offset = vec2(x, y) * stride * TEXTURE_PIXEL_SIZE;
-				glow += texture(TEXTURE, UV + offset);
+				float v = TIME / cycle_time;
+				float t = (v - floor(v)) - 0.5;
+				vec4 alt = vec4(color.xyz, pixel.a);
+				COLOR = mix(pixel, alt, abs(t) * 2.0);
+				c = false;
 			}
 		}
-		glow = power * glow / count;
-		float v = TIME / cycle_time;
-		float t = (v - floor(v)) - 0.5;
-		
-		COLOR = mix(pixel, color, abs(t) * 2.0);
+	}
+	
+	if (c)
+	{
+		COLOR = pixel;
 	}
 }
