@@ -25,6 +25,3 @@ TODO:
 	- other enemies
 	- player power ups
 	- better player artwork
-	- better enemy artwork
-	- enemy take damage when ramming
-	- enemy mutation: ramming resistance
