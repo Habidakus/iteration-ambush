@@ -7,6 +7,7 @@ var room : Room = null
 func init(id : int, containing_room : Room) -> void:
 	lock_id = id
 	room = containing_room
+	modulate = containing_room.key_color
 
 func remove_from_room() -> void:
 	room.KeyGrabbed()

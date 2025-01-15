@@ -25,9 +25,11 @@ var has_enemy : bool = true
 var key_scene : Resource = preload("res://Scene/key.tscn")
 var key : Key = null
 var key_id : int = -1
+var key_color : Color = Color.WHITE
 var lock_scene : Resource = preload("res://Scene/lock.tscn")
 var lock : Lock = null
 var room_lock_blocks : Room = null
+var lock_color : Color = Color.WHITE
 
 var has_entered : bool = false
 var has_woken : bool = false
@@ -231,6 +233,12 @@ func Spawn() -> void:
 		play_state.add_child(enemy)
 	
 	has_spawned = true
+
+func SetKeyColor(color : Color) -> void:
+	key_color = color
+
+func SetLockColor(color : Color) -> void:
+	lock_color = color
 
 func KeyGrabbed() -> void:
 	assert(key != null)

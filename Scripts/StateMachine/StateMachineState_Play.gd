@@ -166,7 +166,7 @@ func generate_direction_room_collection(loc : Vector2i) -> DirectionRoomCollecti
 var mutate_count : int = 0
 func mutate_map() -> void:
 	mutate_count += 1
-	if mutate_count % 3 == 1:
+	if mutate_count % 5 == 2:
 		if mutate_map_key_lock():
 			return
 	if mutate_count % 2 == 0:
@@ -279,7 +279,6 @@ func get_next_room(room : Room) -> Room:
 func lock_key_map(room : Room, dir : Vector2i) -> void:
 	room.AddLock(get_next_room(room))
 	var new_room : Room = Room.CreateKeyRoom(room, dir, self)
-	rooms.append(new_room)
 	connect_rooms(room, new_room)
 	if dir == Vector2i(0, -1):
 		room.north = new_room
@@ -401,7 +400,29 @@ func set_gameplay_active(active : bool) -> void:
 	is_gameplay_active = active
 	%Player.set_ui_visibility(active)
 
+func get_room_by_id(id : int) -> Room:
+	for room : Room in rooms:
+		if room.id == id:
+			return room
+	return null
+
 func spawn_map() -> void:
 	go_active = true
 	assert(is_gameplay_active == false)
 	%Player.spawn(first_room, get_room_central_pos(first_room.x, first_room.y))
+	var key_lock_pairs : Array = []
+	for room : Room in rooms:
+		if room.key_id != -1:
+			key_lock_pairs.append([room, room.key_id])
+	if key_lock_pairs.size() > 0:
+		key_lock_pairs[0][0].SetKeyColor(Color.BLACK)
+		get_room_by_id(key_lock_pairs[0][1]).SetLockColor(Color.BLACK)
+		key_lock_pairs.remove_at(0)
+	if key_lock_pairs.size() > 0:
+		var hue_inc : float = 1.0 / key_lock_pairs.size()
+		var c : Color = Color.RED
+		c.h = 0
+		for key_lock_pair : Array in key_lock_pairs:
+			key_lock_pair[0].SetKeyColor(c)
+			get_room_by_id(key_lock_pair[1]).SetLockColor(c)
+			c.h += hue_inc
