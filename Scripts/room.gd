@@ -6,6 +6,7 @@ var north : Room = null
 var south : Room = null
 var east : Room = null
 var west : Room = null
+var parent_room : Room = null
 var x : int
 var y : int
 var id : int
@@ -20,6 +21,13 @@ var difficulty_increase_per_reset : int = 2
 
 var enemy_scene : Resource = preload("res://Scene/enemy.tscn")
 var has_enemy : bool = true
+
+var key_scene : Resource = preload("res://Scene/key.tscn")
+var key : Key = null
+var key_id : int = -1
+var lock_scene : Resource = preload("res://Scene/lock.tscn")
+var lock : Lock = null
+var room_lock_blocks : Room = null
 
 var has_entered : bool = false
 var has_woken : bool = false
@@ -42,7 +50,31 @@ var is_last_room : bool = false
 
 static var global_id : int = 0
 
-static func CreateRoom(cx : int, cy : int, cplay_state : PlayState) -> Room:
+static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayState) -> Room:
+	global_id += 1
+
+	var room : Room = Room.new()
+	room.x = clock_room.x + dir.x
+	room.y = clock_room.y + dir.y
+	room.id = global_id
+	room.play_state = cplay_state
+	room.key_id = clock_room.id
+	room.parent_room = clock_room
+
+	if room.id % 13 == 0:
+		room.has_many_firepit = true
+		room.difficulty -= 1
+	elif room.id % 11 == 0:
+		room.is_many_pilars = true
+	elif room.id % 5 == 0:
+		room.is_diamond = true
+	elif room.id % 3 == 0:
+		room.is_narrow = true
+	elif room.id % 2 == 0:
+		room.is_pilars = true
+	return room
+
+static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Room) -> Room:
 	global_id += 1
 	
 	var room : Room = Room.new()
@@ -50,6 +82,7 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState) -> Room:
 	room.y = cy
 	room.id = global_id
 	room.play_state = cplay_state
+	room.parent_room = parent
 	if room.id % 13 == 0:
 		room.has_many_firepit = true
 		room.difficulty -= 1
@@ -66,14 +99,55 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState) -> Room:
 		room.is_pilars = true
 	return room
 
+func GetParentRoom() -> Room:
+	return parent_room
+
+func FixParenting(possible_parent_a : Room, possible_parent_b : Room) -> void:
+	if possible_parent_a.parent_room == possible_parent_b:
+		parent_room = possible_parent_b
+		possible_parent_a.parent_room = self
+	elif possible_parent_b.parent_room == possible_parent_a:
+		parent_room = possible_parent_a
+		possible_parent_b.parent_room = self
+	else:
+		assert(false)
+
+func CanAddLock() -> bool:
+	if room_lock_blocks != null:
+		return false
+	if key_id != -1:
+		return false
+	var access_count : int = 0
+	if north != null:
+		access_count += 1
+	if south != null:
+		access_count += 1
+	if west != null:
+		access_count += 1
+	if east != null:
+		access_count += 1
+	return access_count == 2
+
+func AddLock(next_room : Room) -> void:
+	room_lock_blocks = next_room
+
 func ResetRoom() -> void:
 	has_entered = false
 	has_woken = false
 	has_spawned = false
 	difficulty += difficulty_increase_per_reset
+	if key:
+		key.queue_free()
+		print("Queuing free for room #" + str(id) + " key to room #" + str(key_id) + "'s lock")
+		key = null
+
+	if lock:
+		lock.queue_free()
+		print("Queuing free for room #" + str(id) + " lock")
+		lock = null
+		
 	if enemy:
 		enemy.queue_free()
-		print("Queuing free for room #" + str(id) + " enemy")
 		enemy = null
 
 func SetAsLastRoom() -> void:
@@ -131,6 +205,22 @@ func Spawn() -> void:
 		return
 		
 	#print("Spawn room ID: " + str(id))
+	
+	if room_lock_blocks != null:
+		assert(lock == null)
+		lock = lock_scene.instantiate()
+		var our_center_pos : Vector2 = play_state.get_room_central_pos(x, y)
+		var locked_room_center_pos : Vector2 = play_state.get_room_central_pos(room_lock_blocks.x, room_lock_blocks.y)
+		lock.position = our_center_pos + (locked_room_center_pos - our_center_pos).normalized() * 64 * 6
+		lock.init(self)
+		play_state.add_child(lock)
+	
+	if key_id != -1:
+		assert(key == null)
+		key = key_scene.instantiate()
+		key.position = play_state.get_room_central_pos(x, y)
+		key.init(key_id, self)
+		play_state.add_child(key)
 
 	if has_enemy:
 		assert(enemy == null)
@@ -141,6 +231,14 @@ func Spawn() -> void:
 		play_state.add_child(enemy)
 	
 	has_spawned = true
+
+func KeyGrabbed() -> void:
+	assert(key != null)
+	key = null
+
+func LockRemoved() -> void:
+	assert(lock != null)
+	lock = null
 
 func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 	var rnd : RandomNumberGenerator = RandomNumberGenerator.new()

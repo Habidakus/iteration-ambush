@@ -15,6 +15,7 @@ var gun_sprite : Sprite2D = null
 var ui_current_health_bar : ColorRect = null
 var ui_current_health_label : Label = null
 var ui_current_health_max_width : float = 200
+var owned_keys : Array[int]
 
 var bullet_simple_scene : Resource = preload("res://Scene/simple_bullet.tscn")
 
@@ -31,7 +32,11 @@ func _ready() -> void:
 func defered_init() -> void:
 	ui_current_health_max_width = (find_child("MaxHealth") as ColorRect).custom_minimum_size.x
 	set_health_bar()
-	
+
+func spawn(_room: Room, pos : Vector2) -> void:
+	owned_keys.clear()
+	position = pos # Vector2((room.x * 15 + 7.5) * 64, (room.y * 15 + 7.5) * 64)
+
 func set_health_bar() -> void:
 	ui_current_health_label.text = str(round(current_health)) + "/" + str(round(max_health))
 	var fraction : float = current_health / max_health
@@ -104,6 +109,16 @@ func _physics_process(delta: float) -> void:
 		var enemy : Enemy = collision.get_collider() as Enemy
 		if enemy:
 			self.take_damage(enemy.get_ram_damage() * delta)
+		var key : Key = collision.get_collider() as Key
+		if key:
+			owned_keys.append(key.lock_id)
+			key.remove_from_room()
+		var lock : Lock = collision.get_collider() as Lock
+		if lock:
+			var index : int = owned_keys.find(lock.room.id)
+			if index != -1:
+				owned_keys.remove_at(index)
+				lock.remove_from_room()
 	
 	our_momentum = get_position_delta() / delta
 

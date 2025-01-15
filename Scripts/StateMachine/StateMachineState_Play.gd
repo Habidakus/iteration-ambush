@@ -82,10 +82,10 @@ func enter_state() -> void:
 	%PlayStateMachine.switch_state("PlayState_LevelSetup")
 
 func init_map() -> void:
-	var r1 = Room.CreateRoom(0, 0, self)
-	var r2 = Room.CreateRoom(0, -1, self)
-	var r3 = Room.CreateRoom(-1, -1, self)
-	var r4 = Room.CreateRoom(-1, 0, self)
+	var r1 = Room.CreateRoom(0, 0, self, null)
+	var r2 = Room.CreateRoom(0, -1, self, r1)
+	var r3 = Room.CreateRoom(-1, -1, self, r2)
+	var r4 = Room.CreateRoom(-1, 0, self, r3)
 	r1.has_enemy = false
 	r4.has_enemy = false
 	r4.SetAsLastRoom()
@@ -166,6 +166,9 @@ func generate_direction_room_collection(loc : Vector2i) -> DirectionRoomCollecti
 var mutate_count : int = 0
 func mutate_map() -> void:
 	mutate_count += 1
+	if mutate_count % 3 == 1:
+		if mutate_map_key_lock():
+			return
 	if mutate_count % 2 == 0:
 		if mutate_map_extrude():
 			return
@@ -176,6 +179,50 @@ func is_empty_room(x : int, y : int) -> bool:
 		if room.x == x and room.y == y:
 			return false
 	return true
+
+func mutate_map_key_lock() -> bool:
+	var potential_east : Array[Room]
+	var potential_west : Array[Room]
+	var potential_north : Array[Room]
+	var potential_south : Array[Room]
+	for room : Room in rooms:
+		# TODO: We should just make sure this room has 2 and only 2 doors
+		if room != first_room && room != last_room && room.CanAddLock():
+			if is_empty_room(room.x + 1, room.y):
+				potential_east.append(room)
+			if is_empty_room(room.x - 1, room.y):
+				potential_west.append(room)
+			if is_empty_room(room.x, room.y - 1):
+				potential_north.append(room)
+			if is_empty_room(room.x, room.y + 1):
+				potential_south.append(room)
+	var count : int = potential_east.size() + potential_west.size() + potential_north.size() + potential_south.size()
+	if count == 0:
+		print("Failed to add lock and key")
+		return false
+	print("TODO: mutate_map_key_lock() should be random")
+	var index : int = mutate_count % count
+	if index < potential_east.size():
+		lock_key_map(potential_east[index], Vector2i(1, 0))
+		return true
+	index -= potential_east.size()
+	
+	if index < potential_west.size():
+		lock_key_map(potential_west[index], Vector2i(-1, 0))
+		return true
+	index -= potential_west.size()
+	
+	if index < potential_north.size():
+		lock_key_map(potential_north[index], Vector2i(0, -1))
+		return true
+	index -= potential_north.size()
+		
+	if index < potential_south.size():
+		lock_key_map(potential_south[index], Vector2i(0, 1))
+		return true
+		
+	assert(false)
+	return false
 
 func mutate_map_extrude() -> bool:
 	var potential_east : Array[Room]
@@ -220,12 +267,34 @@ func mutate_map_extrude() -> bool:
 		
 	assert(false)
 	return false
+
+func get_next_room(room : Room) -> Room:
+	for iter : Room in rooms:
+		if iter.GetParentRoom() == room:
+			return iter
+	# TODO: If this triggers, fix the logic in mutate_map_key_lock()
+	assert(false)
+	return null
+
+func lock_key_map(room : Room, dir : Vector2i) -> void:
+	room.AddLock(get_next_room(room))
+	var new_room : Room = Room.CreateKeyRoom(room, dir, self)
+	rooms.append(new_room)
+	connect_rooms(room, new_room)
+	if dir == Vector2i(0, -1):
+		room.north = new_room
+		new_room.south = room
+	elif dir == Vector2i(0, 1):
+		room.south = new_room
+		new_room.north = room
+	rooms.append(new_room)
+	room.ClearFromMaps(%TerrainMap, %ObjectMap)
+	new_room.ApplyToMaps(%TerrainMap, %ObjectMap)
+	room.ApplyToMaps(%TerrainMap, %ObjectMap)
 	
 func extrude_map(room_a : Room, room_b : Room, dir : Vector2i) -> void:
-	#print("Extruding " + str(room_a.x) + "," + str(room_a.y) + " towards " + str(dir))
-	var new_room_a : Room = Room.CreateRoom(room_a.x + dir.x, room_a.y + dir.y, self)
-	#print("Extruding " + str(room_b.x) + "," + str(room_b.y) + " towards " + str(dir))
-	var new_room_b : Room = Room.CreateRoom(room_b.x + dir.x, room_b.y + dir.y, self)
+	var new_room_a : Room = Room.CreateRoom(room_a.x + dir.x, room_a.y + dir.y, self, null)
+	var new_room_b : Room = Room.CreateRoom(room_b.x + dir.x, room_b.y + dir.y, self, null)
 	if room_a.north == room_b:
 		new_room_a.north = new_room_b
 		new_room_b.south = new_room_a
@@ -248,6 +317,17 @@ func extrude_map(room_a : Room, room_b : Room, dir : Vector2i) -> void:
 		room_b.east = null
 	else:
 		assert(false)
+
+	var a_is_before_b : bool = room_b.parent_room == room_a
+	if a_is_before_b:
+		new_room_a.parent_room = room_a
+		new_room_b.parent_room = new_room_a
+		room_b.parent_room = new_room_b
+	else:
+		new_room_b.parent_room = room_b
+		new_room_a.parent_room = new_room_b
+		room_a.parent_room = new_room_a
+
 	rooms.append(new_room_a)
 	rooms.append(new_room_b)
 	connect_rooms(room_a, new_room_a)
@@ -283,20 +363,21 @@ func mutate_map_extend() -> void:
 
 	for room : Room in pre_empty_rooms:
 		#var old_dest : Room = room.east
-		var new_room : Room = Room.CreateRoom(room.x + move_direction.x, room.y + move_direction.y, self)
-		print("Adding at " + str(new_room.x) + "," + str(new_room.y))
+		var new_room : Room = Room.CreateRoom(room.x + move_direction.x, room.y + move_direction.y, self, null)
 		if move_direction.x > 0:
 			var old_dest : Room = room.east
 			new_room.west = room
 			new_room.east = old_dest
 			room.east = new_room
 			old_dest.west = new_room
+			new_room.FixParenting(room, old_dest)
 		elif move_direction.x < 0:
 			var old_dest : Room = room.west
 			new_room.east = room
 			new_room.west = old_dest
 			room.west = new_room
 			old_dest.east = new_room
+			new_room.FixParenting(room, old_dest)
 
 		elif move_direction.y > 0:
 			var old_dest : Room = room.south
@@ -304,12 +385,14 @@ func mutate_map_extend() -> void:
 			new_room.south = old_dest
 			room.south = new_room
 			old_dest.north = new_room
+			new_room.FixParenting(room, old_dest)
 		elif move_direction.y < 0:
 			var old_dest : Room = room.north
 			new_room.south = room
 			new_room.north = old_dest
 			room.north = new_room
 			old_dest.south = new_room
+			new_room.FixParenting(room, old_dest)
 
 		new_room.ApplyToMaps(%TerrainMap, %ObjectMap)
 		rooms.append(new_room)
@@ -319,7 +402,6 @@ func set_gameplay_active(active : bool) -> void:
 	%Player.set_ui_visibility(active)
 
 func spawn_map() -> void:
-	print("TODO: SPAWN ENEMIES")
 	go_active = true
 	assert(is_gameplay_active == false)
-	%Player.position = Vector2((first_room.x * 15 + 7.5) * 64, (first_room.y * 15 + 7.5) * 64)
+	%Player.spawn(first_room, get_room_central_pos(first_room.x, first_room.y))

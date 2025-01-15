@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://dduwp5v7c1cqt"]
+
+[ext_resource type="Texture2D" uid="uid://cx6p0n1g0xv7r" path="res://Art/Lock_01.png" id="1_6pfy6"]
+[ext_resource type="Script" path="res://Scripts/lock.gd" id="1_gfso3"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2jgxs"]
+radius = 32.0624
+
+[node name="Lock" type="StaticBody2D"]
+collision_mask = 31
+script = ExtResource("1_gfso3")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_6pfy6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_2jgxs")
