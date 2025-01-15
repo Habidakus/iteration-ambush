@@ -102,3 +102,6 @@ func _physics_process(delta: float) -> void:
 		var col_player : Player = collision.get_collider() as Player
 		if col_player:
 			col_player.take_damage(get_ram_damage() * delta)
+		var col_bullet : SimpleBullet = collision.get_collider() as SimpleBullet
+		if col_bullet:
+			col_bullet.collide_with_enemy(self, collision.get_position())

@@ -64,6 +64,7 @@ func fire_bullet() -> void:
 	bullet.look_at(get_global_mouse_position())
 	bullet.position -= Vector2(20,20)
 	bullet.position += Vector2.RIGHT.rotated(bullet.rotation) * 32.0
+	bullet.init()
 	%State_Play.add_child(bullet)
 	fire_cooldown = fire_cooldown_max
 

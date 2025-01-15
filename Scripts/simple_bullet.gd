@@ -1,7 +1,11 @@
 extends StaticBody2D
 
+class_name SimpleBullet
+
 var lifetime : float = 4
 var damage : float = 101
+var movement_dir : float
+var rotation_speed : float = -10.0
 const SPEED : float = 400
 
 var explosion_scene : Resource = preload("res://Scene/wall_hit_vfx.tscn")
@@ -23,15 +27,21 @@ func die(global_pos : Vector2) -> void:
 	tween.tween_callback(explosion.queue_free)
 	queue_free()
 
-func _process(_delta: float) -> void:
-	pass
+func init() -> void:
+	movement_dir = rotation
+
+func collide_with_enemy(enemy: Enemy, col_glob_pos : Vector2) -> void:
+	enemy.take_damage(damage)
+	die(col_glob_pos)
 
 func _physics_process(delta : float) -> void:
 	lifetime -= delta
-	var move_delta : Vector2 = Vector2.RIGHT.rotated(rotation) * SPEED * delta
+	var move_delta : Vector2 = Vector2.RIGHT.rotated(movement_dir) * SPEED * delta
 	if lifetime <= 0:
 		#print("f=" + str(global_position))
 		queue_free()
+	
+	rotation += delta * rotation_speed
 
 	var space_state = get_world_2d().direct_space_state
 	var query = PhysicsRayQueryParameters2D.create(global_position, global_position + move_delta * 1.05)
@@ -44,8 +54,7 @@ func _physics_process(delta : float) -> void:
 		col_glob_pos -= Vector2(20,20)
 		var enemy : Enemy = collider as Enemy
 		if enemy != null:
-			enemy.take_damage(damage)
-			die(col_glob_pos)
+			collide_with_enemy(enemy, col_glob_pos)
 			return
 
 		var tml : TileMapLayer = collider as TileMapLayer
