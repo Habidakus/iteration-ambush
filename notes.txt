@@ -14,6 +14,7 @@ Potential power ups:
 	- regen at lap completion
 	- faster fire rate
 	- more damage
+	- able to fire through locks
 
 TODO:
 	- Swap floor (bricks) and walls (black)
@@ -25,5 +26,3 @@ TODO:
 	- player power ups
 	- better player artwork
 	- better enemy artwork
-	- lava shader
-
