@@ -15,6 +15,7 @@ Potential power ups:
 	- faster fire rate
 	- more damage
 	- able to fire through locks
+	- scythe lasts longer (will have to reduce current 4 seconds)
 
 TODO:
 	- Swap floor (bricks) and walls (black)
