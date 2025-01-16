@@ -25,4 +25,3 @@ TODO:
 	- highscore
 	- other enemies
 	- player power ups
-	- better player artwork
