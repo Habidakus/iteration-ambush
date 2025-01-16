@@ -86,25 +86,26 @@ func set_ui_visibility(_visible : bool) -> void:
 #func _draw() -> void:
 	#draw_line(to_local(global_position), get_local_mouse_position(), Color.REBECCA_PURPLE, 3)
 
+func stop_anim() -> void:
+	(find_child("AnimatedSprite2D") as AnimatedSprite2D).pause()
+
 func _physics_process(delta: float) -> void:
 	if %State_Play.is_gameplay_active == false:
 		return
 	
 	#look_at(get_global_mouse_position())
 	
-	fire_cooldown -= delta
-	if Input.is_action_pressed("fire_guns"):
-		if fire_cooldown <= 0:
-			fire_bullet()
-
-	#if fire_cooldown <= 0:
-		#gun_sprite.scale = Vector2.ONE
-	#else:
-		#var barrel_fraction : float = (fire_cooldown_max - max(fire_cooldown, 0)) / fire_cooldown_max
-		#barrel_fraction *= barrel_fraction
-		#gun_sprite.scale = Vector2(barrel_fraction, 1)
-	
 	var anim : AnimatedSprite2D = (find_child("AnimatedSprite2D") as AnimatedSprite2D)
+	if fire_cooldown >= 0:
+		fire_cooldown -= delta
+		if fire_cooldown < 0:
+			anim.play("armed")
+
+	if Input.is_action_pressed("fire_guns"):
+		if fire_cooldown < 0:
+			fire_bullet()
+			anim.play("unarmed")
+
 	var acc_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	if acc_dir == Vector2.ZERO:
 		var slow = (1 - delta)
@@ -115,7 +116,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity = (acc_dir * SPEED + our_momentum).normalized() * SPEED
 		if !anim.is_playing():
-			anim.play("default")
+			anim.play()
 
 	move_and_slide()
 	

@@ -6,6 +6,7 @@ var timer : float = 3
 func enter_state() -> void:
 	super.enter_state()
 	timer = 3.0
+	%Player.stop_anim()
 	(find_child("RestartButton") as CanvasItem).visible = false
 
 func _process(delta : float) -> void:
