@@ -15,8 +15,8 @@ var play_state : PlayState
 var enemies : Array[Enemy]
 var enemy_count : float = 1
 var fire_damage : float = 20.0
-var difficulty : int = 1
-var difficulty_increase_per_reset : int = 2
+var room_mods : Array[RoomMod]
+var unspent_difficulty : int = 1
 
 var enemy_scene : Resource = preload("res://Scene/enemy.tscn")
 var has_enemy : bool = true
@@ -67,7 +67,7 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 	match cplay_state.build_rnd.randi_range(0,10):
 		0:
 			room.has_many_firepit = true
-			room.difficulty -= 1
+			room.unspent_difficulty -= 1
 		1:
 			room.is_many_pilars = true
 		2,3:
@@ -76,6 +76,10 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 			room.is_narrow = true
 		6,7:
 			room.is_pilars = true
+	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd)
+	while room.unspent_difficulty > 0:
+		room.SpendDifficulty(cplay_state.build_rnd)
+		room.unspent_difficulty -= 1
 
 	print("Creating room: " + str(room))
 	return room
@@ -93,7 +97,7 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 	match cplay_state.build_rnd.randi_range(0,11):
 		0:
 			room.has_many_firepit = true
-			room.difficulty -= 1
+			room.unspent_difficulty -= 1
 		1:
 			room.is_many_pilars = true
 		2,3:
@@ -104,13 +108,32 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 			room.is_pilars = true
 		8,9:
 			room.has_firepit = true
-			room.difficulty -= 1
-
+			room.unspent_difficulty -= 1
+	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd)
+	while room.unspent_difficulty > 0:
+		room.SpendDifficulty(cplay_state.build_rnd)
+		room.unspent_difficulty -= 1
 	print("Creating room: " + str(room))
 	return room
 
+func SpendDifficulty(rnd : RandomNumberGenerator) -> void:
+	var count : int = 0
+	for mod : RoomMod in room_mods:
+		if mod.can_advance():
+			count += 1
+	if count == 0:
+		print("Can't advance " + str(self))
+	count = rnd.randi() % count
+	for mod : RoomMod in room_mods:
+		if mod.can_advance():
+			if count == 0:
+				mod.advance()
+				return
+			count -= 1
+	assert(false)
+
 func _to_string() -> String:
-	var ret_val : String = "id=" + str(id) + " diff=" + str(difficulty) + " coord=" + str(x) + "," + str(y)
+	var ret_val : String = "id=" + str(id) + " coord=" + str(x) + "," + str(y)
 	if has_many_firepit:
 		ret_val += " fire=4"
 	if has_firepit:
@@ -166,15 +189,16 @@ func ResetRoom() -> void:
 	has_entered = false
 	has_woken = false
 	has_spawned = false
-	difficulty += difficulty_increase_per_reset
+	unspent_difficulty += play_state.get_room_difficulty_increase()
+	while unspent_difficulty > 0:
+		SpendDifficulty(play_state.build_rnd)
+		unspent_difficulty -= 1
 	if key:
 		key.queue_free()
-		print("Queuing free for room #" + str(id) + " key to room #" + str(key_id) + "'s lock")
 		key = null
 
 	if lock:
 		lock.queue_free()
-		print("Queuing free for room #" + str(id) + " lock")
 		lock = null
 		
 	if !enemies.is_empty():
@@ -219,6 +243,10 @@ func WakeUp(rnd : RandomNumberGenerator) -> void:
 	if has_woken:
 		return
 
+	enemy_count = 1.0
+	for mod : RoomMod in room_mods:
+		mod.apply_to_room(self)
+
 	#print("Woke room ID: " + str(id))
 	has_woken = true
 	
@@ -240,7 +268,7 @@ func WakeUp(rnd : RandomNumberGenerator) -> void:
 func Spawn(rnd : RandomNumberGenerator) -> void:
 	if has_spawned:
 		return
-		
+
 	#print("Spawn room ID: " + str(id))
 	
 	if room_lock_blocks != null:
@@ -265,7 +293,7 @@ func Spawn(rnd : RandomNumberGenerator) -> void:
 		for i in range(0, round(enemy_count)):
 			var enemy : Enemy = enemy_scene.instantiate()
 			enemy.position = GetSafeEnemyPlacement(rnd)
-			enemy.init(id, difficulty, play_state.get_player().get_shot_damage(), self)
+			enemy.init(id, play_state.get_player().get_shot_damage(), self)
 			play_state.add_child(enemy)
 			enemies.append(enemy)
 	

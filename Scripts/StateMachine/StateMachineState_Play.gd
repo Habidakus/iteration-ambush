@@ -101,6 +101,14 @@ func can_place_enemy(pos : Vector2) -> bool:
 	var cell = tml.local_to_map(pos)
 	var source_id : int = tml.get_cell_source_id(cell)
 	return source_id == atlas_floor_source_id
+
+func get_room_difficulty_increase() -> int:
+	match difficulty:
+		Difficulty.Easy: return 1
+		Difficulty.Medium: return 2
+		Difficulty.Hard: return 3
+	assert(false)
+	return 5
 	
 func player_entered_room_for_first_time(_room : Room) -> void:
 	pass

@@ -20,6 +20,10 @@ const BASE_RAM_DAMAGE = 33
 var explosion_scene : Resource = preload("res://Scene/explosion.tscn")
 
 func take_damage(dmg : float) -> void:
+	if health <= 0:
+		# We've already been killed this impulse
+		return
+		
 	health -= dmg
 	if health > 0:
 		if health < player_shot_damage:
@@ -37,22 +41,25 @@ func take_damage(dmg : float) -> void:
 	tween.tween_callback(explosion.queue_free)
 	queue_free()
 
-func init(_seed : int, difficulty : int, _player_shot_damage : float, _room : Room) -> void:
+func init(_seed : int, _player_shot_damage : float, _room : Room) -> void:
 	ram_damage = BASE_RAM_DAMAGE
 	player_shot_damage = _player_shot_damage
 	health = BASE_HEALTH
-	var rnd : RandomNumberGenerator = RandomNumberGenerator.new()
-	rnd.seed = _seed
 	room = _room
-	var scale_mod : float = 1
-	for i in range(0, difficulty):
-		match rnd.randi() % 4:
-			0: speed_multiple *= 1.15
-			1: health *= 1.25
-			2: scale_mod *= 1.15
-			3: ram_damage *= 1.25
-			4: self_damage_multiple /= 1.25
-	self.scale /= scale_mod
+	#var rnd : RandomNumberGenerator = RandomNumberGenerator.new()
+	#rnd.seed = _seed
+	for mod : RoomMod in _room.room_mods:
+		mod.apply_to_enemy(self)
+	
+	#var scale_mod : float = 1
+	#for i in range(0, 0):
+		#match rnd.randi() % 4:
+			#0: speed_multiple *= 1.15
+			#1: health *= 1.25
+			#2: scale_mod *= 1.15
+			#3: ram_damage *= 1.25
+			#4: self_damage_multiple /= 1.25
+	#self.scale /= scale_mod
 	if health > player_shot_damage:
 		(find_child("HealthSprite") as Sprite2D).visible = true
 	if ram_damage > BASE_RAM_DAMAGE:
