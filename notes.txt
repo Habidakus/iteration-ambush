@@ -22,6 +22,7 @@ TODO:
 	- sound effects
 	- music
 	- credits & thanks
-	- highscore
+	- highscore & track current score
+	- more room layouts (thin exterior circuit, wall seperating two primary entrances)
 	- other enemies
 	- player power ups
