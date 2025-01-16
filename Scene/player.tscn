@@ -1,14 +1,37 @@
-[gd_scene load_steps=5 format=3 uid="uid://cb6e0fesdu8rd"]
+[gd_scene load_steps=9 format=3 uid="uid://cb6e0fesdu8rd"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_lncui"]
 [ext_resource type="Texture2D" uid="uid://nddvl8yi45qd" path="res://Art/Player01.png" id="2_suexg"]
-[ext_resource type="Texture2D" uid="uid://c5xj5oafsfame" path="res://Art/gun01.png" id="3_ytaf1"]
+[ext_resource type="Texture2D" uid="uid://wlw5idqllxjl" path="res://Art/dwarf_standing.png" id="3_y70hw"]
+[ext_resource type="Texture2D" uid="uid://ccrx3dq5vg8dg" path="res://Art/dwarf_walk_01.png" id="4_svwm1"]
+[ext_resource type="Texture2D" uid="uid://cy4aqgjt267go" path="res://Art/dwarf_walk_02.png" id="5_oi71h"]
+[ext_resource type="Texture2D" uid="uid://cvr0qs533t64i" path="res://Art/Scythe01.png" id="6_kukyx"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ikals"]
-size = Vector2(62, 62)
+[sub_resource type="SpriteFrames" id="SpriteFrames_mi3pv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_y70hw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_svwm1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_y70hw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_oi71h")
+}],
+"loop": true,
+"name": &"default",
+"speed": 2.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bp7o0"]
+radius = 11.3154
+height = 56.5771
 
 [node name="Player" type="CharacterBody2D"]
-scale = Vector2(0.707, 0.707)
 collision_layer = 4
 collision_mask = 11
 motion_mode = 1
@@ -19,13 +42,8 @@ script = ExtResource("1_lncui")
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 texture = ExtResource("2_suexg")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_ikals")
-
-[node name="Gun" type="Sprite2D" parent="."]
-texture = ExtResource("3_ytaf1")
 
 [node name="UI" type="CanvasLayer" parent="."]
 visible = false
@@ -64,3 +82,16 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "100/100"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_mi3pv")
+autoplay = "default"
+frame_progress = 0.162839
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_bp7o0")
+
+[node name="Gun" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(14.1443, -4.24328)
+texture = ExtResource("6_kukyx")
