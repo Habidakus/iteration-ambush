@@ -2,6 +2,7 @@ extends StaticBody2D
 
 class_name SimpleBullet
 
+var is_dead : bool = false
 var lifetime : float = 4
 var damage : float = 101
 var movement_dir : float
@@ -31,8 +32,14 @@ func init() -> void:
 	movement_dir = rotation
 
 func collide_with_enemy(enemy: Enemy, col_glob_pos : Vector2) -> void:
+	# Sometimes both the bullet will collide with the enemy, and then the enemy
+	# will collide with the bullet. To stop damaging twice, we mark the bullet
+	# dead on the first impact.
+	if is_dead:
+		return
 	enemy.take_damage(damage)
 	die(col_glob_pos)
+	is_dead = true
 
 func _physics_process(delta : float) -> void:
 	lifetime -= delta
