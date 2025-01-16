@@ -87,15 +87,21 @@ func trigger_player_location_events(player_loc : Vector2, delta : float) -> void
 	# TODO: Cache last player room so we don't have to iterate over every single one
 	if last_room_player_was_in != null:
 		if last_room_player_was_in.x == grid_x && last_room_player_was_in.y == grid_y:
-			last_room_player_was_in.UpdatePlayerInRoom()
+			last_room_player_was_in.UpdatePlayerInRoom(build_rnd)
 			return
 			
 	for room : Room in rooms:
 		if room.x == grid_x && room.y == grid_y:
-			room.UpdatePlayerInRoom()
+			room.UpdatePlayerInRoom(build_rnd)
 			last_room_player_was_in = room
 			return
 
+func can_place_enemy(pos : Vector2) -> bool:
+	var tml : TileMapLayer = (%TerrainMap as TileMapLayer)
+	var cell = tml.local_to_map(pos)
+	var source_id : int = tml.get_cell_source_id(cell)
+	return source_id == atlas_floor_source_id
+	
 func player_entered_room_for_first_time(_room : Room) -> void:
 	pass
 

@@ -11,10 +11,9 @@ var x : int
 var y : int
 var id : int
 var size : int = 15
-var atlas_source_id_floor : int = 0
-var atlas_source_id_other : int = 1
 var play_state : PlayState
-var enemy : Enemy = null
+var enemies : Array[Enemy]
+var enemy_count : float = 1
 var fire_damage : float = 20.0
 var difficulty : int = 1
 var difficulty_increase_per_reset : int = 2
@@ -36,6 +35,8 @@ var has_woken : bool = false
 var has_spawned : bool = false
 
 # TODO: Make global
+var atlas_source_id_floor : int = 0
+var atlas_source_id_other : int = 1
 var atlas_coords_other_wall : Vector2i = Vector2i(0, 0)
 var atlas_coords_other_firepit : Vector2i = Vector2i(2, 0)
 var atlas_coords_other_lastroom : Vector2i = Vector2i(1, 0)
@@ -79,22 +80,6 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 	print("Creating room: " + str(room))
 	return room
 
-func _to_string() -> String:
-	var ret_val : String = "id=" + str(id) + " diff=" + str(difficulty) + " coord=" + str(x) + "," + str(y)
-	if has_many_firepit:
-		ret_val += " fire=4"
-	if has_firepit:
-		ret_val += " fire=1"
-	if is_pilars:
-		ret_val += " pillar=1"
-	if is_many_pilars:
-		ret_val += " pillar=many"
-	if is_diamond:
-		ret_val += " diamond"
-	if is_narrow:
-		ret_val += " narrow"
-	return ret_val
-
 static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Room) -> Room:
 	global_id += 1
 	
@@ -124,6 +109,27 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 	print("Creating room: " + str(room))
 	return room
 
+func _to_string() -> String:
+	var ret_val : String = "id=" + str(id) + " diff=" + str(difficulty) + " coord=" + str(x) + "," + str(y)
+	if has_many_firepit:
+		ret_val += " fire=4"
+	if has_firepit:
+		ret_val += " fire=1"
+	if is_pilars:
+		ret_val += " pillar=1"
+	if is_many_pilars:
+		ret_val += " pillar=many"
+	if is_diamond:
+		ret_val += " diamond"
+	if is_narrow:
+		ret_val += " narrow"
+	return ret_val
+
+func StopTracking(enemy : Enemy) -> void:
+	var index : int = enemies.find(enemy)
+	assert(index != -1)
+	enemies.remove_at(index)
+	
 func GetParentRoom() -> Room:
 	return parent_room
 
@@ -171,9 +177,10 @@ func ResetRoom() -> void:
 		print("Queuing free for room #" + str(id) + " lock")
 		lock = null
 		
-	if enemy:
-		enemy.queue_free()
-		enemy = null
+	if !enemies.is_empty():
+		for enemy : Enemy in enemies:
+			enemy.queue_free()
+		enemies.clear()
 
 func SetAsLastRoom() -> void:
 	is_last_room = true
@@ -188,7 +195,7 @@ func DrawRoomNumber() -> void:
 	var font = ThemeDB.fallback_font
 	play_state.draw_string(font, pos, str(id), HORIZONTAL_ALIGNMENT_CENTER, 64, 64)
 
-func UpdatePlayerInRoom() -> void:
+func UpdatePlayerInRoom(rnd : RandomNumberGenerator) -> void:
 	if has_entered == true:
 		return
 	
@@ -197,40 +204,40 @@ func UpdatePlayerInRoom() -> void:
 	play_state.player_entered_room_for_first_time(self)
 	has_entered = true
 
-	Spawn()
-	WakeUp()
+	Spawn(rnd)
+	WakeUp(rnd)
 	if north:
-		north.WakeUp()
+		north.WakeUp(rnd)
 	if south:
-		south.WakeUp()
+		south.WakeUp(rnd)
 	if east:
-		east.WakeUp()
+		east.WakeUp(rnd)
 	if west:
-		west.WakeUp()
+		west.WakeUp(rnd)
 
-func WakeUp() -> void:
+func WakeUp(rnd : RandomNumberGenerator) -> void:
 	if has_woken:
 		return
 
 	#print("Woke room ID: " + str(id))
 	has_woken = true
 	
-	Spawn()
+	Spawn(rnd)
 
-	if enemy:
+	for enemy : Enemy in enemies:
 		#print("Waking enemy in room " + str(id))
 		enemy.wake(play_state.get_player())
 
 	if north:
-		north.Spawn()
+		north.Spawn(rnd)
 	if south:
-		south.Spawn()
+		south.Spawn(rnd)
 	if east:
-		east.Spawn()
+		east.Spawn(rnd)
 	if west:
-		west.Spawn()
+		west.Spawn(rnd)
 
-func Spawn() -> void:
+func Spawn(rnd : RandomNumberGenerator) -> void:
 	if has_spawned:
 		return
 		
@@ -241,7 +248,7 @@ func Spawn() -> void:
 		lock = lock_scene.instantiate()
 		var our_center_pos : Vector2 = play_state.get_room_central_pos(x, y)
 		var locked_room_center_pos : Vector2 = play_state.get_room_central_pos(room_lock_blocks.x, room_lock_blocks.y)
-		lock.position = our_center_pos + (locked_room_center_pos - our_center_pos).normalized() * 64 * 6
+		lock.position = our_center_pos + (locked_room_center_pos - our_center_pos).normalized() * 64 * 7
 		lock.init(self)
 		play_state.add_child(lock)
 	
@@ -253,14 +260,33 @@ func Spawn() -> void:
 		play_state.add_child(key)
 
 	if has_enemy:
-		assert(enemy == null)
+		assert(enemies.is_empty())
 		#print("Spawning enemy for room ID: " + str(id))
-		enemy = enemy_scene.instantiate()
-		enemy.position = play_state.get_room_central_pos(x, y)
-		enemy.init(id, difficulty, play_state.get_player().get_shot_damage(), self)
-		play_state.add_child(enemy)
+		for i in range(0, round(enemy_count)):
+			var enemy : Enemy = enemy_scene.instantiate()
+			enemy.position = GetSafeEnemyPlacement(rnd)
+			enemy.init(id, difficulty, play_state.get_player().get_shot_damage(), self)
+			play_state.add_child(enemy)
+			enemies.append(enemy)
 	
 	has_spawned = true
+
+func AnyEnemiesHere(pos : Vector2) -> bool:
+	for enemy: Enemy in enemies:
+		if (enemy.position - pos).length_squared() < 64 * 64 * 1.707:
+			return true
+	return false
+
+func GetSafeEnemyPlacement(rnd : RandomNumberGenerator) -> Vector2:
+	var center : Vector2 = play_state.get_room_central_pos(x, y)
+	var ret_val : Vector2 = center
+
+	while !play_state.can_place_enemy(ret_val) || AnyEnemiesHere(ret_val):
+		var dx : int = rnd.randi_range(-6, 6)
+		var dy : int = rnd.randi_range(-6, 6)
+		ret_val = center + Vector2(dx * 64, dy * 64)
+		
+	return ret_val
 
 func SetKeyColor(color : Color) -> void:
 	key_color = color

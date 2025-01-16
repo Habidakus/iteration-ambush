@@ -26,7 +26,7 @@ func take_damage(dmg : float) -> void:
 			(find_child("HealthSprite") as Sprite2D).visible = false
 		return
 		
-	room.enemy = null
+	room.StopTracking(self)
 	var explosion : CPUParticles2D = explosion_scene.instantiate()
 	explosion.position = position
 	explosion.emitting = true
