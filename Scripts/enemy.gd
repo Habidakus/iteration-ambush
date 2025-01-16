@@ -37,12 +37,13 @@ func take_damage(dmg : float) -> void:
 	tween.tween_callback(explosion.queue_free)
 	queue_free()
 
-func init(_seed : int, difficulty : int, _player_shot_damage : float) -> void:
+func init(_seed : int, difficulty : int, _player_shot_damage : float, _room : Room) -> void:
 	ram_damage = BASE_RAM_DAMAGE
 	player_shot_damage = _player_shot_damage
 	health = BASE_HEALTH
 	var rnd : RandomNumberGenerator = RandomNumberGenerator.new()
 	rnd.seed = _seed
+	room = _room
 	var scale_mod : float = 1
 	for i in range(0, difficulty):
 		match rnd.randi() % 4:
@@ -57,6 +58,22 @@ func init(_seed : int, difficulty : int, _player_shot_damage : float) -> void:
 	if ram_damage > BASE_RAM_DAMAGE:
 		var v : float = BASE_RAM_DAMAGE / ram_damage
 		modulate = Color(1, v, v)
+	print("initializing enemy: " + str(self))
+
+func _to_string() -> String:
+	var ret_val : String = "id=" + str(room.id)
+	if scale != Vector2.ONE:
+		ret_val += " scale=" + str(scale.x)
+	if speed_multiple != 1:
+		ret_val += " speed=" + str(speed_multiple)
+	if health != BASE_HEALTH:
+		ret_val += " hp=" + str(health)
+	if ram_damage != BASE_RAM_DAMAGE:
+		ret_val += " dmg=" + str(ram_damage)
+	if self_damage_multiple != 5:
+		ret_val += " def=" + str(5.0 / self_damage_multiple)
+		
+	return ret_val
 
 func tick() -> void:
 	if nav_agent:
@@ -68,9 +85,8 @@ func tick() -> void:
 				var past_player : Vector2 = player.global_position + vec_to_player.normalized() * 64.0
 				nav_agent.target_position = past_player
 
-func wake(_player : Player, _room : Room) -> void:
+func wake(_player : Player) -> void:
 	player = _player
-	room = _room
 	start_timer = true
 
 func _process(_delta : float) -> void:

@@ -75,8 +75,25 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 			room.is_narrow = true
 		6,7:
 			room.is_pilars = true
-	
+
+	print("Creating room: " + str(room))
 	return room
+
+func _to_string() -> String:
+	var ret_val : String = "id=" + str(id) + " diff=" + str(difficulty) + " coord=" + str(x) + "," + str(y)
+	if has_many_firepit:
+		ret_val += " fire=4"
+	if has_firepit:
+		ret_val += " fire=1"
+	if is_pilars:
+		ret_val += " pillar=1"
+	if is_many_pilars:
+		ret_val += " pillar=many"
+	if is_diamond:
+		ret_val += " diamond"
+	if is_narrow:
+		ret_val += " narrow"
+	return ret_val
 
 static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Room) -> Room:
 	global_id += 1
@@ -104,6 +121,7 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 			room.has_firepit = true
 			room.difficulty -= 1
 
+	print("Creating room: " + str(room))
 	return room
 
 func GetParentRoom() -> Room:
@@ -201,7 +219,7 @@ func WakeUp() -> void:
 
 	if enemy:
 		#print("Waking enemy in room " + str(id))
-		enemy.wake(play_state.get_player(), self)
+		enemy.wake(play_state.get_player())
 
 	if north:
 		north.Spawn()
@@ -239,7 +257,7 @@ func Spawn() -> void:
 		#print("Spawning enemy for room ID: " + str(id))
 		enemy = enemy_scene.instantiate()
 		enemy.position = play_state.get_room_central_pos(x, y)
-		enemy.init(id, difficulty, play_state.get_player().get_shot_damage())
+		enemy.init(id, difficulty, play_state.get_player().get_shot_damage(), self)
 		play_state.add_child(enemy)
 	
 	has_spawned = true

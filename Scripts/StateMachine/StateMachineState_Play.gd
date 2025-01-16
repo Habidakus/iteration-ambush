@@ -12,6 +12,9 @@ var last_room_player_was_in : Room = null
 var first_room : Room
 var last_room : Room
 
+enum Difficulty { Easy, Medium, Hard }
+var difficulty : Difficulty = Difficulty.Easy
+
 # TODO: Make global
 var atlas_floor_source_id : int = 0
 var atlas_other_source_id : int = 1
@@ -101,6 +104,7 @@ func enter_state() -> void:
 	%PlayStateMachine.switch_state("PlayState_LevelSetup")
 
 func init_map() -> void:
+	Room.global_id = 0
 	build_rnd = RandomNumberGenerator.new()
 	build_rnd.seed = build_seed
 	var r1 = Room.CreateRoom(0, 0, self, null)
