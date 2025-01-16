@@ -96,7 +96,12 @@ void fragment() {
 	
 	float rz = flow(p);
 	vec3 col = vec3(.2, .07, .01) / rz;
-	col = pow(col, vec3(1.4));
+	col = pow(col, vec3(1.4)) * 3.;
+	if (col.r > 1.)
+	{
+		col.r = 1.0;
+		col.g = min(1., max(col.g, col.r / 3.));
+	}
 	
 	COLOR = vec4(col, 1.0);
 }
