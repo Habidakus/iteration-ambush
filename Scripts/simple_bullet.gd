@@ -28,8 +28,9 @@ func die(global_pos : Vector2) -> void:
 	tween.tween_callback(explosion.queue_free)
 	queue_free()
 
-func init() -> void:
+func init(_lifetime : float) -> void:
 	movement_dir = rotation
+	lifetime = _lifetime
 
 func collide_with_enemy(enemy: Enemy, col_glob_pos : Vector2) -> void:
 	# Sometimes both the bullet will collide with the enemy, and then the enemy

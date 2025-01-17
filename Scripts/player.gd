@@ -7,6 +7,7 @@ const MAX_SPEED = 600.0
 const INITIAL_MAX_COOLDOWN = 1.75
 const INITIAL_DAMAGE = 101.0
 const INITIAL_MAX_HEALTH = 100.0
+const INITIAL_BULLET_LIFETIME = 0.75
 
 var our_momentum : Vector2
 var fire_cooldown : float = 0
@@ -15,6 +16,7 @@ var current_health : float = INITIAL_MAX_HEALTH
 var max_health : float = INITIAL_MAX_HEALTH
 var shot_damage : float = INITIAL_DAMAGE
 var current_speed : float = INITIAL_SPEED
+var bullet_lifetime : float = INITIAL_BULLET_LIFETIME
 var ui_layer : CanvasLayer = null
 var gun_sprite : Sprite2D = null
 var ui_current_health_bar : ColorRect = null
@@ -40,7 +42,6 @@ func defered_init() -> void:
 	set_health_bar()
 
 func init_brand_new_game(play_state : PlayState) -> void:
-	print("INIT BRAND NEW GAME (hand size = " + str(play_state.get_initial_hand_size()) + ")")
 	owned_keys.clear()
 	current_speed = INITIAL_SPEED
 	hand_size = play_state.get_initial_hand_size()
@@ -49,6 +50,7 @@ func init_brand_new_game(play_state : PlayState) -> void:
 	max_health = INITIAL_MAX_HEALTH
 	current_health = max_health
 	shot_damage = INITIAL_DAMAGE
+	bullet_lifetime = INITIAL_BULLET_LIFETIME
 	set_health_bar()
 
 func spawn(_room: Room, pos : Vector2) -> void:
@@ -82,7 +84,7 @@ func fire_bullet() -> void:
 	bullet.look_at(get_global_mouse_position())
 	bullet.position -= Vector2(20,20)
 	bullet.position += Vector2.RIGHT.rotated(bullet.rotation) * 32.0
-	bullet.init()
+	bullet.init(bullet_lifetime)
 	%State_Play.add_child(bullet)
 	fire_cooldown = fire_cooldown_max
 

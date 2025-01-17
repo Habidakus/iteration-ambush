@@ -148,6 +148,7 @@ func _to_string() -> String:
 	return ret_val
 
 func StopTracking(enemy : Enemy) -> void:
+	play_state.killed_this_wave += 1
 	var index : int = enemies.find(enemy)
 	assert(index != -1)
 	enemies.remove_at(index)
@@ -327,6 +328,9 @@ func KeyGrabbed() -> void:
 	assert(lock_room)
 	lock_room.RespawnLockEnemies()
 	key = null
+
+func UpdateSpawnCount() -> void:
+	play_state.spawned_this_wave += 1
 
 func RespawnLockEnemies() -> void:
 	for i in range(enemies.size(), round(enemy_count)):

@@ -46,6 +46,7 @@ func init(_seed : int, _player_shot_damage : float, _room : Room) -> void:
 	player_shot_damage = _player_shot_damage
 	health = BASE_HEALTH
 	room = _room
+	room.UpdateSpawnCount()
 	#var rnd : RandomNumberGenerator = RandomNumberGenerator.new()
 	#rnd.seed = _seed
 	for mod : RoomMod in _room.room_mods:

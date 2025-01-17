@@ -9,6 +9,9 @@ var build_seed : int = 0
 var build_rnd : RandomNumberGenerator = null
 var last_room_player_was_in : Room = null
 
+var killed_this_wave : int = 0
+var spawned_this_wave : int = 0
+
 var first_room : Room
 var last_room : Room
 
@@ -43,11 +46,13 @@ func restart() -> void:
 		room.ResetRoom()
 		
 	rooms.clear()
-	%Player.init_brand_new_game()
+	%Player.init_brand_new_game(self)
 	go_active = false
 	is_gameplay_active = false
 	first_room = null
 	last_room = null
+	killed_this_wave = 0
+	spawned_this_wave = 0
 	last_room_player_was_in = null
 	our_state_machine.switch_state("State_MainMenu")
 
@@ -485,6 +490,8 @@ func get_room_by_id(id : int) -> Room:
 
 func spawn_map() -> void:
 	go_active = true
+	killed_this_wave = 0
+	spawned_this_wave = 0
 	assert(is_gameplay_active == false)
 	%Player.spawn(first_room, get_room_central_pos(first_room.x, first_room.y))
 	var key_lock_pairs : Array = []
