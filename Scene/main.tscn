@@ -273,6 +273,7 @@ script = ExtResource("2_fbjv7")
 initial_state = NodePath("PlayState_Asleep")
 
 [node name="PlayState_LevelSetup" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -282,6 +283,7 @@ grow_vertical = 2
 script = ExtResource("7_8xsm8")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup"]
+visible = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer"]
 anchors_preset = 8
@@ -381,7 +383,6 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="PlayState_LevelAdvance" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -389,6 +390,236 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("8_m3tch")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance"]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = 200.0
+offset_right = 290.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.68, 1)
+size_flags_vertical = 3
+color = Color(0.266575, 0.266575, 0.266575, 1)
+
+[node name="Label" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/Control/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 64
+text = "Select Mod:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+alignment = 1
+
+[node name="Control1" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1"]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer"]
+layout_mode = 2
+color = Color(0.252028, 0.252028, 0.252028, 1)
+
+[node name="HBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "foo"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Description" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+autowrap_mode = 3
+
+[node name="spacer_a" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2"]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer"]
+layout_mode = 2
+color = Color(0.252028, 0.252028, 0.252028, 1)
+
+[node name="HBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "foo"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Description" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+autowrap_mode = 3
+
+[node name="spacer_b" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Control3" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3"]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer"]
+layout_mode = 2
+color = Color(0.252028, 0.252028, 0.252028, 1)
+
+[node name="HBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "foo"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Description" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+autowrap_mode = 3
+
+[node name="spacer_c" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Control4" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4"]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer"]
+layout_mode = 2
+color = Color(0.252028, 0.252028, 0.252028, 1)
+
+[node name="HBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "foo"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Description" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+autowrap_mode = 3
 
 [node name="PlayState_Active" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
 visible = false
@@ -475,4 +706,8 @@ visible = false
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Easy" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup" method="_on_easy_button_up"]
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Medium" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup" method="_on_medium_button_up"]
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Hard" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup" method="_on_hard_button_up"]
+[connection signal="gui_input" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance" method="on_card1_gui_input"]
+[connection signal="gui_input" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance" method="on_card2_gui_input"]
+[connection signal="gui_input" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance" method="on_card3_gui_input"]
+[connection signal="gui_input" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance" method="on_card4_gui_input"]
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Dead/CanvasLayer/VBoxContainer/RestartButton" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Dead" method="_on_restart_button_button_up"]

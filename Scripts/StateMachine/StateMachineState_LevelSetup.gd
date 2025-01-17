@@ -9,6 +9,7 @@ func enter_state() -> void:
 func exit_state(next_state: StateMachineState) -> void:
 	%Player.visible = true
 	%State_Play.build_seed = seed_value
+	%State_Play.init_player()
 	%State_Play.init_map()
 	%State_Play.spawn_map()
 	super.exit_state(next_state)

@@ -2,20 +2,26 @@ extends CharacterBody2D
 
 class_name Player
 
-const SPEED = 300.0
+const INITIAL_SPEED = 300.0
+const MAX_SPEED = 600.0
+const INITIAL_MAX_COOLDOWN = 1.75
+const INITIAL_DAMAGE = 101.0
+const INITIAL_MAX_HEALTH = 100.0
 
 var our_momentum : Vector2
 var fire_cooldown : float = 0
-var fire_cooldown_max : float = 1.5
-var current_health : float = 100.0
-var max_health : float = 100.0
-var shot_damage : float = 101.0
+var fire_cooldown_max : float = INITIAL_MAX_COOLDOWN
+var current_health : float = INITIAL_MAX_HEALTH
+var max_health : float = INITIAL_MAX_HEALTH
+var shot_damage : float = INITIAL_DAMAGE
+var current_speed : float = INITIAL_SPEED
 var ui_layer : CanvasLayer = null
 var gun_sprite : Sprite2D = null
 var ui_current_health_bar : ColorRect = null
 var ui_current_health_label : Label = null
 var ui_current_health_max_width : float = 200
 var owned_keys : Array[int]
+var hand_size : int = 2
 
 var bullet_simple_scene : Resource = preload("res://Scene/simple_bullet.tscn")
 
@@ -33,13 +39,16 @@ func defered_init() -> void:
 	ui_current_health_max_width = (find_child("MaxHealth") as ColorRect).custom_minimum_size.x
 	set_health_bar()
 
-func init() -> void:
+func init_brand_new_game(play_state : PlayState) -> void:
+	print("INIT BRAND NEW GAME (hand size = " + str(play_state.get_initial_hand_size()) + ")")
 	owned_keys.clear()
+	current_speed = INITIAL_SPEED
+	hand_size = play_state.get_initial_hand_size()
 	fire_cooldown = 0
-	fire_cooldown_max = 1.5
-	max_health = 100.0
+	fire_cooldown_max = INITIAL_MAX_COOLDOWN
+	max_health = INITIAL_MAX_HEALTH
 	current_health = max_health
-	shot_damage = 101.0
+	shot_damage = INITIAL_DAMAGE
 	set_health_bar()
 
 func spawn(_room: Room, pos : Vector2) -> void:
@@ -114,7 +123,7 @@ func _physics_process(delta: float) -> void:
 		if anim.is_playing():
 			anim.pause()
 	else:
-		velocity = (acc_dir * SPEED + our_momentum).normalized() * SPEED
+		velocity = (acc_dir * current_speed + our_momentum).normalized() * current_speed
 		if !anim.is_playing():
 			anim.play()
 

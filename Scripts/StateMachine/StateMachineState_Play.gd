@@ -43,7 +43,7 @@ func restart() -> void:
 		room.ResetRoom()
 		
 	rooms.clear()
-	%Player.init()
+	%Player.init_brand_new_game()
 	go_active = false
 	is_gameplay_active = false
 	first_room = null
@@ -122,6 +122,9 @@ func enter_state() -> void:
 	super.enter_state()
 	%PlayStateMachine.switch_state("PlayState_LevelSetup")
 
+func init_player() -> void:
+	%Player.init_brand_new_game(self)
+
 func init_map() -> void:
 	Room.global_id = 0
 	build_rnd = RandomNumberGenerator.new()
@@ -167,6 +170,38 @@ func connect_rooms(left : Room, right : Room) -> void:
 	else:
 		assert(false)
 
+var available_player_mods : Array[PlayerMod]
+
+func pick_player_mods() -> Array[PlayerMod]:
+	if available_player_mods.is_empty():
+		available_player_mods = PlayerMod.GetAllMods(get_player(), self)
+	var mod_weights : Array
+	var total_weight : float = 0
+	for mod : PlayerMod in available_player_mods:
+		if mod.is_available():
+			mod_weights.append([mod.get_weight(), mod])
+			total_weight += mod.get_weight()
+	var ret_val : Array[PlayerMod]
+	for i in range(0, get_player().hand_size):
+		var index : float = build_rnd.randf_range(0, total_weight)
+		for mp in mod_weights:
+			if index < mp[0]:
+				ret_val.append(mp[1])
+				total_weight -= mp[0]
+				mp[0] = 0
+				break
+			index -= mp[0]
+		
+	return ret_val
+
+func get_initial_hand_size() -> int:
+	match difficulty:
+		Difficulty.Easy: return 4
+		Difficulty.Medium: return 3
+		Difficulty.Hard: return 2
+	assert(false)
+	return 1
+	
 func clean_map() -> void:
 	for room : Room in rooms:
 		room.ResetRoom()
@@ -206,6 +241,9 @@ func generate_direction_room_collection(loc : Vector2i) -> DirectionRoomCollecti
 		else:
 			ret_val.norths.append(room)
 	return ret_val
+
+func apply_player_mod(player_mod : PlayerMod) -> void:
+	player_mod.selected()
 
 func mutate_map() -> void:
 	if build_rnd.randi_range(0, 4) == 0:
