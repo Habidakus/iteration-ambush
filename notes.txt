@@ -7,13 +7,8 @@ Location of some MIT notes:
 Potential power ups:
 	- switch room hazards to boons
 	- lava immunity
-	- faster
 	- better handling
-	- higher max health (if at full health)
-	- healing (if not at full health)
 	- regen at lap completion
-	- faster fire rate
-	- more damage
 	- able to fire through locks
 	- repulsor field that is used once per loop
 	- scythe lasts longer (will have to reduce current 4 seconds)
@@ -25,7 +20,6 @@ TODO:
 	- highscore & track current score
 	- more room layouts (thin exterior circuit, wall seperating two primary entrances)
 	- other enemies
-	- player power ups
 	- animate throwing the scythe
 	- add to enemies both "erratic" and "dodge" move menchanics
 	- flag on rooms that allow them to close the retreat door when a player walks through
