@@ -35,12 +35,11 @@ var has_woken : bool = false
 var has_spawned : bool = false
 
 # TODO: Make global
-var atlas_source_id_floor : int = 0
+var atlas_source_id_wall : int = 0
 var atlas_source_id_other : int = 1
-var atlas_coords_other_wall : Vector2i = Vector2i(0, 0)
+var atlas_coords_other_floor : Vector2i = Vector2i(0, 0)
 var atlas_coords_other_firepit : Vector2i = Vector2i(2, 0)
 var atlas_coords_other_lastroom : Vector2i = Vector2i(1, 0)
-#var atlas_coords_other_floor : Vector2i = Vector2i(3, 0)
 
 # TODO: No, repalce with enum
 var has_firepit : bool = false
@@ -341,11 +340,11 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 			apply_floor(terrain, baseX + dx, baseY + dy, rnd)
 	for w in range(0, width):
 		for i in range(0, size):
-			terrain.set_cell(Vector2i(baseX + i, baseY + w), atlas_source_id_other, atlas_coords_other_wall)
-			terrain.set_cell(Vector2i(baseX + i, baseY + size - (1 + w)), atlas_source_id_other, atlas_coords_other_wall)
+			apply_wall(terrain, baseX + i, baseY + w, rnd)
+			apply_wall(terrain, baseX + i, baseY + size - (1 + w), rnd)
 			if i >= width and i <= (size - (1 + width)):
-				terrain.set_cell(Vector2i(baseX + w, baseY + i), atlas_source_id_other, atlas_coords_other_wall)
-				terrain.set_cell(Vector2i(baseX + size - (1 + w), baseY + i), atlas_source_id_other, atlas_coords_other_wall)
+				apply_wall(terrain, baseX + w, baseY + i, rnd)
+				apply_wall(terrain, baseX + size - (1 + w), baseY + i, rnd)
 		if north != null:
 			apply_floor(terrain, baseX + 7, baseY + w, rnd)
 		if west != null:
@@ -357,28 +356,28 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 	if is_diamond:
 		for dx in range(1, 6):
 			for dy in range(1, 7 - dx):
-				terrain.set_cell(Vector2i(baseX + dx, baseY + dy), atlas_source_id_other, atlas_coords_other_wall)
-				terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + dy), atlas_source_id_other, atlas_coords_other_wall)
-				terrain.set_cell(Vector2i(baseX + dx, baseY + size - (1 + dy)), atlas_source_id_other, atlas_coords_other_wall)
-				terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + size - (1 + dy)), atlas_source_id_other, atlas_coords_other_wall)
+				apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+				apply_wall(terrain, baseX + size - (1 + dx), baseY + dy, rnd)
+				apply_wall(terrain, baseX + dx, baseY + size - (1 + dy), rnd)
+				apply_wall(terrain, baseX + size - (1 + dx), baseY + size - (1 + dy), rnd)
 	if is_last_room:
 		for ox in range(baseX + 5, baseX + size - 5):
 			for oy in range(baseY + 5, baseY + size - 5):
 				terrain.set_cell(Vector2i(ox, oy), atlas_source_id_other, atlas_coords_other_lastroom)
 	if is_pilars:
-		apply_pillar(terrain, baseX + 4, baseY + 4)
-		apply_pillar(terrain, baseX + 9, baseY + 4)
-		apply_pillar(terrain, baseX + 4, baseY + 9)
-		apply_pillar(terrain, baseX + 9, baseY + 9)
+		apply_pillar(terrain, baseX + 4, baseY + 4, rnd)
+		apply_pillar(terrain, baseX + 9, baseY + 4, rnd)
+		apply_pillar(terrain, baseX + 4, baseY + 9, rnd)
+		apply_pillar(terrain, baseX + 9, baseY + 9, rnd)
 	if is_many_pilars:
-		apply_pillar(terrain, baseX + 2, baseY + 2)
-		apply_pillar(terrain, baseX + 2, baseY + 11)
-		apply_pillar(terrain, baseX + 5, baseY + 5)
-		apply_pillar(terrain, baseX + 8, baseY + 8)
-		apply_pillar(terrain, baseX + 5, baseY + 8)
-		apply_pillar(terrain, baseX + 8, baseY + 5)
-		apply_pillar(terrain, baseX + 11, baseY + 2)
-		apply_pillar(terrain, baseX + 11, baseY + 11)
+		apply_pillar(terrain, baseX + 2, baseY + 2, rnd)
+		apply_pillar(terrain, baseX + 2, baseY + 11, rnd)
+		apply_pillar(terrain, baseX + 5, baseY + 5, rnd)
+		apply_pillar(terrain, baseX + 8, baseY + 8, rnd)
+		apply_pillar(terrain, baseX + 5, baseY + 8, rnd)
+		apply_pillar(terrain, baseX + 8, baseY + 5, rnd)
+		apply_pillar(terrain, baseX + 11, baseY + 2, rnd)
+		apply_pillar(terrain, baseX + 11, baseY + 11, rnd)
 	if has_firepit:
 		for ox in range(baseX + 4, baseX + size - 4):
 			for oy in range(baseY + 4, baseY + size - 4):
@@ -391,14 +390,17 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 				terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + dy), atlas_source_id_other, atlas_coords_other_firepit)
 				terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + size - (1 + dy)), atlas_source_id_other, atlas_coords_other_firepit)
 
-func apply_pillar(terrain : TileMapLayer, px : int, py : int) -> void:
-	terrain.set_cell(Vector2i(px, py), atlas_source_id_other, atlas_coords_other_wall)
-	terrain.set_cell(Vector2i(px, py + 1), atlas_source_id_other, atlas_coords_other_wall)
-	terrain.set_cell(Vector2i(px + 1, py), atlas_source_id_other, atlas_coords_other_wall)
-	terrain.set_cell(Vector2i(px + 1, py + 1), atlas_source_id_other, atlas_coords_other_wall)
+func apply_pillar(terrain : TileMapLayer, px : int, py : int, rnd : RandomNumberGenerator) -> void:
+	terrain.set_cell(Vector2i(px, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
+	terrain.set_cell(Vector2i(px, py + 1), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
+	terrain.set_cell(Vector2i(px + 1, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
+	terrain.set_cell(Vector2i(px + 1, py + 1), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
 
-func apply_floor(terrain : TileMapLayer, px : int, py : int, rnd : RandomNumberGenerator) -> void:
-	terrain.set_cell(Vector2i(px, py), atlas_source_id_floor, Vector2i(rnd.randi() % 16, 0))
+func apply_wall(terrain : TileMapLayer, px : int, py : int, rnd : RandomNumberGenerator) -> void:
+	terrain.set_cell(Vector2i(px, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
+
+func apply_floor(terrain : TileMapLayer, px : int, py : int, _rnd : RandomNumberGenerator) -> void:
+	terrain.set_cell(Vector2i(px, py), atlas_source_id_other, atlas_coords_other_floor)
 
 func ClearFromMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 	var baseX : int = x * size

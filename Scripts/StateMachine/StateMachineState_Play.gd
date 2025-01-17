@@ -16,8 +16,9 @@ enum Difficulty { Easy, Medium, Hard }
 var difficulty : Difficulty = Difficulty.Easy
 
 # TODO: Make global
-var atlas_floor_source_id : int = 0
+var atlas_wall_source_id : int = 0
 var atlas_other_source_id : int = 1
+var floor_atlas_other : Vector2i = Vector2i(0, 0)
 var last_room_atlas_other : Vector2i = Vector2i(1, 0)
 var fire_pit_atlas_other : Vector2i = Vector2i(2, 0)
 
@@ -100,7 +101,11 @@ func can_place_enemy(pos : Vector2) -> bool:
 	var tml : TileMapLayer = (%TerrainMap as TileMapLayer)
 	var cell = tml.local_to_map(pos)
 	var source_id : int = tml.get_cell_source_id(cell)
-	return source_id == atlas_floor_source_id
+	if source_id == atlas_other_source_id:
+		var atlas : Vector2i = tml.get_cell_atlas_coords(cell)
+		return atlas == floor_atlas_other
+	else:
+		return false
 
 func get_room_difficulty_increase() -> int:
 	match difficulty:
@@ -449,8 +454,8 @@ func spawn_map() -> void:
 		if room.key_id != -1:
 			key_lock_pairs.append([room, room.key_id])
 	if key_lock_pairs.size() > 0:
-		key_lock_pairs[0][0].SetKeyColor(Color.BLACK)
-		get_room_by_id(key_lock_pairs[0][1]).SetLockColor(Color.BLACK)
+		key_lock_pairs[0][0].SetKeyColor(Color.WHITE)
+		get_room_by_id(key_lock_pairs[0][1]).SetLockColor(Color.WHITE)
 		key_lock_pairs.remove_at(0)
 	if key_lock_pairs.size() > 0:
 		var hue_inc : float = 1.0 / key_lock_pairs.size()
