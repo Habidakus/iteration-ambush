@@ -453,6 +453,7 @@ func spawn_map() -> void:
 	for room : Room in rooms:
 		if room.key_id != -1:
 			key_lock_pairs.append([room, room.key_id])
+	key_lock_pairs.sort_custom(func(a,b): return a[1] < b[1])
 	if key_lock_pairs.size() > 0:
 		key_lock_pairs[0][0].SetKeyColor(Color.WHITE)
 		get_room_by_id(key_lock_pairs[0][1]).SetLockColor(Color.WHITE)
