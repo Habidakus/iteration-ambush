@@ -25,6 +25,13 @@ var ui_current_health_max_width : float = 200
 var owned_keys : Array[int]
 var hand_size : int = 2
 @export var reload_sounds : AudioStreamRandomizer
+@export var lock_open_sound : AudioStream
+@export var key_pickup_sound : AudioStream
+@export var firepit_sound : AudioStream
+
+var lock_audio_player : AudioStreamPlayer
+var firepit_audio_player : AudioStreamPlayer
+var firepit_sound_continue : float = 0
 
 var bullet_simple_scene : Resource = preload("res://Scene/simple_bullet.tscn")
 
@@ -37,6 +44,13 @@ func _ready() -> void:
 	assert(ui_current_health_label)
 	gun_sprite = find_child("Gun") as Sprite2D
 	assert(gun_sprite)
+	lock_audio_player = find_child("AudioStreamPlayer_Lock") as AudioStreamPlayer
+	assert(lock_audio_player)
+	firepit_audio_player = find_child("AudioStreamPlayer_Fire") as AudioStreamPlayer
+	assert(firepit_audio_player)
+
+	firepit_audio_player.stream = firepit_sound
+	firepit_audio_player.volume_db = -15
 	$AudioStreamPlayer.stream = reload_sounds
 
 func defered_init() -> void:
@@ -71,6 +85,10 @@ func take_damage(damage : float) -> void:
 		%State_Play.player_died()
 
 func apply_fire_pit(room: Room, delta : float) -> void:
+	if firepit_audio_player.playing:
+		firepit_sound_continue = 0.15
+	else:
+		firepit_audio_player.play()
 	var damage : float = room.fire_damage * delta
 	take_damage(damage)
 
@@ -101,8 +119,13 @@ func set_ui_visibility(_visible : bool) -> void:
 
 func stop_anim() -> void:
 	(find_child("AnimatedSprite2D") as AnimatedSprite2D).pause()
-
+	
 func _physics_process(delta: float) -> void:
+	if firepit_sound_continue > 0:
+		firepit_sound_continue -= delta
+		if firepit_sound_continue <= 0:
+			firepit_audio_player.stop()
+			
 	if %State_Play.is_gameplay_active == false:
 		return
 	
@@ -143,12 +166,18 @@ func _physics_process(delta: float) -> void:
 		if key:
 			owned_keys.append(key.lock_id)
 			key.remove_from_room()
+			lock_audio_player.stream = key_pickup_sound
+			lock_audio_player.volume_db = -15
+			lock_audio_player.play()
 		var lock : Lock = collision.get_collider() as Lock
 		if lock:
 			var index : int = owned_keys.find(lock.room.id)
 			if index != -1:
 				owned_keys.remove_at(index)
 				lock.remove_from_room()
+				lock_audio_player.stream = lock_open_sound
+				lock_audio_player.volume_db = 0
+				lock_audio_player.play()
 	
 	our_momentum = get_position_delta() / delta
 

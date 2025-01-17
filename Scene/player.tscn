@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cb6e0fesdu8rd"]
+[gd_scene load_steps=23 format=3 uid="uid://cb6e0fesdu8rd"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_lncui"]
 [ext_resource type="AudioStream" uid="uid://5cd86l3jwhhl" path="res://Sound/equip01.wav" id="2_rg562"]
@@ -16,6 +16,9 @@
 [ext_resource type="Texture2D" uid="uid://cvr0qs533t64i" path="res://Art/Scythe01.png" id="6_kukyx"]
 [ext_resource type="AudioStream" uid="uid://c6vqvop7s8i7" path="res://Sound/equip06.wav" id="7_b1j6c"]
 [ext_resource type="AudioStream" uid="uid://dw1yjs8vjkt04" path="res://Sound/equip07.wav" id="8_foc5s"]
+[ext_resource type="AudioStream" uid="uid://du3dcjj727f8o" path="res://Sound/UI_powerup04.wav" id="9_vo1k8"]
+[ext_resource type="AudioStream" uid="uid://b6upq8lr6b3fa" path="res://Sound/UI_Pickup03.wav" id="10_g0058"]
+[ext_resource type="AudioStream" uid="uid://bje8mxd64khtf" path="res://Sound/UI_Fire02_looping.wav" id="11_wiqsd"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_wyvt7"]
 playback_mode = 1
@@ -77,6 +80,9 @@ wall_min_slide_angle = 0.0
 platform_on_leave = 2
 script = ExtResource("1_lncui")
 reload_sounds = SubResource("AudioStreamRandomizer_wyvt7")
+lock_open_sound = ExtResource("9_vo1k8")
+key_pickup_sound = ExtResource("10_g0058")
+firepit_sound = ExtResource("11_wiqsd")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
@@ -139,3 +145,7 @@ texture = ExtResource("6_kukyx")
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 
 [node name="AudioStreamPlayer_Bullet" type="AudioStreamPlayer" parent="."]
+
+[node name="AudioStreamPlayer_Lock" type="AudioStreamPlayer" parent="."]
+
+[node name="AudioStreamPlayer_Fire" type="AudioStreamPlayer" parent="."]
