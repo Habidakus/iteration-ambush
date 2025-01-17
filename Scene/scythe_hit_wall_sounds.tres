@@ -1,0 +1,14 @@
+[gd_resource type="AudioStreamRandomizer" load_steps=5 format=3 uid="uid://uvqcb5aw2uru"]
+
+[ext_resource type="AudioStream" uid="uid://d1wviyofsgu78" path="res://Sound/bullet_expired01.wav" id="1_rwhyq"]
+[ext_resource type="AudioStream" uid="uid://b5ss4vxkohkwn" path="res://Sound/bullet_expired02.wav" id="2_6gdva"]
+[ext_resource type="AudioStream" uid="uid://dqrjlf2sduo13" path="res://Sound/bullet_expired03.wav" id="3_xfi2h"]
+[ext_resource type="AudioStream" uid="uid://csouywfj3jpb3" path="res://Sound/bullet_expired04.wav" id="4_uqpq1"]
+
+[resource]
+playback_mode = 1
+streams_count = 4
+stream_0/stream = ExtResource("1_rwhyq")
+stream_1/stream = ExtResource("2_6gdva")
+stream_2/stream = ExtResource("3_xfi2h")
+stream_3/stream = ExtResource("4_uqpq1")

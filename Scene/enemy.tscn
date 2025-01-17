@@ -1,9 +1,30 @@
-[gd_scene load_steps=7 format=3 uid="uid://ciimtinkcteoe"]
+[gd_scene load_steps=17 format=3 uid="uid://ciimtinkcteoe"]
 
 [ext_resource type="Script" path="res://Scripts/enemy.gd" id="1_sjov5"]
+[ext_resource type="AudioStream" uid="uid://53r1efw3a1qo" path="res://Sound/gobble01_looping.wav" id="2_177st"]
 [ext_resource type="Shader" path="res://Art/enemy.gdshader" id="2_cxxvh"]
 [ext_resource type="Texture2D" uid="uid://b402wvnucwagv" path="res://Art/ghost_01.png" id="2_px7xw"]
+[ext_resource type="AudioStream" uid="uid://b42uda1i6ctqp" path="res://Sound/gobble02_looping.wav" id="3_0kgy0"]
+[ext_resource type="AudioStream" uid="uid://ch1dcic4xfjfw" path="res://Sound/gobble03.wav" id="4_5hr0v"]
+[ext_resource type="AudioStream" uid="uid://deymai2tbp5yd" path="res://Scene/ghost_death_sounds.tres" id="4_cbw55"]
 [ext_resource type="Texture2D" uid="uid://87y6co18nvu8" path="res://Art/ShieldRing_01.png" id="4_ijtys"]
+[ext_resource type="AudioStream" uid="uid://dkcn7sfjqvvts" path="res://Sound/gobble04.wav" id="5_1w22k"]
+[ext_resource type="AudioStream" uid="uid://cxr4t1rkfkg58" path="res://Sound/gobble05.wav" id="6_egsk0"]
+[ext_resource type="AudioStream" uid="uid://biojgv2wav10b" path="res://Sound/gobble06.wav" id="7_n6i6d"]
+[ext_resource type="AudioStream" uid="uid://dr8yckpiqnlhf" path="res://Sound/gobble07.wav" id="8_5x51u"]
+[ext_resource type="AudioStream" uid="uid://dtdjim3h80fml" path="res://Sound/gobble08.wav" id="9_u8ekm"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_j2y35"]
+playback_mode = 1
+streams_count = 8
+stream_0/stream = ExtResource("2_177st")
+stream_1/stream = ExtResource("3_0kgy0")
+stream_2/stream = ExtResource("4_5hr0v")
+stream_3/stream = ExtResource("5_1w22k")
+stream_4/stream = ExtResource("6_egsk0")
+stream_5/stream = ExtResource("7_n6i6d")
+stream_6/stream = ExtResource("8_5x51u")
+stream_7/stream = ExtResource("9_u8ekm")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4ky0h"]
 radius = 24.0093
@@ -23,6 +44,8 @@ collision_mask = 23
 motion_mode = 1
 wall_min_slide_angle = 0.0
 script = ExtResource("1_sjov5")
+gobble_sounds = SubResource("AudioStreamRandomizer_j2y35")
+death_sounds = ExtResource("4_cbw55")
 
 [node name="BodySprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_px7xw")
@@ -49,5 +72,7 @@ visible = false
 material = SubResource("ShaderMaterial_23krm")
 scale = Vector2(1.1, 1.1)
 texture = ExtResource("4_ijtys")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 
 [connection signal="timeout" from="Node2D/Timer" to="." method="tick"]

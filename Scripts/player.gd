@@ -24,6 +24,7 @@ var ui_current_health_label : Label = null
 var ui_current_health_max_width : float = 200
 var owned_keys : Array[int]
 var hand_size : int = 2
+@export var reload_sounds : AudioStreamRandomizer
 
 var bullet_simple_scene : Resource = preload("res://Scene/simple_bullet.tscn")
 
@@ -36,6 +37,7 @@ func _ready() -> void:
 	assert(ui_current_health_label)
 	gun_sprite = find_child("Gun") as Sprite2D
 	assert(gun_sprite)
+	$AudioStreamPlayer.stream = reload_sounds
 
 func defered_init() -> void:
 	ui_current_health_max_width = (find_child("MaxHealth") as ColorRect).custom_minimum_size.x
@@ -84,7 +86,7 @@ func fire_bullet() -> void:
 	bullet.look_at(get_global_mouse_position())
 	bullet.position -= Vector2(20,20)
 	bullet.position += Vector2.RIGHT.rotated(bullet.rotation) * 32.0
-	bullet.init(bullet_lifetime)
+	bullet.init(bullet_lifetime, self)
 	%State_Play.add_child(bullet)
 	fire_cooldown = fire_cooldown_max
 
@@ -110,6 +112,7 @@ func _physics_process(delta: float) -> void:
 	if fire_cooldown >= 0:
 		fire_cooldown -= delta
 		if fire_cooldown < 0:
+			$AudioStreamPlayer.play()
 			anim.play("armed")
 
 	if Input.is_action_pressed("fire_guns"):

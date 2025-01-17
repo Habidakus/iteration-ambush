@@ -17,10 +17,16 @@ const BASE_HEALTH = 100.0 / 1.25
 const BASE_SPEED = 300.0 / 1.25
 const BASE_RAM_DAMAGE = 33
 
+var audio_player : AudioStreamPlayer
 var explosion_scene : Resource = preload("res://Scene/explosion.tscn")
+@export var gobble_sounds : AudioStreamRandomizer
+@export var death_sounds : AudioStreamRandomizer
 
+func is_dead() -> bool:
+	return health <= 0
+		
 func take_damage(dmg : float) -> void:
-	if health <= 0:
+	if is_dead():
 		# We've already been killed this impulse
 		return
 		
@@ -29,13 +35,20 @@ func take_damage(dmg : float) -> void:
 		if health < player_shot_damage:
 			(find_child("HealthSprite") as Sprite2D).visible = false
 		return
-		
+	
+	audio_player.stop()
+
 	room.StopTracking(self)
 	var explosion : CPUParticles2D = explosion_scene.instantiate()
 	explosion.position = position
 	explosion.emitting = true
 	explosion.one_shot = true
 	room.play_state.add_child(explosion)
+	if death_sounds != null && death_sounds.streams_count > 0:
+		var new_audio_player = AudioStreamPlayer.new()
+		explosion.add_child(new_audio_player)
+		new_audio_player.stream = death_sounds
+		new_audio_player.play()
 	var tween = room.play_state.create_tween()
 	tween.tween_interval(1.0)
 	tween.tween_callback(explosion.queue_free)
@@ -47,6 +60,7 @@ func init(_seed : int, _player_shot_damage : float, _room : Room) -> void:
 	health = BASE_HEALTH
 	room = _room
 	room.UpdateSpawnCount()
+	audio_player = find_child("AudioStreamPlayer") as AudioStreamPlayer
 	#var rnd : RandomNumberGenerator = RandomNumberGenerator.new()
 	#rnd.seed = _seed
 	for mod : RoomMod in _room.room_mods:
@@ -118,6 +132,10 @@ func handle_player_collision(p : Player, delta: float) -> void:
 	var damage : float = get_ram_damage() * delta
 	p.take_damage(damage)
 	take_damage(damage * self_damage_multiple)
+	if !audio_player.playing && gobble_sounds != null && gobble_sounds.streams_count > 0:
+		audio_player.stream = gobble_sounds
+		audio_player.play()
+		
 
 func _physics_process(delta: float) -> void:
 	if nav_agent == null || nav_agent.is_navigation_finished():
@@ -136,3 +154,5 @@ func _physics_process(delta: float) -> void:
 		var col_bullet : SimpleBullet = collision.get_collider() as SimpleBullet
 		if col_bullet:
 			col_bullet.collide_with_enemy(self, collision.get_position())
+	elif audio_player.playing:
+		audio_player.stop()

@@ -10,15 +10,23 @@ var rotation_speed : float = -10.0
 const SPEED : float = 400
 
 var explosion_scene : Resource = preload("res://Scene/wall_hit_vfx.tscn")
+@export var hit_wall_sounds : AudioStreamRandomizer
+@export var hit_enemy_sounds : AudioStreamRandomizer
+@export var hit_shield_sounds : AudioStreamRandomizer
 
-func _ready() -> void:
-	pass # Replace with function body.
+var player : Player = null
 
 func set_damage(_damage : float) -> void:
 	damage = _damage
 
-func die(global_pos : Vector2) -> void:
+func die(global_pos : Vector2, sound_generator : AudioStreamRandomizer, db : int) -> void:
 	var explosion : CPUParticles2D = explosion_scene.instantiate()
+	var audio_player : AudioStreamPlayer = null
+	if sound_generator != null && sound_generator.streams_count > 0:
+		audio_player = player.find_child("AudioStreamPlayer_Bullet")
+		audio_player.volume_db = db
+		audio_player.stream = sound_generator
+		audio_player.play()
 	explosion.global_position = global_pos
 	explosion.emitting = true
 	explosion.one_shot = true
@@ -28,8 +36,9 @@ func die(global_pos : Vector2) -> void:
 	tween.tween_callback(explosion.queue_free)
 	queue_free()
 
-func init(_lifetime : float) -> void:
+func init(_lifetime : float, _player : Player) -> void:
 	movement_dir = rotation
+	player = _player
 	lifetime = _lifetime
 
 func collide_with_enemy(enemy: Enemy, col_glob_pos : Vector2) -> void:
@@ -39,7 +48,10 @@ func collide_with_enemy(enemy: Enemy, col_glob_pos : Vector2) -> void:
 	if is_dead:
 		return
 	enemy.take_damage(damage)
-	die(col_glob_pos)
+	if enemy.is_dead():
+		die(col_glob_pos, hit_enemy_sounds, 0)
+	else:
+		die(col_glob_pos, hit_shield_sounds, -20)
 	is_dead = true
 
 func _physics_process(delta : float) -> void:
@@ -47,7 +59,7 @@ func _physics_process(delta : float) -> void:
 	var move_delta : Vector2 = Vector2.RIGHT.rotated(movement_dir) * SPEED * delta
 	if lifetime <= 0:
 		#print("f=" + str(global_position))
-		queue_free()
+		die(position, hit_wall_sounds, -20)
 	
 	rotation += delta * rotation_speed
 
@@ -67,7 +79,7 @@ func _physics_process(delta : float) -> void:
 
 		var tml : TileMapLayer = collider as TileMapLayer
 		if tml != null:
-			die(col_glob_pos)
+			die(col_glob_pos, hit_wall_sounds, -10)
 			return
 
 		var o : Object = collider as Object
@@ -75,7 +87,7 @@ func _physics_process(delta : float) -> void:
 			print(str(collider) + " class=" + o.get_class())
 		else:
 			print(str(collider) + " type=" + type_string(typeof(collider)))
-		die(col_glob_pos)
+		die(col_glob_pos, hit_wall_sounds, -10)
 		return
 
 	position += move_delta

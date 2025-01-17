@@ -13,7 +13,7 @@ Potential power ups:
 	- repulsor field that is used once per loop
 
 TODO:
-	- sound effects
+	- UI sound effects
 	- music
 	- credits & thanks
 	- highscore & track current score
