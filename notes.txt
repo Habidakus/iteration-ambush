@@ -23,7 +23,6 @@ TODO:
 	- animate throwing the scythe
 	- add to enemies both "erratic" and "dodge" move menchanics
 	- flag on rooms that allow them to close the retreat door when a player walks through
-	- locks respawn foes when their key is picked up
 	- add "platform" mechanics to a new room type
 
 Bugs:

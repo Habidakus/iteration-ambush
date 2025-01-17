@@ -323,7 +323,19 @@ func SetLockColor(color : Color) -> void:
 
 func KeyGrabbed() -> void:
 	assert(key != null)
+	var lock_room : Room = play_state.get_room_by_id(key.lock_id)
+	assert(lock_room)
+	lock_room.RespawnLockEnemies()
 	key = null
+
+func RespawnLockEnemies() -> void:
+	for i in range(enemies.size(), round(enemy_count)):
+		var enemy : Enemy = enemy_scene.instantiate()
+		enemy.position = GetSafeEnemyPlacement(play_state.build_rnd)
+		enemy.init(id, play_state.get_player().get_shot_damage(), self)
+		play_state.add_child(enemy)
+		enemies.append(enemy)
+		enemy.wake(play_state.get_player())
 
 func LockRemoved() -> void:
 	assert(lock != null)
