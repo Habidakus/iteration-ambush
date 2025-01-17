@@ -15,6 +15,7 @@ Potential power ups:
 	- faster fire rate
 	- more damage
 	- able to fire through locks
+	- repulsor field that is used once per loop
 	- scythe lasts longer (will have to reduce current 4 seconds)
 
 TODO:
@@ -26,3 +27,12 @@ TODO:
 	- more room layouts (thin exterior circuit, wall seperating two primary entrances)
 	- other enemies
 	- player power ups
+	- animate throwing the scythe
+	- add to enemies both "erratic" and "dodge" move menchanics
+	- flag on rooms that allow them to close the retreat door when a player walks through
+	- locks respawn foes when their key is picked up
+	- add "platform" mechanics to a new room type
+
+Bugs:
+	- fix lock being left in a wall when paths move
+	- scythes not spawning when ghost is close?
