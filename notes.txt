@@ -9,7 +9,7 @@ Potential power ups:
 	- lava immunity
 	- better handling
 	- regen at lap completion
-	- able to fire through locks
+	- able to fire through locks / only wake monsters behind locks after the lock is destroyed
 	- repulsor field that is used once per loop
 
 TODO:
@@ -23,6 +23,7 @@ TODO:
 	- add to enemies both "erratic" and "dodge" move menchanics
 	- flag on rooms that allow them to close the retreat door when a player walks through
 	- add "platform" mechanics to a new room type
+	- juice up the power-up selection
 
 Bugs:
 	- fix lock being left in a wall when paths move
