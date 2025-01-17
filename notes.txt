@@ -19,7 +19,6 @@ Potential power ups:
 	- scythe lasts longer (will have to reduce current 4 seconds)
 
 TODO:
-	- Swap floor (bricks) and walls (black)
 	- sound effects
 	- music
 	- credits & thanks
