@@ -8,10 +8,13 @@ const INITIAL_MAX_COOLDOWN = 1.75
 const INITIAL_DAMAGE = 101.0
 const INITIAL_MAX_HEALTH = 100.0
 const INITIAL_BULLET_LIFETIME = 0.75
+const INITIAL_FIRE_RESISTANCE = 1.0
 
 var our_momentum : Vector2
+var fire_resistance : float = INITIAL_FIRE_RESISTANCE
 var fire_cooldown : float = 0
 var fire_cooldown_max : float = INITIAL_MAX_COOLDOWN
+var has_regeneration : bool = false
 var current_health : float = INITIAL_MAX_HEALTH
 var max_health : float = INITIAL_MAX_HEALTH
 var shot_damage : float = INITIAL_DAMAGE
@@ -67,10 +70,16 @@ func init_brand_new_game(play_state : PlayState) -> void:
 	current_health = max_health
 	shot_damage = INITIAL_DAMAGE
 	bullet_lifetime = INITIAL_BULLET_LIFETIME
+	fire_resistance = INITIAL_FIRE_RESISTANCE
+	has_regeneration = false
 	set_health_bar()
 
 func spawn(_room: Room, pos : Vector2) -> void:
 	owned_keys.clear()
+	if has_regeneration:
+		current_health = min(current_health + 5, max_health)
+		set_health_bar()
+	fire_cooldown = 0.01
 	position = pos # Vector2((room.x * 15 + 7.5) * 64, (room.y * 15 + 7.5) * 64)
 
 func set_health_bar() -> void:
@@ -89,7 +98,7 @@ func apply_fire_pit(room: Room, delta : float) -> void:
 		firepit_sound_continue = 0.15
 	else:
 		firepit_audio_player.play()
-	var damage : float = room.fire_damage * delta
+	var damage : float = room.fire_damage * delta / fire_resistance
 	take_damage(damage)
 
 func get_shot_damage() -> float:
