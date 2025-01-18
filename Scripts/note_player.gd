@@ -34,8 +34,6 @@ func _ready() -> void:
 	for i : int in range(0, notes_in_span):
 		notes.append(timings[i][0])
 	notes.sort()
-	for v in notes:
-		print(note_name + ": " + str(v))
 	index = 0
 	
 func set_to_major() -> void:

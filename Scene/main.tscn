@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://bjmkbjlquesr5"]
+[gd_scene load_steps=36 format=3 uid="uid://bjmkbjlquesr5"]
 
 [ext_resource type="Script" path="res://Scripts/note_player.gd" id="1_f13wc"]
 [ext_resource type="Shader" path="res://Art/background.gdshader" id="1_kmdog"]
@@ -22,6 +22,7 @@
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayAsleep.gd" id="11_c5r5p"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayDead.gd" id="13_3fc7e"]
 [ext_resource type="PackedScene" uid="uid://cb6e0fesdu8rd" path="res://Scene/player.tscn" id="14_blx2k"]
+[ext_resource type="Script" path="res://Scripts/ControlDecorator.gd" id="16_64sy8"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_k3dey"]
 noise_type = 3
@@ -148,6 +149,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="AudioStreamPlayer_UI" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
 
 [node name="MusicManager" type="Node" parent="."]
 unique_name_in_owner = true
@@ -335,6 +339,7 @@ theme_override_font_sizes/font_size = 20
 text = "https://github.com/gleitz/midi-js-soundfonts/tree/gh-pages/MusyngKite"
 
 [node name="State_Story" type="Control" parent="MarginContainer/MenuStateMachine" node_paths=PackedStringArray("next_state")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -348,6 +353,7 @@ fade_out = true
 fade_time = 0.5
 
 [node name="CanvasLayer" type="CanvasLayer" parent="MarginContainer/MenuStateMachine/State_Story"]
+visible = false
 
 [node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/MenuStateMachine/State_Story/CanvasLayer"]
 anchors_preset = 15
@@ -537,40 +543,108 @@ grow_vertical = 2
 theme_override_constants/separation = 20
 
 [node name="Button_Play" type="Button" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 90)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 5
 size_flags_vertical = 4
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_rbybo")
 theme_override_font_sizes/font_size = 64
 text = "Play"
 flat = true
 
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button_Play"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("16_64sy8")
+
 [node name="Button_Tools" type="Button" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 90)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 5
 size_flags_vertical = 4
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_rbybo")
 theme_override_font_sizes/font_size = 64
 text = "Tools"
 flat = true
 
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button_Tools"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("16_64sy8")
+
 [node name="Button_Credits" type="Button" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 90)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 5
 size_flags_vertical = 4
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_rbybo")
 theme_override_font_sizes/font_size = 64
 text = "Credits"
 flat = true
 
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button_Credits"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("16_64sy8")
+
 [node name="Button_Story" type="Button" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 90)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 5
 size_flags_vertical = 4
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_rbybo")
 theme_override_font_sizes/font_size = 64
 text = "Story"
 flat = true
+
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button_Story"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("16_64sy8")
 
 [node name="State_Play" type="Control" parent="MarginContainer/MenuStateMachine"]
 unique_name_in_owner = true
@@ -592,7 +666,6 @@ unique_name_in_owner = true
 
 [node name="PlayStateMachine" type="Control" parent="MarginContainer/MenuStateMachine/State_Play" node_paths=PackedStringArray("initial_state")]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -613,7 +686,6 @@ grow_vertical = 2
 script = ExtResource("7_8xsm8")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup"]
-visible = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer"]
 anchors_preset = 8
@@ -658,13 +730,17 @@ theme_override_constants/separation = 20
 [node name="Easy" type="Button" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(200, 70)
 layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_rbybo")
 theme_override_font_sizes/font_size = 42
 text = "Easy"
 flat = true
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Easy"]
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Easy"]
 show_behind_parent = true
 layout_mode = 1
 anchors_preset = 15
@@ -673,17 +749,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("16_64sy8")
 
 [node name="Medium" type="Button" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_rbybo")
 theme_override_font_sizes/font_size = 42
 text = "Medium"
 flat = true
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Medium"]
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Medium"]
 show_behind_parent = true
 layout_mode = 1
 anchors_preset = 15
@@ -692,17 +773,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("16_64sy8")
 
 [node name="Hard" type="Button" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_rbybo")
 theme_override_font_sizes/font_size = 42
 text = "Hard"
 flat = true
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Hard"]
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Hard"]
 show_behind_parent = true
 layout_mode = 1
 anchors_preset = 15
@@ -711,6 +797,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("16_64sy8")
 
 [node name="PlayState_LevelAdvance" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
 visible = false
@@ -742,15 +829,15 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = 200.0
-offset_right = 290.0
+offset_left = -205.0
+offset_top = 160.0
+offset_right = 395.0
 offset_bottom = 280.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.68, 1)
 size_flags_vertical = 3
-color = Color(0.266575, 0.266575, 0.266575, 1)
+color = Color(0.8, 0.8, 0.8, 1)
 
 [node name="Label" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/Control/ColorRect"]
 layout_mode = 1
@@ -761,8 +848,9 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 10
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_rbybo")
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 94
 text = "Select Mod:"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -788,15 +876,18 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer"]
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer"]
+show_behind_parent = true
 layout_mode = 2
-color = Color(0.252028, 0.252028, 0.252028, 1)
+mouse_filter = 2
+script = ExtResource("16_64sy8")
 
 [node name="HBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer"]
 layout_mode = 2
 
 [node name="Title" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "foo"
 horizontal_alignment = 1
 
@@ -812,6 +903,8 @@ theme_override_constants/margin_bottom = 10
 [node name="Description" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control1/MarginContainer/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(185, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 23
 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
 autowrap_mode = 3
 
@@ -834,15 +927,18 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer"]
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer"]
+show_behind_parent = true
 layout_mode = 2
-color = Color(0.252028, 0.252028, 0.252028, 1)
+mouse_filter = 2
+script = ExtResource("16_64sy8")
 
 [node name="HBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer"]
 layout_mode = 2
 
 [node name="Title" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "foo"
 horizontal_alignment = 1
 
@@ -858,6 +954,8 @@ theme_override_constants/margin_bottom = 10
 [node name="Description" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control2/MarginContainer/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(185, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 23
 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
 autowrap_mode = 3
 
@@ -880,15 +978,18 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer"]
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer"]
+show_behind_parent = true
 layout_mode = 2
-color = Color(0.252028, 0.252028, 0.252028, 1)
+mouse_filter = 2
+script = ExtResource("16_64sy8")
 
 [node name="HBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer"]
 layout_mode = 2
 
 [node name="Title" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "foo"
 horizontal_alignment = 1
 
@@ -904,6 +1005,8 @@ theme_override_constants/margin_bottom = 10
 [node name="Description" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control3/MarginContainer/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(185, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 23
 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
 autowrap_mode = 3
 
@@ -926,15 +1029,18 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer"]
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer"]
+show_behind_parent = true
 layout_mode = 2
-color = Color(0.252028, 0.252028, 0.252028, 1)
+mouse_filter = 2
+script = ExtResource("16_64sy8")
 
 [node name="HBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer"]
 layout_mode = 2
 
 [node name="Title" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "foo"
 horizontal_alignment = 1
 
@@ -950,6 +1056,8 @@ theme_override_constants/margin_bottom = 10
 [node name="Description" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/VBoxContainer/HBoxContainer/Control4/MarginContainer/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(185, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 23
 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
 autowrap_mode = 3
 
