@@ -14,3 +14,12 @@ func do_shader_preload():
 func _on_button_button_up() -> void:
 	%State_Play.build_seed = 1
 	our_state_machine.switch_state("State_Play")
+
+func _on_button_tools_button_up() -> void:
+	our_state_machine.switch_state("State_Tools")
+
+func _on_button_credits_button_up() -> void:
+	our_state_machine.switch_state("State_Credits")
+
+func _on_button_story_button_up() -> void:
+	our_state_machine.switch_state("State_Story")

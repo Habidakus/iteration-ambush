@@ -245,6 +245,270 @@ label_settings = SubResource("LabelSettings_vam3j")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="State_Tools" type="Control" parent="MarginContainer/MenuStateMachine" node_paths=PackedStringArray("next_state")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_7fknr")
+next_state = NodePath("../State_MainMenu")
+fade_in = true
+fade_out = true
+fade_time = 0.5
+
+[node name="CanvasLayer" type="CanvasLayer" parent="MarginContainer/MenuStateMachine/State_Tools"]
+visible = false
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -418.0
+offset_top = -218.5
+offset_right = 418.0
+offset_bottom = 218.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="Label" type="Label" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Tools:"
+horizontal_alignment = 2
+
+[node name="Label2" type="Label" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Godot 4
+Audacity
+Wavosaur
+Gimp"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer/GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="Label3" type="Label" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Fonts:"
+horizontal_alignment = 2
+
+[node name="Label4" type="Label" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 20
+text = "https://fontlibrary.org/en/font/vintage-propagandist
+https://fontlibrary.org/en/font/destroya"
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer/GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator4" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="Label5" type="Label" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Notes:"
+horizontal_alignment = 2
+
+[node name="Label6" type="Label" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 20
+text = "https://github.com/gleitz/midi-js-soundfonts/tree/gh-pages/MusyngKite"
+
+[node name="State_Story" type="Control" parent="MarginContainer/MenuStateMachine" node_paths=PackedStringArray("next_state")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_7fknr")
+next_state = NodePath("../State_MainMenu")
+fade_in = true
+fade_out = true
+fade_time = 0.5
+
+[node name="CanvasLayer" type="CanvasLayer" parent="MarginContainer/MenuStateMachine/State_Story"]
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/MenuStateMachine/State_Story/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/normal_font = ExtResource("4_rbybo")
+theme_override_font_sizes/normal_font_size = 51
+text = "How many times had Farmer McYoder warned little Urist to stay away from the crumbling castle?
+
+And yet, the child must have pixie dust from brains, because just this morning ol' McYoder heard the plinking of wee' Urist's music box coming from the castle grounds.
+
+''That blasted child of mine is going to get themselves kidnapped by ghosts, or worse, you mark my words!''
+
+And so, McYoder set off... to make sure his wee little Urist came to no harm."
+
+[node name="State_Credits" type="Control" parent="MarginContainer/MenuStateMachine" node_paths=PackedStringArray("next_state")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_7fknr")
+next_state = NodePath("../State_MainMenu")
+fade_in = true
+fade_out = true
+fade_time = 0.5
+
+[node name="CanvasLayer" type="CanvasLayer" parent="MarginContainer/MenuStateMachine/State_Credits"]
+visible = false
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -377.0
+offset_top = -248.0
+offset_right = 377.0
+offset_bottom = 248.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="Programming" type="Label" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Programming:
+"
+horizontal_alignment = 2
+
+[node name="Prog_Jason" type="Label" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Jason Abbott
+"
+
+[node name="HSeparator7" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator8" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="Art" type="Label" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Art:
+"
+horizontal_alignment = 2
+
+[node name="Art_Jason" type="Label" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Jason Abbott
+"
+
+[node name="HSeparator5" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator6" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="SoundMusic" type="Label" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Sound & Music:
+"
+horizontal_alignment = 2
+
+[node name="Sound_Jason" type="Label" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Jason Abbott
+"
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator4" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="Design" type="Label" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Design:
+"
+horizontal_alignment = 2
+
+[node name="Design_Jason" type="Label" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Jason Abbott
+"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="Playtest" type="Label" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Playtest:
+"
+horizontal_alignment = 2
+
+[node name="Playtest_Names" type="Label" parent="MarginContainer/MenuStateMachine/State_Credits/CanvasLayer/GridContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 52
+text = "Jesse Decker
+Jeff Hamilton
+John Hegner
+David Ziring
+Tracy Larrabee
+"
+vertical_alignment = 1
+
 [node name="State_MainMenu" type="Control" parent="MarginContainer/MenuStateMachine"]
 visible = false
 layout_mode = 1
@@ -270,8 +534,9 @@ offset_right = 76.5
 offset_bottom = 36.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 20
 
-[node name="Button" type="Button" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer"]
+[node name="Button_Play" type="Button" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -280,8 +545,36 @@ theme_override_font_sizes/font_size = 64
 text = "Play"
 flat = true
 
+[node name="Button_Tools" type="Button" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 64
+text = "Tools"
+flat = true
+
+[node name="Button_Credits" type="Button" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 64
+text = "Credits"
+flat = true
+
+[node name="Button_Story" type="Button" parent="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 64
+text = "Story"
+flat = true
+
 [node name="State_Play" type="Control" parent="MarginContainer/MenuStateMachine"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -299,6 +592,7 @@ unique_name_in_owner = true
 
 [node name="PlayStateMachine" type="Control" parent="MarginContainer/MenuStateMachine/State_Play" node_paths=PackedStringArray("initial_state")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -419,6 +713,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="PlayState_LevelAdvance" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -428,6 +723,7 @@ grow_vertical = 2
 script = ExtResource("8_m3tch")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance"]
+visible = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer"]
 anchors_preset = 15
@@ -737,7 +1033,10 @@ script = ExtResource("11_c5r5p")
 unique_name_in_owner = true
 visible = false
 
-[connection signal="button_up" from="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button" to="MarginContainer/MenuStateMachine/State_MainMenu" method="_on_button_button_up"]
+[connection signal="button_up" from="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button_Play" to="MarginContainer/MenuStateMachine/State_MainMenu" method="_on_button_button_up"]
+[connection signal="button_up" from="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button_Tools" to="MarginContainer/MenuStateMachine/State_MainMenu" method="_on_button_tools_button_up"]
+[connection signal="button_up" from="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button_Credits" to="MarginContainer/MenuStateMachine/State_MainMenu" method="_on_button_credits_button_up"]
+[connection signal="button_up" from="MarginContainer/MenuStateMachine/State_MainMenu/CanvasLayer/VBoxContainer/Button_Story" to="MarginContainer/MenuStateMachine/State_MainMenu" method="_on_button_story_button_up"]
 [connection signal="text_changed" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer/TextEdit" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup" method="_on_text_edit_text_changed"]
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Easy" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup" method="_on_easy_button_up"]
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Medium" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup" method="_on_medium_button_up"]
