@@ -1,9 +1,14 @@
-[gd_scene load_steps=30 format=3 uid="uid://bjmkbjlquesr5"]
+[gd_scene load_steps=35 format=3 uid="uid://bjmkbjlquesr5"]
 
+[ext_resource type="Script" path="res://Scripts/note_player.gd" id="1_f13wc"]
 [ext_resource type="Shader" path="res://Art/background.gdshader" id="1_kmdog"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachine.gd" id="2_fbjv7"]
+[ext_resource type="AudioStream" uid="uid://ceh67e6jrbjqd" path="res://Sound/Glockenspiel/A4.mp3" id="2_kwteg"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_AnyKeyToContinue.gd" id="3_7fknr"]
+[ext_resource type="AudioStream" uid="uid://4ils6cakgl7c" path="res://Sound/Glockenspiel/C4.mp3" id="3_80qxs"]
+[ext_resource type="AudioStream" uid="uid://cyrha1manpije" path="res://Sound/Glockenspiel/E4.mp3" id="4_bf70j"]
 [ext_resource type="FontFile" uid="uid://byymlkrvwrvqy" path="res://Fonts/Vintage Propagandist.ttf" id="4_rbybo"]
+[ext_resource type="AudioStream" uid="uid://cqphq1wwuekp2" path="res://Sound/Glockenspiel/G4.mp3" id="5_8p2bg"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState.gd" id="5_ku58m"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_MainMenu.gd" id="5_r1cm3"]
 [ext_resource type="FontFile" uid="uid://cw5poiupa2paf" path="res://Fonts/Destroya.ttf" id="6_1qfmw"]
@@ -143,6 +148,37 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="MusicManager" type="Node" parent="."]
+unique_name_in_owner = true
+
+[node name="AudioStreamPlayer_C4" type="AudioStreamPlayer" parent="MusicManager"]
+stream = ExtResource("3_80qxs")
+volume_db = -20.0
+bus = &"Music"
+script = ExtResource("1_f13wc")
+duration = 5.0
+note_name = "C4"
+note_per_second = 0.9
+
+[node name="AudioStreamPlayer_E4" type="AudioStreamPlayer" parent="MusicManager"]
+stream = ExtResource("4_bf70j")
+volume_db = -20.0
+bus = &"Music"
+script = ExtResource("1_f13wc")
+duration = 7.0
+note_name = "E4"
+note_per_second = 0.81
+
+[node name="AudioStreamPlayer_G4" type="AudioStreamPlayer" parent="MusicManager"]
+stream = ExtResource("5_8p2bg")
+volume_db = -20.0
+bus = &"Music"
+script = ExtResource("1_f13wc")
+duration = 2.0
+note_name = "G4"
+note_per_second = 1.0
+alternate_note = ExtResource("2_kwteg")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -1

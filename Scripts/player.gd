@@ -82,10 +82,20 @@ func spawn(_room: Room, pos : Vector2) -> void:
 	fire_cooldown = 0.01
 	position = pos # Vector2((room.x * 15 + 7.5) * 64, (room.y * 15 + 7.5) * 64)
 
+var play_minor_chord : bool = false
 func set_health_bar() -> void:
 	ui_current_health_label.text = str(round(current_health)) + "/" + str(round(max_health))
 	var fraction : float = current_health / max_health
 	ui_current_health_bar.size.x = round(fraction * ui_current_health_max_width)
+	var new_minor_chord : bool = fraction < 0.5
+	if new_minor_chord != play_minor_chord:
+		play_minor_chord = new_minor_chord
+		for child in %MusicManager.get_children(false):
+			if child is NotePlayer:
+				if play_minor_chord:
+					(child as NotePlayer).set_to_minor()
+				else:
+					(child as NotePlayer).set_to_major()
 
 func take_damage(damage : float) -> void:
 	current_health -= damage

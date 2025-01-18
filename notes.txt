@@ -6,15 +6,13 @@ Location of some MIT notes:
 
 Potential power ups:
 	- switch room hazards to boons
-	- lava immunity
 	- better handling
-	- regen at lap completion
 	- able to fire through locks / only wake monsters behind locks after the lock is destroyed
 	- repulsor field that is used once per loop
 
 TODO:
+	- options menu
 	- UI sound effects
-	- music
 	- credits & thanks
 	- highscore & track current score
 	- other enemies
