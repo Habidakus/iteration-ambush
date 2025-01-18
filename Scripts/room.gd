@@ -42,13 +42,27 @@ var atlas_coords_other_firepit : Vector2i = Vector2i(2, 0)
 var atlas_coords_other_lastroom : Vector2i = Vector2i(1, 0)
 
 # TODO: No, repalce with enum
-var has_firepit : bool = false
-var has_many_firepit : bool = false
-var is_narrow : bool = false
-var is_diamond : bool = false
-var is_pilars : bool = false
-var is_many_pilars : bool = false
-var is_last_room : bool = false
+enum RoomType {
+	UNDEFINED,
+	Empty,
+	BigFirepit,
+	ManyFirepits,
+	Narrow,
+	Diamond,
+	BigPilar,
+	ManyPilars,
+	Wall,
+	Loop,
+	LastRoom,
+}
+var room_type : RoomType = RoomType.UNDEFINED
+#var has_firepit : bool = false
+#var has_many_firepit : bool = false
+#var is_narrow : bool = false
+#var is_diamond : bool = false
+#var is_pilars : bool = false
+#var is_many_pilars : bool = false
+#var is_last_room : bool = false
 
 static var global_id : int = 0
 
@@ -63,18 +77,19 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 	room.key_id = clock_room.id
 	room.parent_room = clock_room
 
-	match cplay_state.build_rnd.randi_range(0,10):
+	match cplay_state.build_rnd.randi_range(0,5):
 		0:
-			room.has_many_firepit = true
+			room.room_type = RoomType.ManyFirepits
 			room.unspent_difficulty -= 1
 		1:
-			room.is_many_pilars = true
-		2,3:
-			room.is_diamond = true
-		4,5:
-			room.is_narrow = true
-		6,7:
-			room.is_pilars = true
+			room.room_type = RoomType.ManyPilars
+		2:
+			room.room_type = RoomType.Diamond
+		3:
+			room.room_type = RoomType.Narrow
+		4:
+			room.room_type = RoomType.BigPilar
+			
 	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd)
 	while room.unspent_difficulty > 0:
 		room.SpendDifficulty(cplay_state.build_rnd)
@@ -93,26 +108,31 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 	room.play_state = cplay_state
 	room.parent_room = parent
 
-	match cplay_state.build_rnd.randi_range(0,11):
+	match cplay_state.build_rnd.randi_range(0,9):
 		0:
-			room.has_many_firepit = true
+			room.room_type = RoomType.BigFirepit
 			room.unspent_difficulty -= 1
 		1:
-			room.is_many_pilars = true
-		2,3:
-			room.is_diamond = true
-		4,5:
-			room.is_narrow = true
-		6,7:
-			room.is_pilars = true
-		8,9:
-			room.has_firepit = true
+			room.room_type = RoomType.ManyFirepits
 			room.unspent_difficulty -= 1
+		2:
+			room.room_type = RoomType.ManyPilars
+		3:
+			room.room_type = RoomType.BigPilar
+		4:
+			room.room_type = RoomType.Diamond
+		5:
+			room.room_type = RoomType.Narrow
+		6:
+			room.room_type = RoomType.Wall
+		7:
+			room.room_type = RoomType.Loop
+		8:
+			room.room_type = RoomType.Empty
 	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd)
 	while room.unspent_difficulty > 0:
 		room.SpendDifficulty(cplay_state.build_rnd)
 		room.unspent_difficulty -= 1
-	print("Creating room: " + str(room))
 	return room
 
 func SpendDifficulty(rnd : RandomNumberGenerator) -> void:
@@ -132,19 +152,7 @@ func SpendDifficulty(rnd : RandomNumberGenerator) -> void:
 	assert(false)
 
 func _to_string() -> String:
-	var ret_val : String = "id=" + str(id) + " coord=" + str(x) + "," + str(y)
-	if has_many_firepit:
-		ret_val += " fire=4"
-	if has_firepit:
-		ret_val += " fire=1"
-	if is_pilars:
-		ret_val += " pillar=1"
-	if is_many_pilars:
-		ret_val += " pillar=many"
-	if is_diamond:
-		ret_val += " diamond"
-	if is_narrow:
-		ret_val += " narrow"
+	var ret_val : String = "id=" + str(id) + " coord=" + str(x) + "," + str(y) + " " + str(room_type)
 	return ret_val
 
 func StopTracking(enemy : Enemy) -> void:
@@ -207,12 +215,12 @@ func ResetRoom() -> void:
 		enemies.clear()
 
 func SetAsLastRoom() -> void:
-	is_last_room = true
+	room_type = RoomType.LastRoom
 
 func MakePlayerSafe() -> void:
 	has_enemy = false
-	has_firepit = false
-	has_many_firepit = false
+	if room_type == RoomType.BigFirepit || room_type == RoomType.ManyFirepits || room_type == RoomType.Loop || room_type == RoomType.Wall:
+		room_type = RoomType.Empty
 
 func DrawRoomNumber() -> void:
 	var pos = play_state.get_room_central_pos(x, y)
@@ -350,7 +358,7 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 	rnd.seed = id
 	var baseX : int = x * size
 	var baseY : int = y * size
-	var width : int = 4 if is_narrow else 1
+	var width : int = 4 if room_type == RoomType.Narrow else 1
 	for dx in range(0, size):
 		for dy in range(0, size):
 			apply_floor(terrain, baseX + dx, baseY + dy, rnd)
@@ -369,42 +377,65 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 			apply_floor(terrain, baseX + 7, baseY + size - (1 + w), rnd)
 		if east != null:
 			apply_floor(terrain, baseX + size - (1 + w), baseY + 7, rnd)
-	if is_diamond:
-		for dx in range(1, 6):
-			for dy in range(1, 7 - dx):
-				apply_wall(terrain, baseX + dx, baseY + dy, rnd)
-				apply_wall(terrain, baseX + size - (1 + dx), baseY + dy, rnd)
-				apply_wall(terrain, baseX + dx, baseY + size - (1 + dy), rnd)
-				apply_wall(terrain, baseX + size - (1 + dx), baseY + size - (1 + dy), rnd)
-	if is_last_room:
-		for ox in range(baseX + 5, baseX + size - 5):
-			for oy in range(baseY + 5, baseY + size - 5):
-				terrain.set_cell(Vector2i(ox, oy), atlas_source_id_other, atlas_coords_other_lastroom)
-	if is_pilars:
-		apply_pillar(terrain, baseX + 4, baseY + 4, rnd)
-		apply_pillar(terrain, baseX + 9, baseY + 4, rnd)
-		apply_pillar(terrain, baseX + 4, baseY + 9, rnd)
-		apply_pillar(terrain, baseX + 9, baseY + 9, rnd)
-	if is_many_pilars:
-		apply_pillar(terrain, baseX + 2, baseY + 2, rnd)
-		apply_pillar(terrain, baseX + 2, baseY + 11, rnd)
-		apply_pillar(terrain, baseX + 5, baseY + 5, rnd)
-		apply_pillar(terrain, baseX + 8, baseY + 8, rnd)
-		apply_pillar(terrain, baseX + 5, baseY + 8, rnd)
-		apply_pillar(terrain, baseX + 8, baseY + 5, rnd)
-		apply_pillar(terrain, baseX + 11, baseY + 2, rnd)
-		apply_pillar(terrain, baseX + 11, baseY + 11, rnd)
-	if has_firepit:
-		for ox in range(baseX + 4, baseX + size - 4):
-			for oy in range(baseY + 4, baseY + size - 4):
-				terrain.set_cell(Vector2i(ox, oy), atlas_source_id_other, atlas_coords_other_firepit)
-	if has_many_firepit:
-		for dx in range(2, 6):
-			for dy in range(2, 6):
-				terrain.set_cell(Vector2i(baseX + dx, baseY + dy), atlas_source_id_other, atlas_coords_other_firepit)
-				terrain.set_cell(Vector2i(baseX + dx, baseY + size - (1 + dy)), atlas_source_id_other, atlas_coords_other_firepit)
-				terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + dy), atlas_source_id_other, atlas_coords_other_firepit)
-				terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + size - (1 + dy)), atlas_source_id_other, atlas_coords_other_firepit)
+
+	match room_type:
+		RoomType.Wall:
+			if north == null:
+				for dx in range(6,9):
+					for dy in range(1,12):
+						apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+			elif south == null:
+				for dx in range(6,9):
+					for dy in range(3,14):
+						apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+			elif east == null:
+				for dy in range(6,9):
+					for dx in range(3,14):
+						apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+			elif west == null:
+				for dy in range(6,9):
+					for dx in range(1,12):
+						apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+		RoomType.Loop:
+			for dx in range(3,12):
+				for dy in range(3,12):
+					apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+		RoomType.Diamond:
+			for dx in range(1, 6):
+				for dy in range(1, 7 - dx):
+					apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+					apply_wall(terrain, baseX + size - (1 + dx), baseY + dy, rnd)
+					apply_wall(terrain, baseX + dx, baseY + size - (1 + dy), rnd)
+					apply_wall(terrain, baseX + size - (1 + dx), baseY + size - (1 + dy), rnd)
+		RoomType.LastRoom:
+			for ox in range(baseX + 5, baseX + size - 5):
+				for oy in range(baseY + 5, baseY + size - 5):
+					terrain.set_cell(Vector2i(ox, oy), atlas_source_id_other, atlas_coords_other_lastroom)
+		RoomType.BigPilar:
+			apply_pillar(terrain, baseX + 4, baseY + 4, rnd)
+			apply_pillar(terrain, baseX + 9, baseY + 4, rnd)
+			apply_pillar(terrain, baseX + 4, baseY + 9, rnd)
+			apply_pillar(terrain, baseX + 9, baseY + 9, rnd)
+		RoomType.ManyPilars:
+			apply_pillar(terrain, baseX + 2, baseY + 2, rnd)
+			apply_pillar(terrain, baseX + 2, baseY + 11, rnd)
+			apply_pillar(terrain, baseX + 5, baseY + 5, rnd)
+			apply_pillar(terrain, baseX + 8, baseY + 8, rnd)
+			apply_pillar(terrain, baseX + 5, baseY + 8, rnd)
+			apply_pillar(terrain, baseX + 8, baseY + 5, rnd)
+			apply_pillar(terrain, baseX + 11, baseY + 2, rnd)
+			apply_pillar(terrain, baseX + 11, baseY + 11, rnd)
+		RoomType.BigFirepit:
+			for ox in range(baseX + 4, baseX + size - 4):
+				for oy in range(baseY + 4, baseY + size - 4):
+					terrain.set_cell(Vector2i(ox, oy), atlas_source_id_other, atlas_coords_other_firepit)
+		RoomType.ManyFirepits:
+			for dx in range(2, 6):
+				for dy in range(2, 6):
+					terrain.set_cell(Vector2i(baseX + dx, baseY + dy), atlas_source_id_other, atlas_coords_other_firepit)
+					terrain.set_cell(Vector2i(baseX + dx, baseY + size - (1 + dy)), atlas_source_id_other, atlas_coords_other_firepit)
+					terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + dy), atlas_source_id_other, atlas_coords_other_firepit)
+					terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + size - (1 + dy)), atlas_source_id_other, atlas_coords_other_firepit)
 
 func apply_pillar(terrain : TileMapLayer, px : int, py : int, rnd : RandomNumberGenerator) -> void:
 	terrain.set_cell(Vector2i(px, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))

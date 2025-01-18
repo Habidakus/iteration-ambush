@@ -17,7 +17,6 @@ TODO:
 	- music
 	- credits & thanks
 	- highscore & track current score
-	- more room layouts (thin exterior circuit, wall seperating two primary entrances)
 	- other enemies
 	- animate throwing the scythe
 	- add to enemies both "erratic" and "dodge" move menchanics
