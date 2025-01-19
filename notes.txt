@@ -11,7 +11,7 @@ Potential power ups:
 	- switch room hazards to boons
 
 TODO:
-	- have an end goal (number of waves to endure to win) (10-15 minutes)
+	- add a UI explaining how close we are to reaching the end
 	- Color keys should stay completely consistant as waves advance
 	- add GitHub URL to credits page
 	- better point blank ghost movement
