@@ -7,6 +7,7 @@ func enter_state() -> void:
 	super.enter_state()
 	%State_Play.clean_map()
 	%Player.set_ui_visibility(true)
+	%State_Play.update_waves_remaining(Callable(self, "update_waves_remaining"))
 	(find_child("CoinTotal") as CanvasItem).visible = true
 	(find_child("ModsAvailable") as CanvasItem).visible = false
 	var update_coin_callable : Callable = Callable(self, "update_coin")
@@ -21,6 +22,10 @@ func exit_state(next_state: StateMachineState) -> void:
 func update_coin(new_coin_value : int) -> void:
 	var total_coins_label : Label = find_child("TotalCoinsLabel") as Label
 	total_coins_label.text = str(new_coin_value)
+
+func update_waves_remaining(new_waves_remaining : int) -> void:
+	var waves_remaining_label : Label = find_child("WavesRemainingLabel") as Label
+	waves_remaining_label.text = str(new_waves_remaining)
 
 func display_mods() -> void:
 	(find_child("CoinTotal") as CanvasItem).visible = false

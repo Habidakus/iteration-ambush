@@ -256,12 +256,15 @@ func generate_direction_room_collection(loc : Vector2i) -> DirectionRoomCollecti
 func apply_player_mod(player_mod : PlayerMod) -> void:
 	player_mod.selected()
 
-func mutate_map() -> void:
+func update_waves_remaining(update_label : Callable) -> void:
 	waves_to_go -= 1
+	update_label.call(waves_to_go)
 	if waves_to_go <= 1:
 		last_room.MakeFinalRoom()
 		last_room.ClearFromMaps(%TerrainMap, %ObjectMap)
 		last_room.ApplyToMaps(%TerrainMap, %ObjectMap)
+
+func mutate_map() -> void:
 	
 	if build_rnd.randi_range(0, 4) == 0:
 		if mutate_map_key_lock(build_rnd):

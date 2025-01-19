@@ -1102,6 +1102,36 @@ text = "100"
 horizontal_alignment = 2
 vertical_alignment = 1
 
+[node name="WavesToGo" type="Node2D" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer"]
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/WavesToGo"]
+offset_left = 379.0
+offset_top = 185.0
+offset_right = 917.0
+offset_bottom = 306.0
+color = Color(0.295867, 0.295866, 0.295866, 1)
+
+[node name="Label" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/WavesToGo"]
+offset_left = 403.0
+offset_top = 213.0
+offset_right = 822.0
+offset_bottom = 277.0
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 48
+text = "Levels Remaining:"
+vertical_alignment = 1
+
+[node name="WavesRemainingLabel" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/WavesToGo"]
+offset_left = 785.0
+offset_top = 207.0
+offset_right = 895.0
+offset_bottom = 279.0
+theme_override_font_sizes/font_size = 52
+text = "20
+"
+horizontal_alignment = 2
+vertical_alignment = 1
+
 [node name="PlayState_Active" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
 visible = false
 layout_mode = 1
