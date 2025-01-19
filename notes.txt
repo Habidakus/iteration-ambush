@@ -5,20 +5,22 @@ Location of some MIT notes:
 	https://github.com/gleitz/midi-js-soundfonts/tree/gh-pages/MusyngKite
 
 Potential power ups:
-	- switch room hazards to boons
-	- better handling
-	- able to fire through locks / only wake monsters behind locks after the lock is destroyed
+	- better handling (no more drifting)
+	- only wake monsters behind locks after the lock is destroyed
 	- repulsor field that is used once per loop
+	- switch room hazards to boons
 
 TODO:
+	- Color keys should stay completely consistant as waves advance
 	- add GitHub URL to credits page
 	- better point blank ghost movement
-	- have an end goal (number of waves to endure to win)
+	- have an end goal (number of waves to endure to win) (10-15 minutes)
 	- options menu
 	- UI sound effects
 	- highscore & track current score
 	- other enemies
 	- animate throwing the scythe
+	- have teleport dodging blue ghosts
 	- add to enemies both "erratic" and "dodge" move menchanics
 	- flag on rooms that allow them to close the retreat door when a player walks through
 	- add "platform" mechanics to a new room type

@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://bn7pr1v505gx0"]
+
+[ext_resource type="Texture2D" uid="uid://cyp7p7mv87e1u" path="res://Art/ExplosionPoing_01.png" id="1_5nqob"]
+
+[sub_resource type="Curve" id="Curve_w8vvb"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.639037, 0.905992), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_8gx8m"]
+offsets = PackedFloat32Array(0, 0.424856, 1)
+colors = PackedColorArray(0.942043, 0.104218, 0.194107, 1, 0.836438, 0.0103806, 0.163558, 1, 1, 0, 0, 0)
+
+[node name="Explosion" type="CPUParticles2D"]
+amount = 5
+lifetime = 0.2
+explosiveness = 0.13
+randomness = 0.19
+lifetime_randomness = 0.4
+texture = ExtResource("1_5nqob")
+emission_shape = 1
+emission_sphere_radius = 34.0
+gravity = Vector2(0, 0)
+radial_accel_max = 100.0
+angle_max = 95.0
+scale_amount_curve = SubResource("Curve_w8vvb")
+color_ramp = SubResource("Gradient_8gx8m")

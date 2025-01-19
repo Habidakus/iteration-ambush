@@ -44,6 +44,7 @@ var firepit_audio_player : AudioStreamPlayer
 var firepit_sound_continue : float = 0
 
 var bullet_simple_scene : Resource = preload("res://Scene/simple_bullet.tscn")
+var explosion_scene : Resource = preload("res://Scene/blood_vfx.tscn")
 
 func _ready() -> void:
 	ui_layer = find_child("UI") as CanvasLayer
@@ -111,9 +112,21 @@ func set_health_bar() -> void:
 				else:
 					(child as NotePlayer).set_to_major()
 
-func take_damage(damage : float) -> void:
+func take_damage(damage : float, show_blood : bool) -> void:
 	current_health -= damage
 	set_health_bar()
+	
+	if show_blood:
+		var explosion : CPUParticles2D = explosion_scene.instantiate()
+		explosion.position = Vector2.ZERO
+		explosion.show_behind_parent = true
+		explosion.emitting = true
+		explosion.one_shot = true
+		add_child(explosion)
+		var tween = create_tween()
+		tween.tween_interval(1.0)
+		tween.tween_callback(explosion.queue_free)
+	
 	if current_health <= 0:
 		%State_Play.player_died()
 
@@ -123,7 +136,7 @@ func apply_fire_pit(room: Room, delta : float) -> void:
 	else:
 		firepit_audio_player.play()
 	var damage : float = room.fire_damage * delta / fire_resistance
-	take_damage(damage)
+	take_damage(damage, false)
 
 func get_shot_damage() -> float:
 	return shot_damage

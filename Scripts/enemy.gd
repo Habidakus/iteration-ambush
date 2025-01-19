@@ -130,7 +130,7 @@ func get_ram_damage() -> float:
 
 func handle_player_collision(p : Player, delta: float) -> void:
 	var damage : float = get_ram_damage() * delta
-	p.take_damage(damage)
+	p.take_damage(damage, true)
 	take_damage(damage * self_damage_multiple)
 	if !audio_player.playing && gobble_sounds != null && gobble_sounds.streams_count > 0:
 		audio_player.stream = gobble_sounds

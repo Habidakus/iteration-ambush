@@ -763,7 +763,7 @@ theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_rbybo")
 theme_override_font_sizes/font_size = 42
-text = "Medium"
+text = "Normal"
 flat = true
 
 [node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Medium"]
@@ -787,7 +787,7 @@ theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_rbybo")
 theme_override_font_sizes/font_size = 42
-text = "Hard"
+text = "Expert"
 flat = true
 
 [node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Hard"]

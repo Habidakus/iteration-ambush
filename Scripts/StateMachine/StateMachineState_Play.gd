@@ -497,15 +497,17 @@ func drain_coins(update_coin : Callable, has_enough : Callable, is_short : Calla
 	var end_coins : int = total_coins
 	var lower_player_coins : Callable = %Player.get_lower_coins_callable()
 
-	const time_to_move_coins = 2.5
+	const time_to_move_coins = 1.5
 	var tween = create_tween()
-	tween.tween_method(update_coin, start_coins, end_coins, time_to_move_coins).set_ease(Tween.EASE_IN)
+	tween.tween_method(update_coin, start_coins, end_coins, time_to_move_coins)#.set_ease(Tween.EASE_IN)
 	tween.parallel()
-	tween.tween_method(lower_player_coins, earned_coins, 0, time_to_move_coins).set_ease(Tween.EASE_IN)
+	tween.tween_method(lower_player_coins, earned_coins, 0, time_to_move_coins)#.set_ease(Tween.EASE_IN)
 	if total_coins >= 100:
 		total_coins -= 100
+		tween.tween_interval(0.5)
 		tween.tween_callback(has_enough)
 	else:
+		tween.tween_interval(0.5)
 		tween.tween_callback(is_short)
 
 func spawn_map() -> void:
