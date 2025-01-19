@@ -46,6 +46,7 @@ func take_damage(dmg : float) -> void:
 	room.play_state.add_child(explosion)
 	if death_sounds != null && death_sounds.streams_count > 0:
 		var new_audio_player = AudioStreamPlayer.new()
+		new_audio_player.bus = "FX"
 		explosion.add_child(new_audio_player)
 		new_audio_player.stream = death_sounds
 		new_audio_player.play()

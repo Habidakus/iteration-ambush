@@ -74,5 +74,6 @@ scale = Vector2(1.1, 1.1)
 texture = ExtResource("4_ijtys")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"FX"
 
 [connection signal="timeout" from="Node2D/Timer" to="." method="tick"]

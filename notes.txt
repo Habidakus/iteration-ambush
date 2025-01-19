@@ -15,7 +15,6 @@ TODO:
 	- add GitHub URL to credits page
 	- better point blank ghost movement
 	- have an end goal (number of waves to endure to win) (10-15 minutes)
-	- options menu
 	- UI sound effects
 	- highscore & track current score
 	- other enemies

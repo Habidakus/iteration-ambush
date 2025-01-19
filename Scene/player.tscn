@@ -175,9 +175,13 @@ position = Vector2(14.1443, -4.24328)
 texture = ExtResource("6_kukyx")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"FX"
 
 [node name="AudioStreamPlayer_Bullet" type="AudioStreamPlayer" parent="."]
+bus = &"FX"
 
 [node name="AudioStreamPlayer_Lock" type="AudioStreamPlayer" parent="."]
+bus = &"FX"
 
 [node name="AudioStreamPlayer_Fire" type="AudioStreamPlayer" parent="."]
+bus = &"FX"

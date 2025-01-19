@@ -30,6 +30,7 @@ var ui_timer_label : Label = null
 var ui_timer_color_good : Color = Color.from_string("#00ff3b", Color.GREEN)
 var ui_timer_color_ok : Color = Color.YELLOW
 var ui_timer_color_bad : Color = Color.RED
+var show_blood_option : bool = true
 var level_timer : float = 0
 var level_time_expected : float = 60.0
 var owned_keys : Array[int]
@@ -112,11 +113,14 @@ func set_health_bar() -> void:
 				else:
 					(child as NotePlayer).set_to_major()
 
+func set_show_blood(yes_blood : bool) -> void:
+	show_blood_option = yes_blood
+
 func take_damage(damage : float, show_blood : bool) -> void:
 	current_health -= damage
 	set_health_bar()
 	
-	if show_blood:
+	if show_blood && show_blood_option:
 		var explosion : CPUParticles2D = explosion_scene.instantiate()
 		explosion.position = Vector2.ZERO
 		explosion.show_behind_parent = true

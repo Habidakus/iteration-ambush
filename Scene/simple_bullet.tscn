@@ -34,3 +34,4 @@ shape = SubResource("CapsuleShape2D_hcdmw")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 volume_db = 16.421
+bus = &"FX"
