@@ -15,12 +15,12 @@ enum Mod {
 static func SelectThreeMods(rnd : RandomNumberGenerator) -> Array[RoomMod]:
 	var possible : Array = [
 		[rnd.randf(), Mod.Endurance],
-		[rnd.randf(), Mod.Faster], 
+		[rnd.randf_range(0, 0.9), Mod.Faster], 
 		[rnd.randf(), Mod.Healthier],
 		[rnd.randf(), Mod.MoreEnemies], 
 		[rnd.randf(), Mod.Rammer],
 		[rnd.randf(), Mod.Shrink],
-		[rnd.randf(), Mod.Teleporter],
+		[rnd.randf_range(0, 0.75), Mod.Teleporter],
 	]
 	possible.sort_custom(func(a,b): return a[0] > b[0])
 	var ret_val : Array[RoomMod]

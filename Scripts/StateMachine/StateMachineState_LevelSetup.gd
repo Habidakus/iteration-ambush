@@ -4,6 +4,9 @@ var seed_value : int = 1
 
 func enter_state() -> void:
 	super.enter_state()
+	var text_edit : TextEdit = find_child("TextEdit") as TextEdit
+	seed_value = int(Time.get_unix_time_from_system()) % 1000
+	text_edit.text = str(seed_value)
 	%Player.visible = false
 
 func exit_state(next_state: StateMachineState) -> void:
