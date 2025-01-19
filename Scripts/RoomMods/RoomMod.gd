@@ -9,6 +9,7 @@ enum Mod {
 	MoreEnemies = 3,
 	Rammer = 4,
 	Shrink = 5,
+	Teleporter = 6,
 }
 
 static func SelectThreeMods(rnd : RandomNumberGenerator) -> Array[RoomMod]:
@@ -19,6 +20,7 @@ static func SelectThreeMods(rnd : RandomNumberGenerator) -> Array[RoomMod]:
 		[rnd.randf(), Mod.MoreEnemies], 
 		[rnd.randf(), Mod.Rammer],
 		[rnd.randf(), Mod.Shrink],
+		[rnd.randf(), Mod.Teleporter],
 	]
 	possible.sort_custom(func(a,b): return a[0] > b[0])
 	var ret_val : Array[RoomMod]
@@ -35,6 +37,7 @@ static func CreateMod(modEnum : Mod) -> RoomMod:
 		Mod.MoreEnemies: return RoomMod_MoreEnemy.new()
 		Mod.Rammer: return RoomMod_Rammer.new()
 		Mod.Shrink: return RoomMod_Shrink.new()
+		Mod.Teleporter: return RoomMod_Teleporter.new()
 	assert(false)
 	return null
 

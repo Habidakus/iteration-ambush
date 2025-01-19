@@ -74,6 +74,21 @@ func apply_tile(terrain_atlas_pos : Vector2i, source_id : int, delta : float) ->
 func get_room_central_pos(grid_x : int, grid_y : int) -> Vector2:
 	var local_pos = (%TerrainMap as TileMapLayer).map_to_local(Vector2i(grid_x * 15 + 7, grid_y * 15 + 7))
 	return local_pos
+	
+func get_room_from_pos(pos : Vector2) -> Room:
+	var map_coord : Vector2i = (%TerrainMap as TileMapLayer).local_to_map(pos)
+	var grid_x : int = int(map_coord.x / 15.0)
+	var grid_y : int = int(map_coord.y / 15.0)
+	if map_coord.x < 0:
+		grid_x -= 1
+	if map_coord.y < 0:
+		grid_y -= 1
+	assert((map_coord.x < 0) == (grid_x < 0))
+	assert((map_coord.y < 0) == (grid_y < 0))
+	for room : Room in rooms:
+		if room.x == grid_x && room.y == grid_y:
+			return room
+	return null
 
 func get_player() -> Player:
 	return %Player

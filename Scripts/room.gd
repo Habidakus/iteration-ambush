@@ -99,7 +99,6 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 		room.SpendDifficulty(cplay_state.build_rnd)
 		room.unspent_difficulty -= 1
 
-	print("Creating room: " + str(room))
 	return room
 
 static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Room) -> Room:
@@ -324,6 +323,22 @@ func AnyEnemiesHere(pos : Vector2) -> bool:
 		if (enemy.position - pos).length_squared() < 64 * 64 * 1.707:
 			return true
 	return false
+
+func GetSafeTeleportLocation(best_loc : Vector2, start_place : Vector2) -> Vector2:
+	var best_room : Room = play_state.get_room_from_pos(best_loc)
+	if best_room:
+		if play_state.can_place_enemy(best_loc) && !best_room.AnyEnemiesHere(best_loc):
+			return best_loc
+		for dx in range(-1, 2):
+			for dy in range(-1, 2):
+				var attempt_loc : Vector2 = start_place + Vector2(64 * dx, 64 * dy)
+				if play_state.can_place_enemy(attempt_loc) && !best_room.AnyEnemiesHere(attempt_loc):
+					return attempt_loc
+		return best_room.GetSafeEnemyPlacement(RandomNumberGenerator.new())
+	var current_room : Room = play_state.get_room_from_pos(start_place)
+	if current_room:
+		return current_room.GetSafeEnemyPlacement(RandomNumberGenerator.new())
+	return start_place
 
 func GetSafeEnemyPlacement(rnd : RandomNumberGenerator) -> Vector2:
 	var center : Vector2 = play_state.get_room_central_pos(x, y)

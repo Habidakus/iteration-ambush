@@ -41,6 +41,7 @@ func init(_lifetime : float, _player : Player) -> void:
 	player = _player
 	lifetime = _lifetime
 	speed = _player.current_bullet_speed()
+	add_to_group("bullet")
 
 func collide_with_enemy(enemy: Enemy, col_glob_pos : Vector2) -> void:
 	# Sometimes both the bullet will collide with the enemy, and then the enemy

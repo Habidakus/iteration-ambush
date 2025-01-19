@@ -18,8 +18,6 @@ TODO:
 	- highscore & track current score
 	- other enemies
 	- animate throwing the scythe
-	- have teleport dodging blue ghosts
-	- add to enemies both "erratic" and "dodge" move menchanics
 	- flag on rooms that allow them to close the retreat door when a player walks through
 	- add "platform" mechanics to a new room type
 	- juice up the power-up selection

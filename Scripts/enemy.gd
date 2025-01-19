@@ -12,6 +12,8 @@ var speed_multiple : float = 1
 var health : float = 100.0
 var player_shot_damage : float = 101
 var self_damage_multiple : float = 5.0
+var teleport_cooldown : float = -1.0
+var time_to_next_teleport : float = 10.0
 
 const BASE_HEALTH = 100.0 / 1.25
 const BASE_SPEED = 300.0 / 1.25
@@ -78,9 +80,13 @@ func init(_seed : int, _player_shot_damage : float, _room : Room) -> void:
 	#self.scale /= scale_mod
 	if health > player_shot_damage:
 		(find_child("HealthSprite") as Sprite2D).visible = true
-	if ram_damage > BASE_RAM_DAMAGE:
-		var v : float = BASE_RAM_DAMAGE / ram_damage
-		modulate = Color(1, v, v)
+	if ram_damage > BASE_RAM_DAMAGE || teleport_cooldown > 0:
+		var ram_value : float = BASE_RAM_DAMAGE / ram_damage
+		var tel_value : float = teleport_cooldown / 5.0 if teleport_cooldown > 0 else 1.0
+		var r : float = min(1, tel_value)
+		var g : float = min(ram_value, tel_value)
+		var b : float = min(ram_value, 1)
+		modulate = Color(r, g, b)
 
 func _to_string() -> String:
 	var ret_val : String = "id=" + str(room.id)
@@ -94,6 +100,8 @@ func _to_string() -> String:
 		ret_val += " dmg=" + str(ram_damage)
 	if self_damage_multiple != 5:
 		ret_val += " def=" + str(5.0 / self_damage_multiple)
+	if teleport_cooldown > 0:
+		ret_val += " teleporting"
 		
 	return ret_val
 
@@ -135,11 +143,38 @@ func handle_player_collision(p : Player, delta: float) -> void:
 	if !audio_player.playing && gobble_sounds != null && gobble_sounds.streams_count > 0:
 		audio_player.stream = gobble_sounds
 		audio_player.play()
-		
+
+func can_teleport() -> bool:
+	if teleport_cooldown > 0:
+		return time_to_next_teleport <= 0
+	return false
+
+func teleport(vec_to_bullet : Vector2) -> void:
+	var perp : Vector2 = Vector2(vec_to_bullet.y, -vec_to_bullet.x)
+	var destination : Vector2 = room.GetSafeTeleportLocation(position + vec_to_bullet - perp, position)
+	if destination == position:
+		return
+	
+	print("TELEPORT")
+	#TODO: Do teleport FX
+	position = destination
+	time_to_next_teleport = teleport_cooldown
 
 func _physics_process(delta: float) -> void:
 	if nav_agent == null || nav_agent.is_navigation_finished():
 		return
+		
+	if can_teleport():
+		var should_teleport : Vector2 = Vector2.ZERO
+		for bullet : SimpleBullet in get_tree().get_nodes_in_group("bullet"):
+			var bullet_dir : Vector2 = bullet.global_position - global_position
+			if bullet_dir.length_squared() < 96 * 96:
+				should_teleport = bullet_dir
+				break
+		if should_teleport != Vector2.ZERO:
+			teleport(should_teleport)
+	elif teleport_cooldown > 0:
+		time_to_next_teleport -= delta
 	
 	var axis : Vector2 = to_local(nav_agent.get_next_path_position()).normalized()
 	velocity = axis * BASE_SPEED * speed_multiple
