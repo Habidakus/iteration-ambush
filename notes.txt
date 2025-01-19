@@ -11,6 +11,7 @@ Potential power ups:
 	- repulsor field that is used once per loop
 
 TODO:
+	- add GitHub URL to credits page
 	- better point blank ghost movement
 	- have an end goal (number of waves to endure to win)
 	- options menu
