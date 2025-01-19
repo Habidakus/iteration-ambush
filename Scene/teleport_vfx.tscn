@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://digfxn7ic20mb"]
+
+[ext_resource type="Texture2D" uid="uid://bnveerw6wpjnk" path="res://Art/ExplosionRing_01.png" id="1_10f1i"]
+
+[sub_resource type="Curve" id="Curve_w8vvb"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.363636, 0.328512), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_8gx8m"]
+offsets = PackedFloat32Array(0, 0.251445, 1)
+colors = PackedColorArray(0.392157, 0.392157, 1, 1, 0, 0, 1, 1, 0.392157, 0.392157, 1, 0)
+
+[node name="TeleportVFX" type="CPUParticles2D"]
+amount = 6
+lifetime = 0.25
+explosiveness = 1.0
+randomness = 1.0
+lifetime_randomness = 1.0
+texture = ExtResource("1_10f1i")
+emission_shape = 1
+emission_sphere_radius = 16.0
+gravity = Vector2(0, 0)
+radial_accel_max = 100.0
+angle_max = 90.0
+scale_amount_curve = SubResource("Curve_w8vvb")
+color_ramp = SubResource("Gradient_8gx8m")

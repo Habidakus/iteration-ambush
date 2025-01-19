@@ -21,6 +21,7 @@ const BASE_RAM_DAMAGE = 33
 
 var audio_player : AudioStreamPlayer
 var explosion_scene : Resource = preload("res://Scene/explosion.tscn")
+var teleport_vfx_scene : Resource = preload("res://Scene/teleport_vfx.tscn")
 @export var gobble_sounds : AudioStreamRandomizer
 @export var death_sounds : AudioStreamRandomizer
 
@@ -86,7 +87,14 @@ func init(_seed : int, _player_shot_damage : float, _room : Room) -> void:
 		var r : float = min(1, tel_value)
 		var g : float = min(ram_value, tel_value)
 		var b : float = min(ram_value, 1)
-		modulate = Color(r, g, b)
+		var c : Color = Color(r, g, b)
+		var h : float = c.h
+		var s : float = c.s
+		c = Color.RED
+		c.h = h
+		c.s = s
+		modulate = c
+		#print("r=" + str(r) + " g="+ str(g) + " b=" + str(b) + " h=" + str(h))
 
 func _to_string() -> String:
 	var ret_val : String = "id=" + str(room.id)
@@ -155,8 +163,33 @@ func teleport(vec_to_bullet : Vector2) -> void:
 	if destination == position:
 		return
 	
-	print("TELEPORT")
-	#TODO: Do teleport FX
+	var vfx1 : CPUParticles2D = teleport_vfx_scene.instantiate()
+	var vfx2 : CPUParticles2D = teleport_vfx_scene.instantiate()
+	var vfx3 : CPUParticles2D = teleport_vfx_scene.instantiate()
+	var vfx4 : CPUParticles2D = teleport_vfx_scene.instantiate()
+	vfx1.position = position
+	vfx2.position = destination
+	vfx3.position = position.lerp(destination, 0.333)
+	vfx4.position = position.lerp(destination, 0.666)
+	vfx1.emitting = true
+	vfx2.emitting = true
+	vfx3.emitting = true
+	vfx4.emitting = true
+	vfx1.one_shot = true
+	vfx2.one_shot = true
+	vfx3.one_shot = true
+	vfx4.one_shot = true
+	room.play_state.add_child(vfx1)
+	room.play_state.add_child(vfx2)
+	room.play_state.add_child(vfx3)
+	room.play_state.add_child(vfx4)
+	var tween = room.play_state.create_tween()
+	tween.tween_interval(0.5)
+	tween.tween_callback(vfx1.queue_free)
+	tween.tween_callback(vfx2.queue_free)
+	tween.tween_callback(vfx3.queue_free)
+	tween.tween_callback(vfx4.queue_free)
+	
 	position = destination
 	time_to_next_teleport = teleport_cooldown
 
