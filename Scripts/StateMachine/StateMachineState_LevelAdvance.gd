@@ -12,7 +12,6 @@ func enter_state() -> void:
 	var update_coin_callable : Callable = Callable(self, "update_coin")
 	var has_enough : Callable = Callable(self, "display_mods")
 	var is_short : Callable = Callable(self, "transition_to_next_state")
-	print("Calling drain coins")
 	%State_Play.drain_coins(update_coin_callable, has_enough, is_short)
 
 func exit_state(next_state: StateMachineState) -> void:

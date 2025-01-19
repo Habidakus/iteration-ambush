@@ -80,7 +80,6 @@ func init(_seed : int, _player_shot_damage : float, _room : Room) -> void:
 	if ram_damage > BASE_RAM_DAMAGE:
 		var v : float = BASE_RAM_DAMAGE / ram_damage
 		modulate = Color(1, v, v)
-	print("initializing enemy: " + str(self))
 
 func _to_string() -> String:
 	var ret_val : String = "id=" + str(room.id)
