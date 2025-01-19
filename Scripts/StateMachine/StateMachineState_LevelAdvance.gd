@@ -9,6 +9,7 @@ func enter_state() -> void:
 	%Player.set_ui_visibility(true)
 	%State_Play.update_waves_remaining(Callable(self, "update_waves_remaining"))
 	(find_child("CoinTotal") as CanvasItem).visible = true
+	(find_child("WavesToGo") as CanvasItem).visible = true
 	(find_child("ModsAvailable") as CanvasItem).visible = false
 	var update_coin_callable : Callable = Callable(self, "update_coin")
 	var has_enough : Callable = Callable(self, "display_mods")
@@ -29,6 +30,7 @@ func update_waves_remaining(new_waves_remaining : int) -> void:
 
 func display_mods() -> void:
 	(find_child("CoinTotal") as CanvasItem).visible = false
+	(find_child("WavesToGo") as CanvasItem).visible = false
 	(find_child("ModsAvailable") as CanvasItem).visible = true
 	player_mods = %State_Play.pick_player_mods()
 	for i in range(1, 5):
