@@ -249,6 +249,9 @@ func _physics_process(delta: float) -> void:
 				lock_audio_player.stream = lock_open_sound
 				lock_audio_player.volume_db = 0
 				lock_audio_player.play()
+		var urist : Urist = collision.get_collider() as Urist
+		if urist:
+			%PlayStateMachine.switch_state("PlayState_Victory")
 	
 	our_momentum = get_position_delta() / delta
 

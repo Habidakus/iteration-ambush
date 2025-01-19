@@ -2,6 +2,8 @@ extends StateMachineState
 
 class_name PlayState
 
+const WAVES_TO_WIN = 20
+
 var rooms : Array[Room]
 var go_active : bool = false
 var is_gameplay_active : bool = false
@@ -18,6 +20,7 @@ var last_room : Room
 
 enum Difficulty { Easy, Medium, Hard }
 var difficulty : Difficulty = Difficulty.Easy
+var waves_to_go : int = WAVES_TO_WIN
 
 # TODO: Make global
 var atlas_wall_source_id : int = 0
@@ -48,6 +51,7 @@ func restart() -> void:
 		
 	rooms.clear()
 	%Player.init_brand_new_game(self)
+	waves_to_go = WAVES_TO_WIN
 	go_active = false
 	total_coins = 0
 	is_gameplay_active = false
@@ -253,6 +257,12 @@ func apply_player_mod(player_mod : PlayerMod) -> void:
 	player_mod.selected()
 
 func mutate_map() -> void:
+	waves_to_go -= 1
+	if waves_to_go <= 1:
+		last_room.MakeFinalRoom()
+		last_room.ClearFromMaps(%TerrainMap, %ObjectMap)
+		last_room.ApplyToMaps(%TerrainMap, %ObjectMap)
+	
 	if build_rnd.randi_range(0, 4) == 0:
 		if mutate_map_key_lock(build_rnd):
 			return

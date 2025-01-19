@@ -21,6 +21,9 @@ var unspent_difficulty : int = 1
 var enemy_scene : Resource = preload("res://Scene/enemy.tscn")
 var has_enemy : bool = true
 
+var urist_scene : Resource = preload("res://Scene/urist.tscn")
+var urist : Urist = null
+
 var key_scene : Resource = preload("res://Scene/key.tscn")
 var key : Key = null
 var key_id : int = -1
@@ -54,6 +57,7 @@ enum RoomType {
 	Wall,
 	Loop,
 	LastRoom,
+	FinalRoom,
 }
 var room_type : RoomType = RoomType.UNDEFINED
 #var has_firepit : bool = false
@@ -214,8 +218,16 @@ func ResetRoom() -> void:
 			enemy.queue_free()
 		enemies.clear()
 
+	if urist:
+		urist.queue_free()
+		urist = null
+
 func SetAsLastRoom() -> void:
 	room_type = RoomType.LastRoom
+
+func MakeFinalRoom() -> void:
+	assert(room_type == RoomType.LastRoom)
+	room_type = RoomType.FinalRoom
 
 func MakePlayerSafe() -> void:
 	has_enemy = false
@@ -411,6 +423,11 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 			for ox in range(baseX + 5, baseX + size - 5):
 				for oy in range(baseY + 5, baseY + size - 5):
 					terrain.set_cell(Vector2i(ox, oy), atlas_source_id_other, atlas_coords_other_lastroom)
+		RoomType.FinalRoom:
+			urist = urist_scene.instantiate()
+			var our_center_pos : Vector2 = play_state.get_room_central_pos(x, y)
+			urist.position = our_center_pos
+			play_state.add_child(urist)
 		RoomType.BigPilar:
 			apply_pillar(terrain, baseX + 4, baseY + 4, rnd)
 			apply_pillar(terrain, baseX + 9, baseY + 4, rnd)

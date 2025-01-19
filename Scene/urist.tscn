@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://hsauymrh4a1m"]
+
+[ext_resource type="Script" path="res://Scripts/urist.gd" id="1_jgr31"]
+[ext_resource type="Texture2D" uid="uid://cw30ke7g0jvrv" path="res://Art/urist.png" id="2_6ls6t"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_71ttd"]
+radius = 11.0
+height = 42.0
+
+[node name="Urist" type="CharacterBody2D"]
+collision_mask = 5
+script = ExtResource("1_jgr31")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -4)
+texture = ExtResource("2_6ls6t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_71ttd")

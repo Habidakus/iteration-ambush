@@ -1,6 +1,6 @@
 extends StateMachineState
 
-var timer : float = 2
+var timer : float = 3
 
 func enter_state() -> void:
 	super.enter_state()

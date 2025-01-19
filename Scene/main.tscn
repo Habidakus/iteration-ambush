@@ -9,7 +9,6 @@
 [ext_resource type="AudioStream" uid="uid://cyrha1manpije" path="res://Sound/Glockenspiel/E4.mp3" id="4_bf70j"]
 [ext_resource type="FontFile" uid="uid://byymlkrvwrvqy" path="res://Fonts/Vintage Propagandist.ttf" id="4_rbybo"]
 [ext_resource type="AudioStream" uid="uid://cqphq1wwuekp2" path="res://Sound/Glockenspiel/G4.mp3" id="5_8p2bg"]
-[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState.gd" id="5_ku58m"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_MainMenu.gd" id="5_r1cm3"]
 [ext_resource type="FontFile" uid="uid://cw5poiupa2paf" path="res://Fonts/Destroya.ttf" id="6_1qfmw"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_Play.gd" id="6_q716x"]
@@ -24,6 +23,7 @@
 [ext_resource type="PackedScene" uid="uid://cb6e0fesdu8rd" path="res://Scene/player.tscn" id="14_blx2k"]
 [ext_resource type="Script" path="res://Scripts/ControlDecorator.gd" id="16_64sy8"]
 [ext_resource type="Texture2D" uid="uid://c2mshadwpkxar" path="res://Art/Coins.png" id="18_koehn"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayVictory.gd" id="22_apytm"]
 [ext_resource type="Script" path="res://Scripts/options_canvas.gd" id="25_wf6kf"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_k3dey"]
@@ -1154,9 +1154,26 @@ layout_mode = 2
 custom_minimum_size = Vector2(160, 80)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_rbybo")
 theme_override_font_sizes/font_size = 30
 text = "Accept"
+flat = true
+
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Dead/CanvasLayer/VBoxContainer/RestartButton"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("16_64sy8")
 
 [node name="PlayState_Victory" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
 visible = false
@@ -1166,7 +1183,62 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("5_ku58m")
+script = ExtResource("22_apytm")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Victory"]
+visible = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Victory/CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -254.5
+offset_top = -29.5
+offset_right = 254.5
+offset_bottom = 29.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Victory/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.796384, 0.422335, 1.92523e-07, 1)
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 108
+text = "Beloved Urist!
+I've found you!"
+horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Victory/CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+
+[node name="RestartButton" type="Button" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Victory/CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(160, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_rbybo")
+theme_override_font_sizes/font_size = 30
+text = "Accept"
+flat = true
+
+[node name="Decorator" type="ColorRect" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Victory/CanvasLayer/VBoxContainer/RestartButton"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("16_64sy8")
 
 [node name="PlayState_Asleep" type="Control" parent="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine"]
 visible = false
@@ -1367,6 +1439,7 @@ button_pressed = true
 [connection signal="gui_input" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control3/MarginContainer" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance" method="on_card3_gui_input"]
 [connection signal="gui_input" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control4/MarginContainer" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_LevelAdvance" method="on_card4_gui_input"]
 [connection signal="button_up" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Dead/CanvasLayer/VBoxContainer/RestartButton" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Dead" method="_on_restart_button_button_up"]
+[connection signal="button_up" from="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Victory/CanvasLayer/VBoxContainer/RestartButton" to="MarginContainer/MenuStateMachine/State_Play/PlayStateMachine/PlayState_Victory" method="_on_restart_button_button_up"]
 [connection signal="value_changed" from="OptionsCanvas/ColorRect/VBoxContainer/GridContainer/HBoxContainer/MasterSlider" to="OptionsCanvas" method="_on_master_slider_value_changed"]
 [connection signal="value_changed" from="OptionsCanvas/ColorRect/VBoxContainer/GridContainer/HBoxContainer3/MusicSlider" to="OptionsCanvas" method="_on_music_slider_value_changed"]
 [connection signal="value_changed" from="OptionsCanvas/ColorRect/VBoxContainer/GridContainer/HBoxContainer2/FXSlider" to="OptionsCanvas" method="_on_fx_slider_value_changed"]

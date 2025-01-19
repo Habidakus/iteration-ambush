@@ -1,0 +1,1 @@
+class_name Urist extends CharacterBody2D
