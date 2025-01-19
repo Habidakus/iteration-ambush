@@ -12,7 +12,6 @@ Potential power ups:
 
 TODO:
 	- better point blank ghost movement
-	- decaying chance at getting and upgrade (upper corner starts at 100% and goes down)
 	- have an end goal (number of waves to endure to win)
 	- options menu
 	- UI sound effects

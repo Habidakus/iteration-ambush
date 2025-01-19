@@ -8,6 +8,7 @@ var is_gameplay_active : bool = false
 var build_seed : int = 0
 var build_rnd : RandomNumberGenerator = null
 var last_room_player_was_in : Room = null
+var total_coins : int = 0
 
 var killed_this_wave : int = 0
 var spawned_this_wave : int = 0
@@ -48,6 +49,7 @@ func restart() -> void:
 	rooms.clear()
 	%Player.init_brand_new_game(self)
 	go_active = false
+	total_coins = 0
 	is_gameplay_active = false
 	first_room = null
 	last_room = null
@@ -487,13 +489,31 @@ func get_room_by_id(id : int) -> Room:
 		if room.id == id:
 			return room
 	return null
+	
+func drain_coins(update_coin : Callable, has_enough : Callable, is_short : Callable) -> void:
+	var earned_coins : int = round(100 * %Player.compute_level_time_fraction())
+	var start_coins : int = total_coins
+	total_coins += earned_coins
+	var end_coins : int = total_coins
+	var lower_player_coins : Callable = %Player.get_lower_coins_callable()
+
+	const time_to_move_coins = 2.5
+	var tween = create_tween()
+	tween.tween_method(update_coin, start_coins, end_coins, time_to_move_coins).set_ease(Tween.EASE_IN)
+	tween.parallel()
+	tween.tween_method(lower_player_coins, earned_coins, 0, time_to_move_coins).set_ease(Tween.EASE_IN)
+	if total_coins >= 100:
+		total_coins -= 100
+		tween.tween_callback(has_enough)
+	else:
+		tween.tween_callback(is_short)
 
 func spawn_map() -> void:
 	go_active = true
 	killed_this_wave = 0
 	spawned_this_wave = 0
 	assert(is_gameplay_active == false)
-	%Player.spawn(first_room, get_room_central_pos(first_room.x, first_room.y))
+	%Player.spawn(first_room, get_room_central_pos(first_room.x, first_room.y), rooms.size())
 	var key_lock_pairs : Array = []
 	for room : Room in rooms:
 		if room.key_id != -1:

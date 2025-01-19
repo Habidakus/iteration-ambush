@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://cb6e0fesdu8rd"]
+[gd_scene load_steps=24 format=3 uid="uid://cb6e0fesdu8rd"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_lncui"]
 [ext_resource type="AudioStream" uid="uid://5cd86l3jwhhl" path="res://Sound/equip01.wav" id="2_rg562"]
@@ -19,6 +19,7 @@
 [ext_resource type="AudioStream" uid="uid://du3dcjj727f8o" path="res://Sound/UI_powerup04.wav" id="9_vo1k8"]
 [ext_resource type="AudioStream" uid="uid://b6upq8lr6b3fa" path="res://Sound/UI_Pickup03.wav" id="10_g0058"]
 [ext_resource type="AudioStream" uid="uid://bje8mxd64khtf" path="res://Sound/UI_Fire02_looping.wav" id="11_wiqsd"]
+[ext_resource type="Texture2D" uid="uid://c2mshadwpkxar" path="res://Art/Coins.png" id="13_7r5g6"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_wyvt7"]
 playback_mode = 1
@@ -127,6 +128,37 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "100/100"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Timer" type="Node2D" parent="UI"]
+position = Vector2(950, 10)
+
+[node name="TimerHolder" type="ColorRect" parent="UI/Timer"]
+custom_minimum_size = Vector2(75, 40)
+offset_left = -75.0
+offset_bottom = 40.0
+
+[node name="TimerColor" type="ColorRect" parent="UI/Timer"]
+custom_minimum_size = Vector2(35, 30)
+offset_left = -70.0
+offset_top = 5.0
+offset_right = -35.0
+offset_bottom = 35.0
+color = Color(0, 1, 0.233333, 1)
+
+[node name="TimerLabel" type="Label" parent="UI/Timer"]
+custom_minimum_size = Vector2(35, 30)
+offset_left = -70.0
+offset_top = 5.0
+offset_right = -35.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="UI/Timer"]
+position = Vector2(-20, 20)
+texture = ExtResource("13_7r5g6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_mi3pv")

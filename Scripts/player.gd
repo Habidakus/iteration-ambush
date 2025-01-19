@@ -25,6 +25,13 @@ var gun_sprite : Sprite2D = null
 var ui_current_health_bar : ColorRect = null
 var ui_current_health_label : Label = null
 var ui_current_health_max_width : float = 200
+var ui_timer_color : ColorRect = null
+var ui_timer_label : Label = null
+var ui_timer_color_good : Color = Color.from_string("#00ff3b", Color.GREEN)
+var ui_timer_color_ok : Color = Color.YELLOW
+var ui_timer_color_bad : Color = Color.RED
+var level_timer : float = 0
+var level_time_expected : float = 60.0
 var owned_keys : Array[int]
 var hand_size : int = 2
 @export var reload_sounds : AudioStreamRandomizer
@@ -52,6 +59,11 @@ func _ready() -> void:
 	firepit_audio_player = find_child("AudioStreamPlayer_Fire") as AudioStreamPlayer
 	assert(firepit_audio_player)
 
+	ui_timer_color = find_child("TimerColor") as ColorRect
+	assert(ui_timer_color)
+	ui_timer_label = find_child("TimerLabel") as Label
+	assert(ui_timer_label)
+
 	firepit_audio_player.stream = firepit_sound
 	firepit_audio_player.volume_db = -15
 	$AudioStreamPlayer.stream = reload_sounds
@@ -74,7 +86,9 @@ func init_brand_new_game(play_state : PlayState) -> void:
 	has_regeneration = false
 	set_health_bar()
 
-func spawn(_room: Room, pos : Vector2) -> void:
+func spawn(_room: Room, pos : Vector2, room_count : int) -> void:
+	level_time_expected = 20 + room_count * 15 * 64 / INITIAL_SPEED
+	level_timer = 0
 	owned_keys.clear()
 	if has_regeneration:
 		current_health = min(current_health + 5, max_health)
@@ -138,6 +152,17 @@ func set_ui_visibility(_visible : bool) -> void:
 
 func stop_anim() -> void:
 	(find_child("AnimatedSprite2D") as AnimatedSprite2D).pause()
+
+func compute_level_time_fraction() -> float:
+	var level_timer_fraction : float = min(1.0, level_time_expected / (level_time_expected + level_timer))
+	var fraction : float = exp(0.0 - (1.0 - level_timer_fraction) * (1.0 - level_timer_fraction))
+	return fraction
+
+func get_lower_coins_callable() -> Callable:
+	return Callable(self, "update_timer_label")
+
+func update_timer_label(coins : int) -> void:
+	ui_timer_label.text = str(coins)
 	
 func _physics_process(delta: float) -> void:
 	if firepit_sound_continue > 0:
@@ -147,6 +172,16 @@ func _physics_process(delta: float) -> void:
 			
 	if %State_Play.is_gameplay_active == false:
 		return
+
+	level_timer += delta
+	var level_timer_fraction : float = compute_level_time_fraction()
+	update_timer_label(round(100 * level_timer_fraction))
+	if level_timer_fraction < 0.4:
+		ui_timer_color.color = ui_timer_color_bad
+	elif level_timer_fraction < 0.7:
+		ui_timer_color.color = ui_timer_color_bad.lerp(ui_timer_color_ok, (level_timer_fraction - 0.4) / 0.3)
+	else:
+		ui_timer_color.color = ui_timer_color_ok.lerp(ui_timer_color_good, (level_timer_fraction - 0.7) / 0.3)
 	
 	#look_at(get_global_mouse_position())
 	
