@@ -5,12 +5,12 @@ Location of some MIT notes:
 	https://github.com/gleitz/midi-js-soundfonts/tree/gh-pages/MusyngKite
 
 Potential power ups:
-	- better handling (no more drifting)
 	- only wake monsters behind locks after the lock is destroyed
 	- repulsor field that is used once per loop
 	- switch room hazards to boons
 
 TODO:
+	- add sword throwing room
 	- Color keys should stay completely consistant as waves advance
 	- add GitHub URL to credits page
 	- better point blank ghost movement
