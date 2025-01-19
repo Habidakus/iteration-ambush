@@ -8,9 +8,11 @@ const INITIAL_MAX_COOLDOWN = 1.75
 const INITIAL_DAMAGE = 101.0
 const INITIAL_MAX_HEALTH = 100.0
 const INITIAL_BULLET_LIFETIME = 0.75
+const INITIAL_BULLET_SPEED = 400
 const INITIAL_FIRE_RESISTANCE = 1.0
 
 var our_momentum : Vector2
+var has_cleats : bool = false
 var fire_resistance : float = INITIAL_FIRE_RESISTANCE
 var fire_cooldown : float = 0
 var fire_cooldown_max : float = INITIAL_MAX_COOLDOWN
@@ -20,6 +22,7 @@ var max_health : float = INITIAL_MAX_HEALTH
 var shot_damage : float = INITIAL_DAMAGE
 var current_speed : float = INITIAL_SPEED
 var bullet_lifetime : float = INITIAL_BULLET_LIFETIME
+var bullet_speed : float = INITIAL_BULLET_SPEED
 var ui_layer : CanvasLayer = null
 var gun_sprite : Sprite2D = null
 var ui_current_health_bar : ColorRect = null
@@ -74,6 +77,9 @@ func defered_init() -> void:
 	ui_current_health_max_width = (find_child("MaxHealth") as ColorRect).custom_minimum_size.x
 	set_health_bar()
 
+func current_bullet_speed() -> float:
+	return bullet_speed
+
 func init_brand_new_game(play_state : PlayState) -> void:
 	owned_keys.clear()
 	current_speed = INITIAL_SPEED
@@ -84,8 +90,10 @@ func init_brand_new_game(play_state : PlayState) -> void:
 	current_health = max_health
 	shot_damage = INITIAL_DAMAGE
 	bullet_lifetime = INITIAL_BULLET_LIFETIME
+	bullet_speed = INITIAL_BULLET_SPEED
 	fire_resistance = INITIAL_FIRE_RESISTANCE
 	has_regeneration = false
+	has_cleats = false
 	set_health_bar()
 
 func spawn(_room: Room, pos : Vector2, room_count : int) -> void:
@@ -144,6 +152,9 @@ func apply_fire_pit(room: Room, delta : float) -> void:
 
 func get_shot_damage() -> float:
 	return shot_damage
+	
+func get_total_bullet_distance() -> float:
+	return bullet_speed * bullet_lifetime
 
 func fire_bullet() -> void:
 	var bullet : StaticBody2D = bullet_simple_scene.instantiate()
@@ -213,6 +224,9 @@ func _physics_process(delta: float) -> void:
 		if fire_cooldown < 0:
 			fire_bullet()
 			anim.play("unarmed")
+	
+	if has_cleats:
+		our_momentum = Vector2.ZERO
 
 	var acc_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	if acc_dir == Vector2.ZERO:

@@ -14,6 +14,7 @@ static func GetAllMods(_player : Player, _play_state : PlayState) -> Array[Playe
 	ret_val.append(PlayerMod_FurtherBullets.new())
 	ret_val.append(PlayerMod_FireResistance.new())
 	ret_val.append(PlayerMod_Regeneration.new())
+	ret_val.append(PlayerMod_NoSliding.new())
 	for pm : PlayerMod in ret_val:
 		pm.init(_player, _play_state)
 	return ret_val

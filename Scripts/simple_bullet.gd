@@ -7,7 +7,7 @@ var lifetime : float = 4
 var damage : float = 101
 var movement_dir : float
 var rotation_speed : float = -10.0
-const SPEED : float = 400
+var speed : float = 400
 
 var explosion_scene : Resource = preload("res://Scene/wall_hit_vfx.tscn")
 @export var hit_wall_sounds : AudioStreamRandomizer
@@ -40,6 +40,7 @@ func init(_lifetime : float, _player : Player) -> void:
 	movement_dir = rotation
 	player = _player
 	lifetime = _lifetime
+	speed = _player.current_bullet_speed()
 
 func collide_with_enemy(enemy: Enemy, col_glob_pos : Vector2) -> void:
 	# Sometimes both the bullet will collide with the enemy, and then the enemy
@@ -56,7 +57,7 @@ func collide_with_enemy(enemy: Enemy, col_glob_pos : Vector2) -> void:
 
 func _physics_process(delta : float) -> void:
 	lifetime -= delta
-	var move_delta : Vector2 = Vector2.RIGHT.rotated(movement_dir) * SPEED * delta
+	var move_delta : Vector2 = Vector2.RIGHT.rotated(movement_dir) * speed * delta
 	if lifetime <= 0:
 		#print("f=" + str(global_position))
 		die(position, hit_wall_sounds, -20)
