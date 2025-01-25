@@ -19,7 +19,6 @@ TODO:
 	- add crenelated room
 	- add arena room (vometorium near entrances, blockers around non-entrances)
 	- Have only two monster power-ups per room
-	- Color keys should stay completely consistant as waves advance
 	- add GitHub URL to credits page
 	- better point blank ghost movement
 	- UI sound effects
