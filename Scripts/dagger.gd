@@ -41,6 +41,7 @@ func collide_with_player(player: Player, _col_glob_pos : Vector2) -> void:
 		return
 	player.take_damage(damage, true)
 	is_dead = true
+	queue_free()
 
 func _physics_process(delta : float) -> void:
 	var move_delta : Vector2 = Vector2.RIGHT.rotated(movement_dir) * speed * delta
