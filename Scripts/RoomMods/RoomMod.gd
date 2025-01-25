@@ -10,9 +10,10 @@ enum Mod {
 	Rammer = 4,
 	Shrink = 5,
 	Teleporter = 6,
+	DaggerThrower = 7,
 }
 
-static func SelectThreeMods(rnd : RandomNumberGenerator) -> Array[RoomMod]:
+static func SelectThreeMods(rnd : RandomNumberGenerator, room : Room) -> Array[RoomMod]:
 	var possible : Array = [
 		[rnd.randf(), Mod.Endurance],
 		[rnd.randf_range(0, 0.9), Mod.Faster], 
@@ -21,12 +22,16 @@ static func SelectThreeMods(rnd : RandomNumberGenerator) -> Array[RoomMod]:
 		[rnd.randf(), Mod.Rammer],
 		[rnd.randf(), Mod.Shrink],
 		[rnd.randf_range(0, 0.75), Mod.Teleporter],
+		[rnd.randf(), Mod.DaggerThrower],
 	]
 	possible.sort_custom(func(a,b): return a[0] > b[0])
 	var ret_val : Array[RoomMod]
-	ret_val.append(CreateMod(possible[0][1]))
-	ret_val.append(CreateMod(possible[1][1]))
-	ret_val.append(CreateMod(possible[2][1]))
+	var index : int = 0
+	while ret_val.size() < 3:
+		var mod : RoomMod = CreateMod(possible[index][1])
+		if mod.is_viable(room):
+			ret_val.append(mod)
+		index += 1
 	return ret_val
 
 static func CreateMod(modEnum : Mod) -> RoomMod:
@@ -38,6 +43,7 @@ static func CreateMod(modEnum : Mod) -> RoomMod:
 		Mod.Rammer: return RoomMod_Rammer.new()
 		Mod.Shrink: return RoomMod_Shrink.new()
 		Mod.Teleporter: return RoomMod_Teleporter.new()
+		Mod.DaggerThrower: return RoomMod_DaggerThrower.new()
 	assert(false)
 	return null
 
@@ -50,6 +56,10 @@ func can_advance() -> bool:
 
 func advance() -> void:
 	assert(false)
+
+func is_viable(_room : Room) -> bool:
+	assert(false)
+	return false
 
 func apply_to_room(_room : Room) -> void:
 	assert(false)

@@ -18,6 +18,10 @@ var fire_damage : float = 20.0
 var room_mods : Array[RoomMod]
 var unspent_difficulty : int = 1
 
+var dagger_thrower_reload : float = -1
+var dagger_thrower_scene : Resource = preload("res://Scene/dagger_thrower.tscn")
+var dagger_thrower : DaggerThrower = null
+
 var enemy_scene : Resource = preload("res://Scene/enemy.tscn")
 var has_enemy : bool = true
 
@@ -44,7 +48,6 @@ var atlas_coords_other_floor : Vector2i = Vector2i(0, 0)
 var atlas_coords_other_firepit : Vector2i = Vector2i(2, 0)
 var atlas_coords_other_lastroom : Vector2i = Vector2i(1, 0)
 
-# TODO: No, repalce with enum
 enum RoomType {
 	UNDEFINED,
 	Empty,
@@ -60,13 +63,6 @@ enum RoomType {
 	FinalRoom,
 }
 var room_type : RoomType = RoomType.UNDEFINED
-#var has_firepit : bool = false
-#var has_many_firepit : bool = false
-#var is_narrow : bool = false
-#var is_diamond : bool = false
-#var is_pilars : bool = false
-#var is_many_pilars : bool = false
-#var is_last_room : bool = false
 
 static var global_id : int = 0
 
@@ -94,7 +90,7 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 		4:
 			room.room_type = RoomType.BigPilar
 			
-	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd)
+	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd, room)
 	while room.unspent_difficulty > 0:
 		room.SpendDifficulty(cplay_state.build_rnd)
 		room.unspent_difficulty -= 1
@@ -132,13 +128,19 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 			room.room_type = RoomType.Loop
 		8:
 			room.room_type = RoomType.Empty
-	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd)
+	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd, room)
 	while room.unspent_difficulty > 0:
 		room.SpendDifficulty(cplay_state.build_rnd)
 		room.unspent_difficulty -= 1
 	return room
 
 func SpendDifficulty(rnd : RandomNumberGenerator) -> void:
+	if play_state.last_room == self:
+		return
+
+	if play_state.first_room == self:
+		return
+		
 	var count : int = 0
 	for mod : RoomMod in room_mods:
 		if mod.can_advance():
@@ -166,6 +168,11 @@ func StopTracking(enemy : Enemy) -> void:
 	
 func GetParentRoom() -> Room:
 	return parent_room
+
+func CanHaveDaggerThrower() -> bool:
+	if room_type == RoomType.Empty || room_type == RoomType.ManyFirepits || room_type == RoomType.BigFirepit:
+		return key_id == -1
+	return false
 
 func FixParenting(possible_parent_a : Room, possible_parent_b : Room) -> void:
 	if possible_parent_a.parent_room == possible_parent_b:
@@ -220,6 +227,10 @@ func ResetRoom() -> void:
 	if urist:
 		urist.queue_free()
 		urist = null
+	
+	if dagger_thrower:
+		dagger_thrower.queue_free()
+		dagger_thrower = null
 
 func SetAsLastRoom() -> void:
 	room_type = RoomType.LastRoom
@@ -305,6 +316,13 @@ func Spawn(rnd : RandomNumberGenerator) -> void:
 		key.position = play_state.get_room_central_pos(x, y)
 		key.init(key_id, self)
 		play_state.add_child(key)
+	
+	if dagger_thrower_reload > 0:
+		dagger_thrower = dagger_thrower_scene.instantiate()
+		var our_center_pos : Vector2 = play_state.get_room_central_pos(x, y)
+		dagger_thrower.position = our_center_pos
+		dagger_thrower.init(self, dagger_thrower_reload)
+		play_state.add_child(dagger_thrower)
 
 	if has_enemy:
 		assert(enemies.is_empty())
@@ -460,14 +478,14 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 		RoomType.BigFirepit:
 			for ox in range(baseX + 4, baseX + size - 4):
 				for oy in range(baseY + 4, baseY + size - 4):
-					terrain.set_cell(Vector2i(ox, oy), atlas_source_id_other, atlas_coords_other_firepit)
+					apply_firepit(terrain, ox, oy)
 		RoomType.ManyFirepits:
 			for dx in range(2, 6):
 				for dy in range(2, 6):
-					terrain.set_cell(Vector2i(baseX + dx, baseY + dy), atlas_source_id_other, atlas_coords_other_firepit)
-					terrain.set_cell(Vector2i(baseX + dx, baseY + size - (1 + dy)), atlas_source_id_other, atlas_coords_other_firepit)
-					terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + dy), atlas_source_id_other, atlas_coords_other_firepit)
-					terrain.set_cell(Vector2i(baseX + size - (1 + dx), baseY + size - (1 + dy)), atlas_source_id_other, atlas_coords_other_firepit)
+					apply_firepit(terrain, baseX + dx, baseY + dy)
+					apply_firepit(terrain, baseX + dx, baseY + size - (1 + dy))
+					apply_firepit(terrain, baseX + size - (1 + dx), baseY + dy)
+					apply_firepit(terrain, baseX + size - (1 + dx), baseY + size - (1 + dy))
 
 func apply_pillar(terrain : TileMapLayer, px : int, py : int, rnd : RandomNumberGenerator) -> void:
 	terrain.set_cell(Vector2i(px, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
@@ -478,6 +496,9 @@ func apply_pillar(terrain : TileMapLayer, px : int, py : int, rnd : RandomNumber
 func apply_wall(terrain : TileMapLayer, px : int, py : int, rnd : RandomNumberGenerator) -> void:
 	terrain.set_cell(Vector2i(px, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
 
+func apply_firepit(terrain : TileMapLayer, px : int, py : int) -> void:
+	terrain.set_cell(Vector2i(px, py), atlas_source_id_other, atlas_coords_other_firepit)
+	
 func apply_floor(terrain : TileMapLayer, px : int, py : int, _rnd : RandomNumberGenerator) -> void:
 	terrain.set_cell(Vector2i(px, py), atlas_source_id_other, atlas_coords_other_floor)
 

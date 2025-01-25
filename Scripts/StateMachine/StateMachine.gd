@@ -27,6 +27,10 @@ func switch_state_internal(state: StateMachineState) -> void:
 func switch_state(next_state_name: String) -> void:
 	for state : StateMachineState in all_states:
 		if state.name == next_state_name:
+			if current_state == state:
+				print("Already in state " + next_state_name + ", aborting state switch")
+				return
+
 			switch_state_internal(state)
 			return
 	assert(false, "{0} is not a valid state".format([next_state_name]))

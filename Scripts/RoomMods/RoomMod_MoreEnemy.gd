@@ -11,6 +11,9 @@ func can_advance() -> bool:
 func advance() -> void:
 	multiple *= 1.25
 
+func is_viable(_room : Room) -> bool:
+	return true
+
 func apply_to_room(room : Room) -> void:
 	room.enemy_count = multiple
 
