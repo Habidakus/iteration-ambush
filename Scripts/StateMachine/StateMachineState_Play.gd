@@ -281,7 +281,7 @@ func update_waves_remaining(update_label : Callable) -> void:
 
 func mutate_map() -> void:
 	
-	if build_rnd.randi_range(0, 4) == 0:
+	if build_rnd.randi_range(0, 14) != 0:
 		if mutate_map_key_lock(build_rnd):
 			return
 	if build_rnd.randi_range(0, 1) == 0:
@@ -544,20 +544,45 @@ func spawn_map() -> void:
 	spawned_this_wave = 0
 	assert(is_gameplay_active == false)
 	%Player.spawn(first_room, get_room_central_pos(first_room.x, first_room.y), rooms.size())
-	var key_lock_pairs : Array = []
 	for room : Room in rooms:
 		if room.key_id != -1:
-			key_lock_pairs.append([room, room.key_id])
-	key_lock_pairs.sort_custom(func(a,b): return a[1] < b[1])
-	if key_lock_pairs.size() > 0:
-		key_lock_pairs[0][0].SetKeyColor(Color.WHITE)
-		get_room_by_id(key_lock_pairs[0][1]).SetLockColor(Color.WHITE)
-		key_lock_pairs.remove_at(0)
-	if key_lock_pairs.size() > 0:
-		var hue_inc : float = 1.0 / key_lock_pairs.size()
-		var c : Color = Color.RED
-		c.h = 0
-		for key_lock_pair : Array in key_lock_pairs:
-			key_lock_pair[0].SetKeyColor(c)
-			get_room_by_id(key_lock_pair[1]).SetLockColor(c)
-			c.h += hue_inc
+			var key_color : Color = get_room_color(room.key_id)
+			get_room_by_id(room.key_id).SetLockColor(key_color)
+			room.SetKeyColor(key_color)
+
+var room_color_dictionary : Dictionary
+func get_room_color(room_id : int) -> Color:
+	if room_color_dictionary.is_empty():
+		room_color_dictionary[room_id] = Color.WHITE
+		return Color.WHITE
+	if room_color_dictionary.has(room_id):
+		return room_color_dictionary[room_id]
+	if room_color_dictionary.size() == 1: # Only has white
+		room_color_dictionary[room_id] = Color.RED
+		return Color.RED
+	var r : int = room_color_dictionary.size() + 2
+	var hue_inc : float = 1.0 / r
+	var c : Color = Color.RED
+	c.h = 0
+	var best_color : Color = Color.BLUE
+	var max_dist : float = 0
+	for i in range(1, r):
+		var h : float = i * hue_inc
+		c.h = h
+		var min_dist : float = 100.0
+		for j in room_color_dictionary.keys():
+			var dist : float = get_hue_distance(room_color_dictionary[j], c)
+			if dist < min_dist:
+				min_dist = dist
+		if min_dist > max_dist:
+			max_dist = min_dist
+			best_color = c
+	room_color_dictionary[room_id] = best_color
+	return best_color
+
+static func get_hue_distance(left : Color, right : Color) -> float:
+	var left_radian : float = (left.h * 2.0 * PI)
+	var right_radian : float = (right.h * 2.0 * PI)
+	var left_vector : Vector2 = Vector2(cos(left_radian), sin(left_radian))
+	var right_vector : Vector2 = Vector2(cos(right_radian), sin(right_radian))
+	return (left_vector - right_vector).length()
