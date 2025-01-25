@@ -281,7 +281,7 @@ func update_waves_remaining(update_label : Callable) -> void:
 
 func mutate_map() -> void:
 	
-	if build_rnd.randi_range(0, 14) != 0:
+	if build_rnd.randi_range(0, 4) == 0:
 		if mutate_map_key_lock(build_rnd):
 			return
 	if build_rnd.randi_range(0, 1) == 0:
@@ -312,7 +312,6 @@ func mutate_map_key_lock(rnd : RandomNumberGenerator) -> bool:
 				potential_south.append(room)
 	var count : int = potential_east.size() + potential_west.size() + potential_north.size() + potential_south.size()
 	if count == 0:
-		print("Failed to add lock and key")
 		return false
 	var index : int = rnd.randi_range(0, count - 1)
 	if index < potential_east.size():

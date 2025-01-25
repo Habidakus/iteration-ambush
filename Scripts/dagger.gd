@@ -75,6 +75,10 @@ func _physics_process(delta : float) -> void:
 			position += move_delta
 			return
 		
+		var lock : Lock = collider as Lock
+		if lock != null:
+			return
+		
 		var dagger_thrower : DaggerThrower = collider as DaggerThrower
 		if dagger_thrower != null:
 			position += move_delta
