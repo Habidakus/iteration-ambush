@@ -171,7 +171,8 @@ func GetParentRoom() -> Room:
 
 func CanHaveDaggerThrower() -> bool:
 	if room_type == RoomType.Empty || room_type == RoomType.ManyFirepits || room_type == RoomType.BigFirepit:
-		return key_id == -1
+		if key_id == -1:
+			return play_state.first_room != self && play_state.last_room != self
 	return false
 
 func FixParenting(possible_parent_a : Room, possible_parent_b : Room) -> void:
