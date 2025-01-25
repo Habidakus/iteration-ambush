@@ -19,6 +19,9 @@ const BASE_HEALTH = 100.0 / 1.25
 const BASE_SPEED = 300.0 / 1.25
 const BASE_RAM_DAMAGE = 33
 
+var color_when_charged : Color = Color.WHITE
+var color_when_spent : Color = Color.WHITE
+
 var audio_player : AudioStreamPlayer
 var explosion_scene : Resource = preload("res://Scene/explosion.tscn")
 var teleport_vfx_scene : Resource = preload("res://Scene/teleport_vfx.tscn")
@@ -81,20 +84,15 @@ func init(_seed : int, _player_shot_damage : float, _room : Room) -> void:
 	#self.scale /= scale_mod
 	if health > player_shot_damage:
 		(find_child("HealthSprite") as Sprite2D).visible = true
-	if ram_damage > BASE_RAM_DAMAGE || teleport_cooldown > 0:
-		var ram_value : float = BASE_RAM_DAMAGE / ram_damage
-		var tel_value : float = teleport_cooldown / 5.0 if teleport_cooldown > 0 else 1.0
-		var r : float = min(1, tel_value)
-		var g : float = min(ram_value, tel_value)
-		var b : float = min(ram_value, 1)
-		var c : Color = Color(r, g, b)
-		var h : float = c.h
-		var s : float = c.s
-		c = Color.RED
-		c.h = h
-		c.s = s
-		modulate = c
-		#print("r=" + str(r) + " g="+ str(g) + " b=" + str(b) + " h=" + str(h))
+	if ram_damage > BASE_RAM_DAMAGE:
+		color_when_spent = Color(1, 0, 0)
+		if teleport_cooldown > 0:
+			color_when_charged = Color(1, 0, 1)
+		else:
+			color_when_charged = Color(1, 0, 0)
+	elif teleport_cooldown > 0:
+		color_when_charged = Color(0, 0, 1)
+	modulate = color_when_charged
 
 func _to_string() -> String:
 	var ret_val : String = "id=" + str(room.id)
@@ -192,6 +190,15 @@ func teleport(vec_to_bullet : Vector2) -> void:
 	
 	position = destination
 	time_to_next_teleport = teleport_cooldown
+	adjust_color()
+
+func adjust_color() -> void:
+	if can_teleport():
+		modulate = color_when_charged
+	else:
+		var fraction : float = time_to_next_teleport / teleport_cooldown
+		fraction = sqrt(sqrt(fraction))
+		modulate = color_when_charged.lerp(color_when_spent, fraction)
 
 func _physics_process(delta: float) -> void:
 	if nav_agent == null || nav_agent.is_navigation_finished():
@@ -208,6 +215,7 @@ func _physics_process(delta: float) -> void:
 			teleport(should_teleport)
 	elif teleport_cooldown > 0:
 		time_to_next_teleport -= delta
+		adjust_color()
 	
 	var axis : Vector2 = to_local(nav_agent.get_next_path_position()).normalized()
 	velocity = axis * BASE_SPEED * speed_multiple

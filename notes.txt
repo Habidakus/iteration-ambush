@@ -13,7 +13,6 @@ TODO:
 	- add states when map is being mutated where we first pan the camera out to see entire map, then pan the camera back in
 	- add sounds for sword throwing room
 	- monsters can't travel faster than current player max?
-	- Make ghosts primary colors only (pure red, pure blue) - although might be good to have blue switch to white after t-port and then power back to blue as recharges
 	- give t-port ghosts 10 different possible locations, and have them pick the one that's the same distance from the player, but farthest from the dagger
 	- Add new "slow" ghost that slows you down in an area, maybe they're green?
 	- add crenelated room
