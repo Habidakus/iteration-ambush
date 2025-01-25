@@ -2,7 +2,7 @@ extends StateMachineState
 
 class_name PlayState
 
-const WAVES_TO_WIN = 20
+const WAVES_TO_WIN = 12
 
 var rooms : Array[Room]
 var go_active : bool = false
