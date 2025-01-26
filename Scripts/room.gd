@@ -59,6 +59,8 @@ enum RoomType {
 	ManyPilars,
 	Wall,
 	Loop,
+	Arena,
+	Crenelations,
 	LastRoom,
 	FinalRoom,
 }
@@ -77,7 +79,7 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 	room.key_id = clock_room.id
 	room.parent_room = clock_room
 
-	match cplay_state.build_rnd.randi_range(0,5):
+	match cplay_state.build_rnd.randi_range(0,7):
 		0:
 			room.room_type = RoomType.ManyFirepits
 			room.unspent_difficulty -= 1
@@ -89,6 +91,10 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 			room.room_type = RoomType.Narrow
 		4:
 			room.room_type = RoomType.BigPilar
+		5:
+			room.room_type = RoomType.Arena
+		6:
+			room.room_type = RoomType.Crenelations
 			
 	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd, room)
 	while room.unspent_difficulty > 0:
@@ -107,7 +113,7 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 	room.play_state = cplay_state
 	room.parent_room = parent
 
-	match cplay_state.build_rnd.randi_range(0,9):
+	match cplay_state.build_rnd.randi_range(0,11):
 		0:
 			room.room_type = RoomType.BigFirepit
 			room.unspent_difficulty -= 1
@@ -128,6 +134,10 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 			room.room_type = RoomType.Loop
 		8:
 			room.room_type = RoomType.Empty
+		9:
+			room.room_type = RoomType.Arena
+		10:
+			room.room_type = RoomType.Crenelations
 	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd, room)
 	while room.unspent_difficulty > 0:
 		room.SpendDifficulty(cplay_state.build_rnd)
@@ -487,6 +497,35 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 					apply_firepit(terrain, baseX + dx, baseY + size - (1 + dy))
 					apply_firepit(terrain, baseX + size - (1 + dx), baseY + dy)
 					apply_firepit(terrain, baseX + size - (1 + dx), baseY + size - (1 + dy))
+		RoomType.Arena:
+			for i in range(1, 4):
+				if north != null:
+					apply_wall(terrain, baseX + 6, baseY + i, rnd)
+					apply_wall(terrain, baseX + 8, baseY + i, rnd)
+				else:
+					apply_wall(terrain, baseX + 5 + i, baseY + 2, rnd)
+				if west != null:
+					apply_wall(terrain, baseX + i, baseY + 6, rnd)
+					apply_wall(terrain, baseX + i, baseY + 8, rnd)
+				else:
+					apply_wall(terrain, baseX + 2, baseY + 5 + i, rnd)
+				if south != null:
+					apply_wall(terrain, baseX + 6, baseY + size - (1 + i), rnd)
+					apply_wall(terrain, baseX + 8, baseY + size - (1 + i), rnd)
+				else:
+					apply_wall(terrain, baseX + 5 + i, baseY + size - 3, rnd)
+				if east != null:
+					apply_wall(terrain, baseX + size - (1 + i), baseY + 6, rnd)
+					apply_wall(terrain, baseX + size - (1 + i), baseY + 8, rnd)
+				else:
+					apply_wall(terrain, baseX + size - 3, baseY + 5 + i, rnd)
+		RoomType.Crenelations:
+			for i in [4,6,8,10]:
+				for j in range(1,3):
+					apply_wall(terrain, baseX + i, baseY + j, rnd)
+					apply_wall(terrain, baseX + j, baseY + i, rnd)
+					apply_wall(terrain, baseX + i, baseY + size - (1 + j), rnd)
+					apply_wall(terrain, baseX + size - (1 + j), baseY + i, rnd)
 
 func apply_pillar(terrain : TileMapLayer, px : int, py : int, rnd : RandomNumberGenerator) -> void:
 	terrain.set_cell(Vector2i(px, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))

@@ -15,8 +15,6 @@ TODO:
 	- monsters can't travel faster than current player max?
 	- give t-port ghosts 10 different possible locations, and have them pick the one that's the same distance from the player, but farthest from the dagger
 	- Add new "slow" ghost that slows you down in an area, maybe they're green?
-	- add crenelated room
-	- add arena room (vometorium near entrances, blockers around non-entrances)
 	- Have only two monster power-ups per room
 	- add GitHub URL to credits page
 	- better point blank ghost movement
