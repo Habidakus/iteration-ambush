@@ -79,7 +79,7 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 	room.key_id = clock_room.id
 	room.parent_room = clock_room
 
-	match cplay_state.build_rnd.randi_range(0,7):
+	match cplay_state.build_rnd.randi_range(0,6):
 		0:
 			room.room_type = RoomType.ManyFirepits
 			room.unspent_difficulty -= 1
@@ -95,7 +95,7 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 			room.room_type = RoomType.Arena
 		6:
 			room.room_type = RoomType.Crenelations
-			
+	assert(room.room_type != RoomType.UNDEFINED)
 	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd, room)
 	while room.unspent_difficulty > 0:
 		room.SpendDifficulty(cplay_state.build_rnd)
@@ -103,7 +103,7 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 
 	return room
 
-static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Room) -> Room:
+static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Room, croom_type : RoomType) -> Room:
 	global_id += 1
 	
 	var room : Room = Room.new()
@@ -113,31 +113,35 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 	room.play_state = cplay_state
 	room.parent_room = parent
 
-	match cplay_state.build_rnd.randi_range(0,11):
-		0:
-			room.room_type = RoomType.BigFirepit
-			room.unspent_difficulty -= 1
-		1:
-			room.room_type = RoomType.ManyFirepits
-			room.unspent_difficulty -= 1
-		2:
-			room.room_type = RoomType.ManyPilars
-		3:
-			room.room_type = RoomType.BigPilar
-		4:
-			room.room_type = RoomType.Diamond
-		5:
-			room.room_type = RoomType.Narrow
-		6:
-			room.room_type = RoomType.Wall
-		7:
-			room.room_type = RoomType.Loop
-		8:
-			room.room_type = RoomType.Empty
-		9:
-			room.room_type = RoomType.Arena
-		10:
-			room.room_type = RoomType.Crenelations
+	if croom_type == RoomType.UNDEFINED:
+		var roll : int = cplay_state.build_rnd.randi_range(0,10)
+		match roll:
+			0:
+				croom_type = RoomType.BigFirepit
+				room.unspent_difficulty -= 1
+			1:
+				croom_type = RoomType.ManyFirepits
+				room.unspent_difficulty -= 1
+			2:
+				croom_type = RoomType.ManyPilars
+			3:
+				croom_type = RoomType.BigPilar
+			4:
+				croom_type = RoomType.Diamond
+			5:
+				croom_type = RoomType.Narrow
+			6:
+				croom_type = RoomType.Wall
+			7:
+				croom_type = RoomType.Loop
+			8:
+				croom_type = RoomType.Empty
+			9:
+				croom_type = RoomType.Arena
+			10:
+				croom_type = RoomType.Crenelations
+	room.room_type = croom_type
+	assert(room.room_type != RoomType.UNDEFINED)
 	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd, room)
 	while room.unspent_difficulty > 0:
 		room.SpendDifficulty(cplay_state.build_rnd)
@@ -167,7 +171,7 @@ func SpendDifficulty(rnd : RandomNumberGenerator) -> void:
 	assert(false)
 
 func _to_string() -> String:
-	var ret_val : String = "id=" + str(id) + " coord=" + str(x) + "," + str(y) + " " + str(room_type)
+	var ret_val : String = "id=" + str(id) + " coord=" + str(x) + "," + str(y) + " " + RoomType.keys()[room_type]
 	return ret_val
 
 func StopTracking(enemy : Enemy) -> void:
@@ -180,9 +184,10 @@ func GetParentRoom() -> Room:
 	return parent_room
 
 func CanHaveDaggerThrower() -> bool:
-	if room_type == RoomType.Empty || room_type == RoomType.ManyFirepits || room_type == RoomType.BigFirepit:
-		if key_id == -1:
-			return play_state.first_room != self && play_state.last_room != self
+	if parent_room == null:
+		return false
+	if room_type == RoomType.Empty || room_type == RoomType.ManyFirepits || room_type == RoomType.BigFirepit || room_type == RoomType.Crenelations || room_type == RoomType.Arena:
+		return key_id == -1
 	return false
 
 func FixParenting(possible_parent_a : Room, possible_parent_b : Room) -> void:
@@ -242,9 +247,6 @@ func ResetRoom() -> void:
 	if dagger_thrower:
 		dagger_thrower.queue_free()
 		dagger_thrower = null
-
-func SetAsLastRoom() -> void:
-	room_type = RoomType.LastRoom
 
 func MakeFinalRoom() -> void:
 	assert(room_type == RoomType.LastRoom)

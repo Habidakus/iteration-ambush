@@ -47,6 +47,10 @@ static func CreateMod(modEnum : Mod) -> RoomMod:
 	assert(false)
 	return null
 
+
+func _to_string() -> String:
+	return mod_name()
+
 func mod_name() -> String:
 	return "UNDEFINED"
 

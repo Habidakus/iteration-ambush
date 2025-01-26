@@ -155,13 +155,12 @@ func init_map() -> void:
 	Room.global_id = 0
 	build_rnd = RandomNumberGenerator.new()
 	build_rnd.seed = build_seed
-	var r1 = Room.CreateRoom(0, 0, self, null)
-	var r2 = Room.CreateRoom(0, -1, self, r1)
-	var r3 = Room.CreateRoom(-1, -1, self, r2)
-	var r4 = Room.CreateRoom(-1, 0, self, r3)
+	var r1 = Room.CreateRoom(0, 0, self, null, Room.RoomType.Empty)
+	var r2 = Room.CreateRoom(0, -1, self, r1, Room.RoomType.UNDEFINED)
+	var r3 = Room.CreateRoom(-1, -1, self, r2, Room.RoomType.UNDEFINED)
+	var r4 = Room.CreateRoom(-1, 0, self, r3, Room.RoomType.LastRoom)
 	r1.MakePlayerSafe()
 	r4.MakePlayerSafe()
-	r4.SetAsLastRoom()
 
 	connect_rooms(r1, r2)
 	connect_rooms(r2, r3)
@@ -403,8 +402,8 @@ func lock_key_map(room : Room, dir : Vector2i) -> void:
 	room.ApplyToMaps(%TerrainMap, %ObjectMap)
 	
 func extrude_map(room_a : Room, room_b : Room, dir : Vector2i) -> void:
-	var new_room_a : Room = Room.CreateRoom(room_a.x + dir.x, room_a.y + dir.y, self, null)
-	var new_room_b : Room = Room.CreateRoom(room_b.x + dir.x, room_b.y + dir.y, self, null)
+	var new_room_a : Room = Room.CreateRoom(room_a.x + dir.x, room_a.y + dir.y, self, null, Room.RoomType.UNDEFINED)
+	var new_room_b : Room = Room.CreateRoom(room_b.x + dir.x, room_b.y + dir.y, self, null, Room.RoomType.UNDEFINED)
 	if room_a.north == room_b:
 		new_room_a.north = new_room_b
 		new_room_b.south = new_room_a
@@ -472,8 +471,7 @@ func mutate_map_extend() -> void:
 		pre_empty_rooms = result.souths
 
 	for room : Room in pre_empty_rooms:
-		#var old_dest : Room = room.east
-		var new_room : Room = Room.CreateRoom(room.x + move_direction.x, room.y + move_direction.y, self, null)
+		var new_room : Room = Room.CreateRoom(room.x + move_direction.x, room.y + move_direction.y, self, null, Room.RoomType.UNDEFINED)
 		if move_direction.x > 0:
 			var old_dest : Room = room.east
 			new_room.west = room

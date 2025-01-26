@@ -4,17 +4,12 @@ Fonts (using the MIT license):
 Location of some MIT notes:
 	https://github.com/gleitz/midi-js-soundfonts/tree/gh-pages/MusyngKite
 
-Potential power ups:
-	- only wake monsters behind locks after the lock is destroyed
-	- repulsor field that is used once per loop
-	- switch room hazards to boons
-
 TODO:
 	- add states when map is being mutated where we first pan the camera out to see entire map, then pan the camera back in
 	- add sounds for sword throwing room
 	- monsters can't travel faster than current player max?
 	- give t-port ghosts 10 different possible locations, and have them pick the one that's the same distance from the player, but farthest from the dagger
-	- Add new "slow" ghost that slows you down in an area, maybe they're green?
+	- Add new "slow" ghost that slows you down in an area, maybe they're green? Maybe instead it's a ghost that adds a locked door to the room if the player and the ghost are in the same room
 	- Have only two monster power-ups per room
 	- add GitHub URL to credits page
 	- better point blank ghost movement
@@ -26,14 +21,19 @@ TODO:
 	- add "platform" mechanics to a new room type
 	- juice up the power-up selection
 	- add artwork to replace the "white tiles" of the exit room
+	- make fire pit resistance more meaningful
 
 Bugs:
 	- fix lock being left in a wall when paths move
 	- scythes not spawning when ghost is close?
 
-Jam Feedback:
+Potential power ups:
+	- only wake monsters behind locks after the lock is destroyed
+	- repulsor field that is used once per loop
+	- switch room hazards to boons
 	- more weapon upgrade variations
-	- make fire pit resistance more meaningful
+
+Jam Feedback:
 	- don't let ghosts camp doors
 	- better counters for the teleporting ghosts
 	- maybe give ghosts more HP and let the hero fire faster? Gives the player more agency
