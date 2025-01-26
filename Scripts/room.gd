@@ -186,7 +186,7 @@ func GetParentRoom() -> Room:
 func CanHaveDaggerThrower() -> bool:
 	if parent_room == null:
 		return false
-	if room_type == RoomType.Empty || room_type == RoomType.ManyFirepits || room_type == RoomType.BigFirepit || room_type == RoomType.Crenelations || room_type == RoomType.Arena:
+	if room_type == RoomType.Empty || room_type == RoomType.ManyFirepits || room_type == RoomType.BigFirepit || room_type == RoomType.Crenelations || room_type == RoomType.Diamond:
 		return key_id == -1
 	return false
 
