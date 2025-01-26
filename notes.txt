@@ -25,7 +25,18 @@ TODO:
 	- flag on rooms that allow them to close the retreat door when a player walks through
 	- add "platform" mechanics to a new room type
 	- juice up the power-up selection
+	- add artwork to replace the "white tiles" of the exit room
 
 Bugs:
 	- fix lock being left in a wall when paths move
 	- scythes not spawning when ghost is close?
+
+Jam Feedback:
+	- more weapon upgrade variations
+	- make fire pit resistance more meaningful
+	- don't let ghosts camp doors
+	- better counters for the teleporting ghosts
+	- maybe give ghosts more HP and let the hero fire faster? Gives the player more agency
+	- different enemies
+	- more animation
+	- fancier textures
