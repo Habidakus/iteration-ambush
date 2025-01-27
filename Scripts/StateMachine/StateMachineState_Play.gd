@@ -520,6 +520,24 @@ func set_gameplay_active(active : bool) -> void:
 	is_gameplay_active = active
 	%Player.set_ui_visibility(active)
 
+func get_map_global_rect() -> Rect2:
+	var gr_min : Vector2 = Vector2.ZERO;
+	var gr_max : Vector2 = Vector2.ZERO;
+	for room : Room in rooms:
+		var minx : float = room.x * 15 * 64
+		if gr_min.x > minx:
+			gr_min.x = minx
+		var miny : float = room.y * 15 * 64
+		if gr_min.y > miny:
+			gr_min.y = miny	
+		var maxx : float = (room.x + 1) * 15 * 64 - 1
+		if gr_max.x < maxx:
+			gr_max.x = maxx
+		var maxy : float = (room.y + 1) * 15 * 64 - 1
+		if gr_max.y < maxy:
+			gr_max.y = maxy
+	return Rect2(gr_min, gr_max - gr_min)
+
 func get_room_by_id(id : int) -> Room:
 	for room : Room in rooms:
 		if room.id == id:
@@ -546,12 +564,15 @@ func drain_coins(update_coin : Callable, has_enough : Callable, is_short : Calla
 		tween.tween_interval(0.5)
 		tween.tween_callback(is_short)
 
+func move_player_to_first_room() -> void:
+	assert(is_gameplay_active == false)
+	%Player.spawn(first_room, get_room_central_pos(first_room.x, first_room.y), rooms.size())
+
 func spawn_map() -> void:
 	go_active = true
 	killed_this_wave = 0
 	spawned_this_wave = 0
 	assert(is_gameplay_active == false)
-	%Player.spawn(first_room, get_room_central_pos(first_room.x, first_room.y), rooms.size())
 	for room : Room in rooms:
 		if room.key_id != -1:
 			var key_color : Color = get_room_color(room.key_id)

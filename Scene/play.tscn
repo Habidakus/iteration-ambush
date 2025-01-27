@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://e5uuxqqr5yeu"]
+[gd_scene load_steps=27 format=3 uid="uid://e5uuxqqr5yeu"]
 
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_Play.gd" id="1_lwbtr"]
 [ext_resource type="Texture2D" uid="uid://g7gjad0cp51n" path="res://Art/brickstrip.png" id="2_43biw"]
@@ -16,6 +16,8 @@
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayVictory.gd" id="14_xu8we"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayAsleep.gd" id="15_yw2oc"]
 [ext_resource type="PackedScene" uid="uid://cb6e0fesdu8rd" path="res://Scene/player.tscn" id="16_bcqnm"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_ZoomOut.gd" id="16_xuhla"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_ZoomIn.gd" id="17_jqjkf"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_w1igq"]
 texture = ExtResource("2_43biw")
@@ -734,6 +736,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("15_yw2oc")
+
+[node name="PlayState_ZoomOut" type="Control" parent="PlayStateMachine"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("16_xuhla")
+
+[node name="PlayState_ZoomIn" type="Control" parent="PlayStateMachine"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("17_jqjkf")
+
+[node name="ZoomCamera" type="Camera2D" parent="PlayStateMachine"]
 
 [node name="Player" parent="." instance=ExtResource("16_bcqnm")]
 unique_name_in_owner = true

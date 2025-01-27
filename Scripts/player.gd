@@ -105,6 +105,7 @@ func init_brand_new_game(play_state : PlayState) -> void:
 func spawn(_room: Room, pos : Vector2, room_count : int) -> void:
 	level_time_expected = 20 + room_count * 15 * 64 / INITIAL_SPEED
 	level_timer = 0
+	our_momentum = Vector2.ZERO
 	owned_keys.clear()
 	if has_regeneration:
 		current_health = min(current_health + 5, max_health)
@@ -166,9 +167,14 @@ func fire_bullet() -> void:
 	state_play.add_child(bullet)
 	fire_cooldown = fire_cooldown_max
 
+func get_camera() -> Camera2D:
+	return $Camera2D
+
 func set_ui_visibility(_visible : bool) -> void:
 	ui_layer.visible = _visible
-	
+	if _visible:
+		get_camera().make_current()
+
 #func _process(_delta: float) -> void:
 	#queue_redraw()
 #

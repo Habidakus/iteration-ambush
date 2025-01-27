@@ -46,9 +46,12 @@ func display_mods() -> void:
 	(find_child("HBoxContainer") as HBoxContainer).force_update_transform()
 
 func transition_to_next_state() -> void:
-	var state_play : PlayState = our_state_machine.get_play_state()
-	state_play.mutate_map()
-	state_play.spawn_map()
+	
+	our_state_machine.switch_state("PlayState_ZoomOut")
+	#TODO: Fix back
+	#var state_play : PlayState = our_state_machine.get_play_state()
+	#state_play.mutate_map()
+	#state_play.spawn_map()
 
 func select(event: InputEvent, index : int) -> void:
 	var iemb : InputEventMouseButton = event as InputEventMouseButton

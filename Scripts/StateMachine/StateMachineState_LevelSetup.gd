@@ -15,6 +15,7 @@ func exit_state(next_state: StateMachineState) -> void:
 	state_play.build_seed = seed_value
 	state_play.init_player()
 	state_play.init_map()
+	state_play.move_player_to_first_room()
 	state_play.spawn_map()
 	super.exit_state(next_state)
 
