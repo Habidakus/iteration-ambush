@@ -7,6 +7,7 @@ var max_distance : float = 64 * 15 / 2.0
 var damage : float = 25
 var movement_dir : float
 var speed : float = 400
+var player : Player = null
 
 var explosion_scene : Resource = preload("res://Scene/wall_hit_vfx.tscn")
 @export var hit_wall_sounds : AudioStreamRandomizer
@@ -15,14 +16,15 @@ var explosion_scene : Resource = preload("res://Scene/wall_hit_vfx.tscn")
 func set_damage(_damage : float) -> void:
 	damage = _damage
 
-func die(global_pos : Vector2, _sound_generator : AudioStreamRandomizer, _db : int) -> void:
+func die(global_pos : Vector2, sound_generator : AudioStreamRandomizer, db : int) -> void:
 	var explosion : CPUParticles2D = explosion_scene.instantiate()
-	#var audio_player : AudioStreamPlayer = null
-	#if sound_generator != null && sound_generator.streams_count > 0:
-		#audio_player = player.find_child("AudioStreamPlayer_Bullet")
-		#audio_player.volume_db = db
-		#audio_player.stream = sound_generator
-		#audio_player.play()
+	var audio_player : AudioStreamPlayer = null
+	if sound_generator != null && sound_generator.streams_count > 0:
+		audio_player = player.find_child("AudioStreamPlayer_Bullet")
+		audio_player.volume_db = db
+		audio_player.pitch_scale = 0.5
+		audio_player.stream = sound_generator
+		audio_player.play()
 	explosion.global_position = global_pos
 	explosion.emitting = true
 	explosion.one_shot = true
@@ -34,12 +36,13 @@ func die(global_pos : Vector2, _sound_generator : AudioStreamRandomizer, _db : i
 
 func init(_player : Player) -> void:
 	movement_dir = rotation
+	player = _player
 	speed = _player.current_bullet_speed()
 
-func collide_with_player(player: Player, _col_glob_pos : Vector2) -> void:
+func collide_with_player(_player: Player, _col_glob_pos : Vector2) -> void:
 	if is_dead:
 		return
-	player.take_damage(damage, true)
+	_player.take_damage(damage, true)
 	is_dead = true
 	queue_free()
 
@@ -59,9 +62,9 @@ func _physics_process(delta : float) -> void:
 		var collider = result["collider"]
 		var col_glob_pos : Vector2 = result["position"]
 		col_glob_pos -= Vector2(20,20)
-		var player : Player = collider as Player
-		if player != null:
-			collide_with_player(player, col_glob_pos)
+		var _player : Player = collider as Player
+		if _player != null:
+			collide_with_player(_player, col_glob_pos)
 			return
 
 		var tml : TileMapLayer = collider as TileMapLayer

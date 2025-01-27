@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c5rjjq0jh0rf1"]
+[gd_scene load_steps=5 format=3 uid="uid://c5rjjq0jh0rf1"]
 
 [ext_resource type="Script" path="res://Scripts/dagger.gd" id="1_w6mh1"]
 [ext_resource type="Texture2D" uid="uid://4hgyf0cm3mh1" path="res://Art/Dagger.png" id="2_dn56c"]
+[ext_resource type="AudioStream" uid="uid://uvqcb5aw2uru" path="res://Scene/scythe_hit_wall_sounds.tres" id="2_rlvx3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut661"]
 size = Vector2(30, 4)
@@ -10,6 +11,7 @@ size = Vector2(30, 4)
 collision_layer = 0
 collision_mask = 4
 script = ExtResource("1_w6mh1")
+hit_wall_sounds = ExtResource("2_rlvx3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_dn56c")

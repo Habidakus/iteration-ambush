@@ -6,6 +6,7 @@ var room : Room = null
 var player : Player = null
 var cooldown_max : float
 var cooldown_current : float
+var audio_player : AudioStreamPlayer
 
 var dagger_scene : Resource = preload("res://Scene/dagger.tscn")
 
@@ -14,6 +15,7 @@ func init(_room : Room, _cooldown_length : float) -> void:
 	player = room.play_state.get_player()
 	cooldown_max = _cooldown_length
 	cooldown_current = cooldown_max
+	audio_player = find_child("AudioStreamPlayer") as AudioStreamPlayer
 
 func fire() -> void:
 	var bullet : Dagger = dagger_scene.instantiate()
@@ -24,6 +26,7 @@ func fire() -> void:
 	bullet.position -= Vector2(20,20)
 	bullet.position += Vector2.RIGHT.rotated(bullet.rotation) * 32.0
 	bullet.init(player)
+	audio_player.play()
 	room.play_state.add_child(bullet)
 	cooldown_current = cooldown_max
 
@@ -32,4 +35,5 @@ func _process(delta: float) -> void:
 	
 	cooldown_current -= delta
 	if cooldown_current < 0:
-		fire()
+		if (player.global_position - global_position).length_squared() < (64 * 64 * 8 * 8):
+			fire()

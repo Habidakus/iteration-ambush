@@ -22,7 +22,7 @@ static func SelectThreeMods(rnd : RandomNumberGenerator, room : Room) -> Array[R
 		[rnd.randf(), Mod.Rammer],
 		[rnd.randf(), Mod.Shrink],
 		[rnd.randf_range(0, 0.75), Mod.Teleporter],
-		[rnd.randf(), Mod.DaggerThrower],
+		[rnd.randf_range(0.2, 1), Mod.DaggerThrower],
 	]
 	possible.sort_custom(func(a,b): return a[0] > b[0])
 	var ret_val : Array[RoomMod]
@@ -30,6 +30,8 @@ static func SelectThreeMods(rnd : RandomNumberGenerator, room : Room) -> Array[R
 	while ret_val.size() < 3:
 		var mod : RoomMod = CreateMod(possible[index][1])
 		if mod.is_viable(room):
+			if possible[index][1] == Mod.DaggerThrower:
+				print("Dagger Thrower added to " + str(room))
 			ret_val.append(mod)
 		index += 1
 	return ret_val

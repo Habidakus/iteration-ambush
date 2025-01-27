@@ -22,10 +22,12 @@ TODO:
 	- juice up the power-up selection
 	- add artwork to replace the "white tiles" of the exit room
 	- make fire pit resistance more meaningful
+	- if a mutation can't be slotted, make sure it's random roll continues to climb until it can be slotted (although some mutations should start at a lower roll)
 
 Bugs:
 	- fix lock being left in a wall when paths move
 	- scythes not spawning when ghost is close?
+	- Urist shows up when picking mods at the end of the penultimate level
 
 Potential power ups:
 	- only wake monsters behind locks after the lock is destroyed
