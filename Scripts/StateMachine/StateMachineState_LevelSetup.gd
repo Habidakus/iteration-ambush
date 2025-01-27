@@ -1,7 +1,6 @@
 extends StateMachineState
 
 var seed_value : int = 1
-var state_play : PlayState = null
 
 func enter_state() -> void:
 	super.enter_state()
@@ -10,13 +9,9 @@ func enter_state() -> void:
 	text_edit.text = str(seed_value)
 	%Player.visible = false
 
-	var cs = get_tree().current_scene
-	assert(cs)
-	state_play = cs.find_child("State_Play") as PlayState
-	assert(state_play)
-
 func exit_state(next_state: StateMachineState) -> void:
 	%Player.visible = true
+	var state_play : PlayState = our_state_machine.get_play_state()
 	state_play.build_seed = seed_value
 	state_play.init_player()
 	state_play.init_map()
@@ -31,13 +26,13 @@ func _on_text_edit_text_changed() -> void:
 		text_edit.text = str(seed_value)
 
 func _on_easy_button_up() -> void:
-	state_play.difficulty = state_play.Difficulty.Easy
+	our_state_machine.get_play_state().difficulty = PlayState.Difficulty.Easy
 	our_state_machine.switch_state("PlayState_Active")
 
 func _on_medium_button_up() -> void:
-	state_play.difficulty = state_play.Difficulty.Medium
+	our_state_machine.get_play_state().difficulty = PlayState.Difficulty.Medium
 	our_state_machine.switch_state("PlayState_Active")
 
 func _on_hard_button_up() -> void:
-	state_play.difficulty = state_play.Difficulty.Hard
+	our_state_machine.get_play_state().difficulty = PlayState.Difficulty.Hard
 	our_state_machine.switch_state("PlayState_Active")

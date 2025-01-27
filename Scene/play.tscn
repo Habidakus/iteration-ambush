@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://g7gjad0cp51n" path="res://Art/brickstrip.png" id="2_43biw"]
 [ext_resource type="Material" uid="uid://bnwh5kt343rlu" path="res://Scene/fire_pit_material.tres" id="3_sflol"]
 [ext_resource type="Texture2D" uid="uid://bj750ideyhkgn" path="res://Art/fiveTiles.png" id="4_to2bj"]
-[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachine.gd" id="5_g7l8d"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/GameStateMachine.gd" id="5_6but5"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_LevelSetup.gd" id="6_b1e0c"]
 [ext_resource type="FontFile" uid="uid://byymlkrvwrvqy" path="res://Fonts/Vintage Propagandist.ttf" id="7_rm24t"]
 [ext_resource type="Script" path="res://Scripts/ControlDecorator.gd" id="8_kgolu"]
@@ -123,7 +123,7 @@ tile_set = SubResource("TileSet_efjmm")
 [node name="ObjectMap" type="TileMapLayer" parent="."]
 unique_name_in_owner = true
 
-[node name="PlayStateMachine" type="Control" parent="." node_paths=PackedStringArray("initial_state")]
+[node name="PlayStateMachine" type="Control" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -131,8 +131,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("5_g7l8d")
-initial_state = NodePath("PlayState_Asleep")
+script = ExtResource("5_6but5")
 
 [node name="PlayState_LevelSetup" type="Control" parent="PlayStateMachine"]
 visible = false
