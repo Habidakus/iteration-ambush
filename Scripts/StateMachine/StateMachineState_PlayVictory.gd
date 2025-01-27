@@ -15,4 +15,8 @@ func _process(delta : float) -> void:
 			(find_child("RestartButton") as CanvasItem).visible = true
 
 func _on_restart_button_button_up() -> void:
-	%State_Play.restart()
+	var cs = get_tree().current_scene
+	assert(cs)
+	var state_play : PlayState = cs.find_child("State_Play") as PlayState
+	assert(state_play)
+	state_play.restart()

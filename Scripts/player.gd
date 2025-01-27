@@ -43,6 +43,7 @@ var hand_size : int = 2
 @export var key_pickup_sound : AudioStream
 @export var firepit_sound : AudioStream
 
+var state_play : PlayState = null
 var lock_audio_player : AudioStreamPlayer
 var firepit_audio_player : AudioStreamPlayer
 var firepit_sound_continue : float = 0
@@ -68,6 +69,11 @@ func _ready() -> void:
 	assert(ui_timer_color)
 	ui_timer_label = find_child("TimerLabel") as Label
 	assert(ui_timer_label)
+	
+	var cs = get_tree().current_scene
+	assert(cs)
+	state_play = cs.find_child("State_Play") as PlayState
+	assert(state_play)
 
 	firepit_audio_player.stream = firepit_sound
 	firepit_audio_player.volume_db = -15
@@ -106,20 +112,11 @@ func spawn(_room: Room, pos : Vector2, room_count : int) -> void:
 	fire_cooldown = 0.01
 	position = pos # Vector2((room.x * 15 + 7.5) * 64, (room.y * 15 + 7.5) * 64)
 
-var play_minor_chord : bool = false
 func set_health_bar() -> void:
 	ui_current_health_label.text = str(round(current_health)) + "/" + str(round(max_health))
 	var fraction : float = current_health / max_health
 	ui_current_health_bar.size.x = round(fraction * ui_current_health_max_width)
-	var new_minor_chord : bool = fraction < 0.5
-	if new_minor_chord != play_minor_chord:
-		play_minor_chord = new_minor_chord
-		for child in %MusicManager.get_children(false):
-			if child is NotePlayer:
-				if play_minor_chord:
-					(child as NotePlayer).set_to_minor()
-				else:
-					(child as NotePlayer).set_to_major()
+	state_play.set_is_minor_chord(fraction < 0.5)
 
 func set_show_blood(yes_blood : bool) -> void:
 	show_blood_option = yes_blood
@@ -140,7 +137,7 @@ func take_damage(damage : float, show_blood : bool) -> void:
 		tween.tween_callback(explosion.queue_free)
 	
 	if current_health <= 0:
-		%State_Play.player_died()
+		state_play.player_died()
 
 func apply_fire_pit(room: Room, delta : float) -> void:
 	if firepit_audio_player.playing:
@@ -166,7 +163,7 @@ func fire_bullet() -> void:
 	bullet.position -= Vector2(20,20)
 	bullet.position += Vector2.RIGHT.rotated(bullet.rotation) * 32.0
 	bullet.init(bullet_lifetime, self)
-	%State_Play.add_child(bullet)
+	state_play.add_child(bullet)
 	fire_cooldown = fire_cooldown_max
 
 func set_ui_visibility(_visible : bool) -> void:
@@ -197,8 +194,7 @@ func _physics_process(delta: float) -> void:
 		firepit_sound_continue -= delta
 		if firepit_sound_continue <= 0:
 			firepit_audio_player.stop()
-			
-	if %State_Play.is_gameplay_active == false:
+	if state_play.is_gameplay_active == false:
 		return
 
 	level_timer += delta
@@ -272,4 +268,4 @@ func _physics_process(delta: float) -> void:
 	if velocity != Vector2.ZERO:
 		up_direction = Vector2.ZERO - velocity
 	
-	%State_Play.trigger_player_location_events(position, delta)
+	state_play.trigger_player_location_events(position, delta)

@@ -62,6 +62,17 @@ func restart() -> void:
 	last_room_player_was_in = null
 	our_state_machine.switch_state("State_MainMenu")
 
+var play_minor_chord : bool = false
+func set_is_minor_chord(new_minor_chord : bool) -> void:
+	if new_minor_chord != play_minor_chord:
+		play_minor_chord = new_minor_chord
+		for child in %MusicManager.get_children(false):
+			if child is NotePlayer:
+				if play_minor_chord:
+					(child as NotePlayer).set_to_minor()
+				else:
+					(child as NotePlayer).set_to_major()
+
 func apply_tile(terrain_atlas_pos : Vector2i, source_id : int, delta : float) -> void:
 	if last_room_player_was_in == null:
 		return

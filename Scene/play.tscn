@@ -1,0 +1,752 @@
+[gd_scene load_steps=25 format=3 uid="uid://e5uuxqqr5yeu"]
+
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_Play.gd" id="1_lwbtr"]
+[ext_resource type="Texture2D" uid="uid://g7gjad0cp51n" path="res://Art/brickstrip.png" id="2_43biw"]
+[ext_resource type="Material" uid="uid://bnwh5kt343rlu" path="res://Scene/fire_pit_material.tres" id="3_sflol"]
+[ext_resource type="Texture2D" uid="uid://bj750ideyhkgn" path="res://Art/fiveTiles.png" id="4_to2bj"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachine.gd" id="5_g7l8d"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_LevelSetup.gd" id="6_b1e0c"]
+[ext_resource type="FontFile" uid="uid://byymlkrvwrvqy" path="res://Fonts/Vintage Propagandist.ttf" id="7_rm24t"]
+[ext_resource type="Script" path="res://Scripts/ControlDecorator.gd" id="8_kgolu"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_LevelAdvance.gd" id="9_1jicu"]
+[ext_resource type="Texture2D" uid="uid://c2mshadwpkxar" path="res://Art/Coins.png" id="10_fkh51"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_GameplayActive.gd" id="11_yj1fr"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayDead.gd" id="12_y1pgw"]
+[ext_resource type="FontFile" uid="uid://cw5poiupa2paf" path="res://Fonts/Destroya.ttf" id="13_uqvy3"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayVictory.gd" id="14_xu8we"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/StateMachineState_PlayAsleep.gd" id="15_yw2oc"]
+[ext_resource type="PackedScene" uid="uid://cb6e0fesdu8rd" path="res://Scene/player.tscn" id="16_bcqnm"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_w1igq"]
+texture = ExtResource("2_43biw")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+2:0/0 = 0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+3:0/0 = 0
+3:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+4:0/0 = 0
+4:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+5:0/0 = 0
+5:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+6:0/0 = 0
+6:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+7:0/0 = 0
+7:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+8:0/0 = 0
+8:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+9:0/0 = 0
+9:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+10:0/0 = 0
+10:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+11:0/0 = 0
+11:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+12:0/0 = 0
+12:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+13:0/0 = 0
+13:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+14:0/0 = 0
+14:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+15:0/0 = 0
+15:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_t5oj0"]
+vertices = PackedVector2Array(32, 32, -32, 32, -32, -32, 32, -32)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)])
+agent_radius = 0.0
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_7ihkm"]
+vertices = PackedVector2Array(32, 32, -32, 32, -32, -32, 32, -32)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)])
+agent_radius = 0.0
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_hpxhh"]
+vertices = PackedVector2Array(32, 32, -32, 32, -32, -32, 32, -32)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)])
+agent_radius = 0.0
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_u2iua"]
+vertices = PackedVector2Array(32, 32, -32, 32, -32, -32, 32, -32)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)])
+agent_radius = 0.0
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_yy6s3"]
+vertices = PackedVector2Array(32, 32, -32, 32, -32, -32, 32, -32)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)])
+agent_radius = 0.0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qvyo6"]
+texture = ExtResource("4_to2bj")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_t5oj0")
+1:0/0 = 0
+1:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_7ihkm")
+2:0/0 = 0
+2:0/0/material = ExtResource("3_sflol")
+2:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_hpxhh")
+3:0/0 = 0
+3:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_u2iua")
+4:0/0 = 0
+4:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_yy6s3")
+
+[sub_resource type="TileSet" id="TileSet_efjmm"]
+tile_size = Vector2i(64, 64)
+physics_layer_0/collision_layer = 1
+physics_layer_0/collision_mask = 271
+navigation_layer_0/layers = 1
+sources/1 = SubResource("TileSetAtlasSource_qvyo6")
+sources/0 = SubResource("TileSetAtlasSource_w1igq")
+
+[node name="State_Play" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lwbtr")
+
+[node name="TerrainMap" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
+tile_set = SubResource("TileSet_efjmm")
+
+[node name="ObjectMap" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
+
+[node name="PlayStateMachine" type="Control" parent="." node_paths=PackedStringArray("initial_state")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_g7l8d")
+initial_state = NodePath("PlayState_Asleep")
+
+[node name="PlayState_LevelSetup" type="Control" parent="PlayStateMachine"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6_b1e0c")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="PlayStateMachine/PlayState_LevelSetup"]
+visible = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -93.0
+offset_right = 320.0
+offset_bottom = 93.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("7_rm24t")
+theme_override_font_sizes/font_size = 42
+text = "Seed:"
+
+[node name="TextEdit" type="TextEdit" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="Control" type="Control" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Easy" type="Button" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_rm24t")
+theme_override_font_sizes/font_size = 42
+text = "Easy"
+flat = true
+
+[node name="Decorator" type="ColorRect" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Easy"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_kgolu")
+
+[node name="Medium" type="Button" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_rm24t")
+theme_override_font_sizes/font_size = 42
+text = "Normal"
+flat = true
+
+[node name="Decorator" type="ColorRect" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Medium"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_kgolu")
+
+[node name="Hard" type="Button" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_rm24t")
+theme_override_font_sizes/font_size = 42
+text = "Expert"
+flat = true
+
+[node name="Decorator" type="ColorRect" parent="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Hard"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_kgolu")
+
+[node name="PlayState_LevelAdvance" type="Control" parent="PlayStateMachine"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("9_1jicu")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="PlayStateMachine/PlayState_LevelAdvance"]
+
+[node name="ModsAvailable" type="VBoxContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable"]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -205.0
+offset_top = 160.0
+offset_right = 395.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.68, 1)
+size_flags_vertical = 3
+color = Color(0.8, 0.8, 0.8, 1)
+
+[node name="Label" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/Control/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_rm24t")
+theme_override_font_sizes/font_size = 94
+text = "Select Mod:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+alignment = 1
+
+[node name="Control1" type="Control" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control1"]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Decorator" type="ColorRect" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control1/MarginContainer"]
+show_behind_parent = true
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("8_kgolu")
+
+[node name="HBoxContainer" type="VBoxContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control1/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control1/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "foo"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control1/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control1/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Description" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control1/MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 23
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+autowrap_mode = 3
+
+[node name="spacer_a" type="Control" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control2"]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Decorator" type="ColorRect" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control2/MarginContainer"]
+show_behind_parent = true
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("8_kgolu")
+
+[node name="HBoxContainer" type="VBoxContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control2/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control2/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "foo"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control2/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control2/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Description" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control2/MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 23
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+autowrap_mode = 3
+
+[node name="spacer_b" type="Control" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Control3" type="Control" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control3"]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Decorator" type="ColorRect" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control3/MarginContainer"]
+show_behind_parent = true
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("8_kgolu")
+
+[node name="HBoxContainer" type="VBoxContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control3/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control3/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "foo"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control3/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control3/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Description" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control3/MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 23
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+autowrap_mode = 3
+
+[node name="spacer_c" type="Control" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Control4" type="Control" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control4"]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Decorator" type="ColorRect" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control4/MarginContainer"]
+show_behind_parent = true
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("8_kgolu")
+
+[node name="HBoxContainer" type="VBoxContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control4/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control4/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "foo"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control4/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control4/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Description" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control4/MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 23
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+autowrap_mode = 3
+
+[node name="CoinTotal" type="Node2D" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer"]
+
+[node name="ColorRect" type="ColorRect" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/CoinTotal"]
+offset_left = 344.0
+offset_top = 55.0
+offset_right = 952.0
+offset_bottom = 176.0
+color = Color(0.295867, 0.295866, 0.295866, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/CoinTotal"]
+position = Vector2(890, 116)
+scale = Vector2(2, 2)
+texture = ExtResource("10_fkh51")
+
+[node name="Label" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/CoinTotal"]
+offset_left = 368.0
+offset_top = 83.0
+offset_right = 735.0
+offset_bottom = 147.0
+theme_override_fonts/font = ExtResource("7_rm24t")
+theme_override_font_sizes/font_size = 64
+text = "Ghost Coins:"
+vertical_alignment = 1
+
+[node name="TotalCoinsLabel" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/CoinTotal"]
+offset_left = 743.0
+offset_top = 77.0
+offset_right = 853.0
+offset_bottom = 149.0
+theme_override_font_sizes/font_size = 52
+text = "100"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="WavesToGo" type="Node2D" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer"]
+
+[node name="ColorRect" type="ColorRect" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/WavesToGo"]
+offset_left = 379.0
+offset_top = 185.0
+offset_right = 917.0
+offset_bottom = 306.0
+color = Color(0.295867, 0.295866, 0.295866, 1)
+
+[node name="Label" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/WavesToGo"]
+offset_left = 403.0
+offset_top = 213.0
+offset_right = 822.0
+offset_bottom = 277.0
+theme_override_fonts/font = ExtResource("7_rm24t")
+theme_override_font_sizes/font_size = 48
+text = "Levels Remaining:"
+vertical_alignment = 1
+
+[node name="WavesRemainingLabel" type="Label" parent="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/WavesToGo"]
+offset_left = 785.0
+offset_top = 207.0
+offset_right = 895.0
+offset_bottom = 279.0
+theme_override_font_sizes/font_size = 52
+text = "20
+"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="PlayState_Active" type="Control" parent="PlayStateMachine"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("11_yj1fr")
+
+[node name="PlayState_Dead" type="Control" parent="PlayStateMachine"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("12_y1pgw")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="PlayStateMachine/PlayState_Dead"]
+visible = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PlayStateMachine/PlayState_Dead/CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -254.5
+offset_top = -29.5
+offset_right = 254.5
+offset_bottom = 29.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="PlayStateMachine/PlayState_Dead/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0, 0, 1)
+theme_override_fonts/font = ExtResource("13_uqvy3")
+theme_override_font_sizes/font_size = 108
+text = "TERMINATED"
+
+[node name="Control" type="Control" parent="PlayStateMachine/PlayState_Dead/CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+
+[node name="RestartButton" type="Button" parent="PlayStateMachine/PlayState_Dead/CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(160, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_rm24t")
+theme_override_font_sizes/font_size = 30
+text = "Accept"
+flat = true
+
+[node name="Decorator" type="ColorRect" parent="PlayStateMachine/PlayState_Dead/CanvasLayer/VBoxContainer/RestartButton"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_kgolu")
+
+[node name="PlayState_Victory" type="Control" parent="PlayStateMachine"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("14_xu8we")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="PlayStateMachine/PlayState_Victory"]
+visible = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PlayStateMachine/PlayState_Victory/CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -254.5
+offset_top = -29.5
+offset_right = 254.5
+offset_bottom = 29.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="PlayStateMachine/PlayState_Victory/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.796384, 0.422335, 1.92523e-07, 1)
+theme_override_fonts/font = ExtResource("7_rm24t")
+theme_override_font_sizes/font_size = 108
+text = "Beloved Urist!
+I've found you!"
+horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="PlayStateMachine/PlayState_Victory/CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+
+[node name="RestartButton" type="Button" parent="PlayStateMachine/PlayState_Victory/CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(160, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_rm24t")
+theme_override_font_sizes/font_size = 30
+text = "Accept"
+flat = true
+
+[node name="Decorator" type="ColorRect" parent="PlayStateMachine/PlayState_Victory/CanvasLayer/VBoxContainer/RestartButton"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_kgolu")
+
+[node name="PlayState_Asleep" type="Control" parent="PlayStateMachine"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("15_yw2oc")
+
+[node name="Player" parent="." instance=ExtResource("16_bcqnm")]
+unique_name_in_owner = true
+visible = false
+
+[connection signal="text_changed" from="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer/TextEdit" to="PlayStateMachine/PlayState_LevelSetup" method="_on_text_edit_text_changed"]
+[connection signal="button_up" from="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Easy" to="PlayStateMachine/PlayState_LevelSetup" method="_on_easy_button_up"]
+[connection signal="button_up" from="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Medium" to="PlayStateMachine/PlayState_LevelSetup" method="_on_medium_button_up"]
+[connection signal="button_up" from="PlayStateMachine/PlayState_LevelSetup/CanvasLayer/VBoxContainer/HBoxContainer2/Hard" to="PlayStateMachine/PlayState_LevelSetup" method="_on_hard_button_up"]
+[connection signal="gui_input" from="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control1/MarginContainer" to="PlayStateMachine/PlayState_LevelAdvance" method="on_card1_gui_input"]
+[connection signal="gui_input" from="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control2/MarginContainer" to="PlayStateMachine/PlayState_LevelAdvance" method="on_card2_gui_input"]
+[connection signal="gui_input" from="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control3/MarginContainer" to="PlayStateMachine/PlayState_LevelAdvance" method="on_card3_gui_input"]
+[connection signal="gui_input" from="PlayStateMachine/PlayState_LevelAdvance/CanvasLayer/ModsAvailable/HBoxContainer/Control4/MarginContainer" to="PlayStateMachine/PlayState_LevelAdvance" method="on_card4_gui_input"]
+[connection signal="button_up" from="PlayStateMachine/PlayState_Dead/CanvasLayer/VBoxContainer/RestartButton" to="PlayStateMachine/PlayState_Dead" method="_on_restart_button_button_up"]
+[connection signal="button_up" from="PlayStateMachine/PlayState_Victory/CanvasLayer/VBoxContainer/RestartButton" to="PlayStateMachine/PlayState_Victory" method="_on_restart_button_button_up"]
