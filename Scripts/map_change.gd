@@ -35,7 +35,11 @@ static func create_firepit(x : int, y : int) -> MapChange:
 	ret_val.atlas_coord = atlas_coords_other_firepit
 	ret_val.source_id = atlas_source_id_other
 	return ret_val
-
+static func create_clear(x : int, y : int) -> MapChange:
+	var ret_val : MapChange = MapChange.new()
+	ret_val.cell_coord = Vector2i(x, y)
+	ret_val.source_id = -1
+	return ret_val
 
 func apply(terrain_map : TileMapLayer, _object_map : TileMapLayer) -> void:
 	terrain_map.set_cell(cell_coord, source_id, atlas_coord)

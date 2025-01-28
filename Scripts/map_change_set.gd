@@ -22,6 +22,19 @@ func clear_cell(x : int, y : int) -> void:
 func size() -> int:
 	return clears.size() + additions.size()
 
+func sort() -> void:
+	var dict : Dictionary
+	for cell : Vector2i in clears:
+		dict[cell] = MapChange.create_clear(cell.x, cell.y)
+	clears.clear()
+	for change : MapChange in additions:
+		dict[change.cell_coord] = change
+	var distances : Array = dict.keys()
+	distances.sort_custom(func(a : Vector2i,b : Vector2i) : return a.length_squared() < b.length_squared())
+	additions.clear()
+	for key : Vector2i in distances:
+		additions.append(dict[key])
+
 func apply_subset(terrain_map : TileMapLayer, object_map : TileMapLayer, count : int) -> void:
 	var clears_to_remove : int = 0
 	for cell : Vector2i in clears:

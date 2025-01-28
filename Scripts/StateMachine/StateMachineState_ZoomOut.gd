@@ -27,7 +27,8 @@ func enter_state() -> void:
 func zoom_completed() -> void:
 	var state_play : PlayState = our_state_machine.get_play_state()
 	map_changes = state_play.generate_map_changes()
-	map_change_deadline = 2
+	map_changes.sort()
+	map_change_deadline = 4
 
 func _process(delta: float) -> void:
 	if map_changes == null:
