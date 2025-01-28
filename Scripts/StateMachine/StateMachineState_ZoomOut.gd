@@ -5,6 +5,10 @@ var map_change_deadline : float = 2
 
 func enter_state() -> void:
 	super.enter_state()
+	
+	var viewport : Viewport = get_viewport()  #viewport_set_snap_2d_vertices_to_pixel()
+	viewport.snap_2d_vertices_to_pixel  = true
+	
 	map_changes = null
 	var zoom_camera : Camera2D = %PlayStateMachine/ZoomCamera as Camera2D
 	var player_camera : Camera2D = %Player.get_camera()

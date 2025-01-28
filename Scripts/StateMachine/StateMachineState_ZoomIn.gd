@@ -18,3 +18,6 @@ func enter_state() -> void:
 func zoom_completed() -> void:
 	var state_play : PlayState = our_state_machine.get_play_state()
 	state_play.spawn_map()
+
+	var viewport : Viewport = get_viewport()  #viewport_set_snap_2d_vertices_to_pixel()
+	viewport.snap_2d_vertices_to_pixel  = false
