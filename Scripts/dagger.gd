@@ -58,7 +58,8 @@ func _physics_process(delta : float) -> void:
 	var query = PhysicsRayQueryParameters2D.create(global_position, global_position + move_delta * 1.05)
 	query.hit_from_inside = true
 	query.collision_mask = 1 + 4 # Walls & Players
-	query.exclude.append(dagger_thrower.get_rid())
+	if dagger_thrower != null:
+		query.exclude.append(dagger_thrower.get_rid())
 	var result : Dictionary = space_state.intersect_ray(query)
 	if !result.is_empty():
 		var collider = result["collider"]
