@@ -306,6 +306,11 @@ func Spawn(rnd : RandomNumberGenerator) -> void:
 		return
 
 	#print("Spawn room ID: " + str(id))
+	if room_type == RoomType.FinalRoom:
+		urist = urist_scene.instantiate()
+		var our_center_pos : Vector2 = play_state.get_room_central_pos(x, y)
+		urist.position = our_center_pos
+		play_state.add_child(urist)
 	
 	if room_lock_blocks != null:
 		assert(lock == null)
@@ -463,10 +468,7 @@ func ApplyToMaps(map_change_set : MapChangeSet) -> void:
 				for oy in range(baseY + 5, baseY + size - 5):
 					map_change_set.set_exit(ox, oy)
 		RoomType.FinalRoom:
-			urist = urist_scene.instantiate()
-			var our_center_pos : Vector2 = play_state.get_room_central_pos(x, y)
-			urist.position = our_center_pos
-			play_state.add_child(urist)
+			pass
 		RoomType.BigPilar:
 			apply_pillar(map_change_set, baseX + 4, baseY + 4, rnd)
 			apply_pillar(map_change_set, baseX + 9, baseY + 4, rnd)

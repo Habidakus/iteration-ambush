@@ -24,7 +24,6 @@ TODO:
 
 Bugs:
 	- scythes not spawning when ghost is close?
-	- Urist shows up when picking mods at the end of the penultimate level
 
 Potential power ups:
 	- only wake monsters behind locks after the lock is destroyed
