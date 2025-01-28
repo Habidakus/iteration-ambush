@@ -19,6 +19,9 @@ var room_mods : Array[RoomMod]
 var unspent_difficulty : int = 1
 
 var dagger_thrower_reload : float = -1
+var dagger_thrower_damage : float = -1
+var dagger_thrower_distance : float = -1
+var dagger_thrower_speed : float = -1
 var dagger_thrower_scene : Resource = preload("res://Scene/dagger_thrower.tscn")
 var dagger_thrower : DaggerThrower = null
 
@@ -149,16 +152,29 @@ func SpendDifficulty(rnd : RandomNumberGenerator) -> void:
 		return
 		
 	var count : int = 0
+	var mod_names : String = ""
 	for mod : RoomMod in room_mods:
+		if !mod_names.is_empty():
+			mod_names += " "
 		if mod.can_advance():
 			count += 1
+			mod_names += mod.mod_name()
+		else:
+			mod_names += "["
+			mod_names += mod.mod_name()
+			mod_names += "]"
 	if count == 0:
 		print("Can't advance " + str(self))
+		return
+
 	count = rnd.randi() % count
+	mod_names += ", selecting #" + str(count) + " = "
 	for mod : RoomMod in room_mods:
 		if mod.can_advance():
 			if count == 0:
 				mod.advance()
+				mod_names += mod.mod_name()
+				#print("Room #" + str(id) + " mod selection: " + mod_names)
 				return
 			count -= 1
 	assert(false)
@@ -332,7 +348,7 @@ func Spawn(rnd : RandomNumberGenerator) -> void:
 		dagger_thrower = dagger_thrower_scene.instantiate()
 		var our_center_pos : Vector2 = play_state.get_room_central_pos(x, y)
 		dagger_thrower.position = our_center_pos
-		dagger_thrower.init(self, dagger_thrower_reload)
+		dagger_thrower.init(self, dagger_thrower_reload, dagger_thrower_damage, dagger_thrower_distance, dagger_thrower_speed)
 		play_state.add_child(dagger_thrower)
 
 	if has_enemy:

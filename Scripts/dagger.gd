@@ -8,13 +8,11 @@ var damage : float = 25
 var movement_dir : float
 var speed : float = 400
 var player : Player = null
+var dagger_thrower : DaggerThrower = null
 
 var explosion_scene : Resource = preload("res://Scene/wall_hit_vfx.tscn")
 @export var hit_wall_sounds : AudioStreamRandomizer
 @export var hit_player_sounds : AudioStreamRandomizer
-
-func set_damage(_damage : float) -> void:
-	damage = _damage
 
 func die(global_pos : Vector2, sound_generator : AudioStreamRandomizer, db : int) -> void:
 	var explosion : CPUParticles2D = explosion_scene.instantiate()
@@ -34,10 +32,13 @@ func die(global_pos : Vector2, sound_generator : AudioStreamRandomizer, db : int
 	tween.tween_callback(explosion.queue_free)
 	queue_free()
 
-func init(_player : Player) -> void:
+func init(_player : Player, thrower : DaggerThrower) -> void:
 	movement_dir = rotation
 	player = _player
-	speed = _player.current_bullet_speed()
+	dagger_thrower = thrower
+	speed = dagger_thrower.dagger_speed
+	damage = dagger_thrower.dagger_damage
+	max_distance = dagger_thrower.max_dagger_distance
 
 func collide_with_player(_player: Player, _col_glob_pos : Vector2) -> void:
 	if is_dead:
@@ -57,6 +58,7 @@ func _physics_process(delta : float) -> void:
 	var query = PhysicsRayQueryParameters2D.create(global_position, global_position + move_delta * 1.05)
 	query.hit_from_inside = true
 	query.collision_mask = 1 + 4 # Walls & Players
+	query.exclude.append(dagger_thrower.get_rid())
 	var result : Dictionary = space_state.intersect_ray(query)
 	if !result.is_empty():
 		var collider = result["collider"]
@@ -82,8 +84,8 @@ func _physics_process(delta : float) -> void:
 		if lock != null:
 			return
 		
-		var dagger_thrower : DaggerThrower = collider as DaggerThrower
-		if dagger_thrower != null:
+		var dt : DaggerThrower = collider as DaggerThrower
+		if dt != null:
 			position += move_delta
 			return
 
