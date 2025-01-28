@@ -57,6 +57,7 @@ enum RoomType {
 	Loop,
 	Arena,
 	Crenelations,
+	Corners,
 	FirstRoom,
 	LastRoom,
 	FinalRoom,
@@ -76,7 +77,7 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 	room.key_id = clock_room.id
 	room.parent_room = clock_room
 
-	match cplay_state.build_rnd.randi_range(0,6):
+	match cplay_state.build_rnd.randi_range(0,7):
 		0:
 			room.room_type = RoomType.ManyFirepits
 			room.unspent_difficulty -= 1
@@ -92,6 +93,8 @@ static func CreateKeyRoom(clock_room : Room, dir : Vector2i, cplay_state : PlayS
 			room.room_type = RoomType.Arena
 		6:
 			room.room_type = RoomType.Crenelations
+		7:
+			room.room_type = RoomType.Corners
 	assert(room.room_type != RoomType.UNDEFINED)
 	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd, room)
 	while room.unspent_difficulty > 0:
@@ -111,7 +114,7 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 	room.parent_room = parent
 
 	if croom_type == RoomType.UNDEFINED:
-		var roll : int = cplay_state.build_rnd.randi_range(0,10)
+		var roll : int = cplay_state.build_rnd.randi_range(0,11)
 		match roll:
 			0:
 				croom_type = RoomType.BigFirepit
@@ -137,6 +140,8 @@ static func CreateRoom(cx : int, cy : int, cplay_state : PlayState, parent : Roo
 				croom_type = RoomType.Arena
 			10:
 				croom_type = RoomType.Crenelations
+			11:
+				croom_type = RoomType.Corners
 	room.room_type = croom_type
 	assert(room.room_type != RoomType.UNDEFINED)
 	room.room_mods = RoomMod.SelectThreeMods(cplay_state.build_rnd, room)
@@ -196,7 +201,7 @@ func GetParentRoom() -> Room:
 func CanHaveDaggerThrower() -> bool:
 	if key_id != -1:
 		return false
-	if room_type == RoomType.Empty || room_type == RoomType.ManyFirepits || room_type == RoomType.BigFirepit || room_type == RoomType.Diamond:
+	if room_type == RoomType.Empty || room_type == RoomType.ManyFirepits || room_type == RoomType.BigFirepit || room_type == RoomType.Diamond || room_type == RoomType.Corners:
 		return true
 	if play_state.difficulty != PlayState.Difficulty.Easy:
 		if room_type == RoomType.Arena:
@@ -549,6 +554,26 @@ func ApplyToMaps(map_change_set : MapChangeSet) -> void:
 					apply_wall(map_change_set, baseX + j, baseY + i, rnd)
 					apply_wall(map_change_set, baseX + i, baseY + size - (1 + j), rnd)
 					apply_wall(map_change_set, baseX + size - (1 + j), baseY + i, rnd)
+		RoomType.Corners:
+			for i in [3, 4, 5, 6]:
+				apply_wall(map_change_set, baseX + i, baseY + 3, rnd)
+				apply_wall(map_change_set, baseX + i, baseY + 4, rnd)
+				apply_wall(map_change_set, baseX + size - (1 + i), baseY + 3, rnd)
+				apply_wall(map_change_set, baseX + size - (1 + i), baseY + 4, rnd)
+				apply_wall(map_change_set, baseX + i, baseY + size - 4, rnd)
+				apply_wall(map_change_set, baseX + i, baseY + size - 5, rnd)
+				apply_wall(map_change_set, baseX + size - (1 + i), baseY + size - 4, rnd)
+				apply_wall(map_change_set, baseX + size - (1 + i), baseY + size - 5, rnd)
+				
+				if i > 4:
+					apply_wall(map_change_set, baseX + 3, baseY + i, rnd)
+					apply_wall(map_change_set, baseX + 4, baseY + i, rnd)
+					apply_wall(map_change_set, baseX + 3, baseY + size - (1 + i), rnd)
+					apply_wall(map_change_set, baseX + 4, baseY + size - (1 + i), rnd)
+					apply_wall(map_change_set, baseX + size - 4, baseY + i, rnd)
+					apply_wall(map_change_set, baseX + size - 5, baseY + i, rnd)
+					apply_wall(map_change_set, baseX + size - 4, baseY + size - (1 + i), rnd)
+					apply_wall(map_change_set, baseX + size - 5, baseY + size - (1 + i), rnd)
 
 func apply_pillar(map_change_set : MapChangeSet, px : int, py : int, rnd : RandomNumberGenerator) -> void:
 	map_change_set.set_wall(px, py, rnd)
