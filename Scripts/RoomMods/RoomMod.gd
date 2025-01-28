@@ -13,6 +13,8 @@ enum Mod {
 	DaggerThrower = 7,
 }
 
+static var unspent_points : Dictionary
+
 static func SelectThreeMods(rnd : RandomNumberGenerator, room : Room) -> Array[RoomMod]:
 	var possible : Array = [
 		[rnd.randf(), Mod.Endurance],
@@ -22,18 +24,24 @@ static func SelectThreeMods(rnd : RandomNumberGenerator, room : Room) -> Array[R
 		[rnd.randf(), Mod.Rammer],
 		[rnd.randf(), Mod.Shrink],
 		[rnd.randf_range(0, 0.75), Mod.Teleporter],
-		[rnd.randf_range(0.2, 1), Mod.DaggerThrower],
+		[rnd.randf(), Mod.DaggerThrower],
 	]
+	for key in unspent_points:
+		for i in range(0, possible.size()):
+			if possible[i][1] == key:
+				possible[i][0] += unspent_points[key]
 	possible.sort_custom(func(a,b): return a[0] > b[0])
 	var ret_val : Array[RoomMod]
 	var index : int = 0
 	while ret_val.size() < 3:
 		var mod : RoomMod = CreateMod(possible[index][1])
 		if mod.is_viable(room):
-			if possible[index][1] == Mod.DaggerThrower:
-				print("Dagger Thrower added to " + str(room))
 			ret_val.append(mod)
+			unspent_points.erase(possible[index][1])
+		else:
+			unspent_points[possible[index][1]] = possible[index][0]
 		index += 1
+	
 	return ret_val
 
 static func CreateMod(modEnum : Mod) -> RoomMod:

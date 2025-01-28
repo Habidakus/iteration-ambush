@@ -168,7 +168,7 @@ func init_map() -> void:
 	Room.global_id = 0
 	build_rnd = RandomNumberGenerator.new()
 	build_rnd.seed = build_seed
-	var r1 = Room.CreateRoom(0, 0, self, null, Room.RoomType.Empty)
+	var r1 = Room.CreateRoom(0, 0, self, null, Room.RoomType.FirstRoom)
 	var r2 = Room.CreateRoom(0, -1, self, r1, Room.RoomType.UNDEFINED)
 	var r3 = Room.CreateRoom(-1, -1, self, r2, Room.RoomType.UNDEFINED)
 	var r4 = Room.CreateRoom(-1, 0, self, r3, Room.RoomType.LastRoom)

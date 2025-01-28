@@ -57,6 +57,7 @@ enum RoomType {
 	Loop,
 	Arena,
 	Crenelations,
+	FirstRoom,
 	LastRoom,
 	FinalRoom,
 }
@@ -193,10 +194,17 @@ func GetParentRoom() -> Room:
 	return parent_room
 
 func CanHaveDaggerThrower() -> bool:
-	if parent_room == null:
+	if key_id != -1:
 		return false
-	if room_type == RoomType.Empty || room_type == RoomType.ManyFirepits || room_type == RoomType.BigFirepit || room_type == RoomType.Crenelations || room_type == RoomType.Diamond:
-		return key_id == -1
+	if room_type == RoomType.Empty || room_type == RoomType.ManyFirepits || room_type == RoomType.BigFirepit || room_type == RoomType.Diamond:
+		return true
+	if play_state.difficulty != PlayState.Difficulty.Easy:
+		if room_type == RoomType.Arena:
+			# Arena rooms can have dagger throwers only on Medium or Hard difficulty
+			return true
+		if room_type == RoomType.Crenelations && play_state.difficulty == PlayState.Difficulty.Hard:
+			# Crenelation rooms can have dagger throwers only on Hard difficulty
+			return true
 	return false
 
 func FixParenting(possible_parent_a : Room, possible_parent_b : Room) -> void:
@@ -484,6 +492,8 @@ func ApplyToMaps(map_change_set : MapChangeSet) -> void:
 				for oy in range(baseY + 5, baseY + size - 5):
 					map_change_set.set_exit(ox, oy)
 		RoomType.FinalRoom:
+			pass
+		RoomType.FirstRoom:
 			pass
 		RoomType.BigPilar:
 			apply_pillar(map_change_set, baseX + 4, baseY + 4, rnd)
