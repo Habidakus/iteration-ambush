@@ -422,22 +422,38 @@ func extrude_map(room_a : Room, room_b : Room, dir : Vector2i) -> MapChangeSet:
 	if room_a.north == room_b:
 		new_room_a.north = new_room_b
 		new_room_b.south = new_room_a
+		if room_a.room_lock_blocks == room_a.north:
+			room_a.room_lock_blocks = new_room_a
 		room_a.north = null
+		if room_b.room_lock_blocks == room_b.south:
+			room_b.room_lock_blocks = new_room_b
 		room_b.south = null
 	elif room_a.south == room_b:
 		new_room_a.south = new_room_b
 		new_room_b.north = new_room_a
+		if room_a.room_lock_blocks == room_a.south:
+			room_a.room_lock_blocks = new_room_a
 		room_a.south = null
+		if room_b.room_lock_blocks == room_b.north:
+			room_b.room_lock_blocks = new_room_b
 		room_b.north = null
 	elif room_a.east == room_b:
 		new_room_a.east = new_room_b
 		new_room_b.west = new_room_a
+		if room_a.room_lock_blocks == room_a.east:
+			room_a.room_lock_blocks = new_room_a
 		room_a.east = null
+		if room_b.room_lock_blocks == room_b.west:
+			room_b.room_lock_blocks = new_room_b
 		room_b.west = null
 	elif room_a.west == room_b:
 		new_room_a.west = new_room_b
 		new_room_b.east = new_room_a
+		if room_a.room_lock_blocks == room_a.west:
+			room_a.room_lock_blocks = new_room_a
 		room_a.west = null
+		if room_b.room_lock_blocks == room_b.east:
+			room_b.room_lock_blocks = new_room_b
 		room_b.east = null
 	else:
 		assert(false)

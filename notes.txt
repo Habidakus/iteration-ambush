@@ -5,8 +5,6 @@ Location of some MIT notes:
 	https://github.com/gleitz/midi-js-soundfonts/tree/gh-pages/MusyngKite
 
 TODO:
-	- add states when map is being mutated where we first pan the camera out to see entire map, then pan the camera back in
-	- add sounds for sword throwing room
 	- monsters can't travel faster than current player max?
 	- give t-port ghosts 10 different possible locations, and have them pick the one that's the same distance from the player, but farthest from the dagger
 	- Add new "slow" ghost that slows you down in an area, maybe they're green? Maybe instead it's a ghost that adds a locked door to the room if the player and the ghost are in the same room
@@ -25,7 +23,6 @@ TODO:
 	- if a mutation can't be slotted, make sure it's random roll continues to climb until it can be slotted (although some mutations should start at a lower roll)
 
 Bugs:
-	- fix lock being left in a wall when paths move (Seed: 706, 7 waves to go)
 	- scythes not spawning when ghost is close?
 	- Urist shows up when picking mods at the end of the penultimate level
 
