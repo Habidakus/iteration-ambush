@@ -300,11 +300,11 @@ func generate_map_changes() -> MapChangeSet:
 	var ret_val : MapChangeSet
 	if build_rnd.randi_range(0, 4) == 0:
 		ret_val = generate_mutate_map_key_lock(build_rnd)
-		if !ret_val.is_empty():
+		if ret_val != null && !ret_val.is_empty():
 			return ret_val
 	if build_rnd.randi_range(0, 1) == 0:
 		ret_val = generate_mutate_map_extrude(build_rnd)
-		if !ret_val.is_empty():
+		if ret_val != null && !ret_val.is_empty():
 			return ret_val
 	return generate_mutate_map_extend()
 
