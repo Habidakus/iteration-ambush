@@ -45,9 +45,11 @@ func player_died() -> void:
 
 func restart() -> void:
 	%PlayStateMachine.switch_state("PlayState_Asleep")
+	var map_change_set : MapChangeSet = MapChangeSet.new()
 	for room : Room in rooms:
-		room.ClearFromMaps(%TerrainMap, %ObjectMap)
+		room.ClearFromMaps(map_change_set)
 		room.ResetRoom()
+	map_change_set.apply(%TerrainMap, %ObjectMap)
 		
 	rooms.clear()
 	%Player.init_brand_new_game(self)
@@ -182,10 +184,12 @@ func init_map() -> void:
 	rooms.append(r3)
 	rooms.append(r4)
 	
-	r1.ApplyToMaps(%TerrainMap, %ObjectMap)
-	r2.ApplyToMaps(%TerrainMap, %ObjectMap)
-	r3.ApplyToMaps(%TerrainMap, %ObjectMap)
-	r4.ApplyToMaps(%TerrainMap, %ObjectMap)
+	var map_change_set : MapChangeSet = MapChangeSet.new()
+	r1.ApplyToMaps(map_change_set)
+	r2.ApplyToMaps(map_change_set)
+	r3.ApplyToMaps(map_change_set)
+	r4.ApplyToMaps(map_change_set)
+	map_change_set.apply(%TerrainMap, %ObjectMap)
 	
 	first_room = r1
 	last_room = r4
@@ -242,15 +246,16 @@ func clean_map() -> void:
 	for room : Room in rooms:
 		room.ResetRoom()
 
-func move(rooms_to_move : Array[Room], dir : Vector2i) -> DirectionRoomCollection:
+func move(rooms_to_move : Array[Room], dir : Vector2i, map_change_set : MapChangeSet) -> DirectionRoomCollection:
+	
 	for room : Room in rooms_to_move:
-		room.ClearFromMaps(%TerrainMap, %ObjectMap)
+		room.ClearFromMaps(map_change_set)
 		#print("Moving " + str(room.x) + "," + str(room.y) + " by " + str(dir))
 		room.x += dir.x
 		room.y += dir.y
 	var ret_val : DirectionRoomCollection = DirectionRoomCollection.new()
 	for room : Room in rooms_to_move:
-		room.ApplyToMaps(%TerrainMap, %ObjectMap)
+		room.ApplyToMaps(map_change_set)
 		if room.north != null && room.north.y != room.y - 1:
 			ret_val.norths.append(room)
 			ret_val.souths.append(room.north)
@@ -286,18 +291,22 @@ func update_waves_remaining(update_label : Callable) -> void:
 	update_label.call(waves_to_go)
 	if waves_to_go <= 1:
 		last_room.MakeFinalRoom()
-		last_room.ClearFromMaps(%TerrainMap, %ObjectMap)
-		last_room.ApplyToMaps(%TerrainMap, %ObjectMap)
+		var map_change_set : MapChangeSet = MapChangeSet.new()
+		last_room.ClearFromMaps(map_change_set)
+		last_room.ApplyToMaps(map_change_set)
+		map_change_set.apply(%TerrainMap, %ObjectMap)
 
-func mutate_map() -> void:
-	
+func generate_map_changes() -> MapChangeSet:
+	var ret_val : MapChangeSet
 	if build_rnd.randi_range(0, 4) == 0:
-		if mutate_map_key_lock(build_rnd):
-			return
+		ret_val = generate_mutate_map_key_lock(build_rnd)
+		if !ret_val.is_empty():
+			return ret_val
 	if build_rnd.randi_range(0, 1) == 0:
-		if mutate_map_extrude(build_rnd):
-			return
-	mutate_map_extend()
+		ret_val = generate_mutate_map_extrude(build_rnd)
+		if !ret_val.is_empty():
+			return ret_val
+	return generate_mutate_map_extend()
 
 func is_empty_room(x : int, y : int) -> bool:
 	for room : Room in rooms:
@@ -305,7 +314,7 @@ func is_empty_room(x : int, y : int) -> bool:
 			return false
 	return true
 
-func mutate_map_key_lock(rnd : RandomNumberGenerator) -> bool:
+func generate_mutate_map_key_lock(rnd : RandomNumberGenerator) -> MapChangeSet:
 	var potential_east : Array[Room]
 	var potential_west : Array[Room]
 	var potential_north : Array[Room]
@@ -321,32 +330,29 @@ func mutate_map_key_lock(rnd : RandomNumberGenerator) -> bool:
 			if is_empty_room(room.x, room.y + 1):
 				potential_south.append(room)
 	var count : int = potential_east.size() + potential_west.size() + potential_north.size() + potential_south.size()
+	var empty_array : MapChangeSet = null
 	if count == 0:
-		return false
+		return empty_array
 	var index : int = rnd.randi_range(0, count - 1)
 	if index < potential_east.size():
-		lock_key_map(potential_east[index], Vector2i(1, 0))
-		return true
+		return lock_key_map(potential_east[index], Vector2i(1, 0))
 	index -= potential_east.size()
 	
 	if index < potential_west.size():
-		lock_key_map(potential_west[index], Vector2i(-1, 0))
-		return true
+		return lock_key_map(potential_west[index], Vector2i(-1, 0))
 	index -= potential_west.size()
 	
 	if index < potential_north.size():
-		lock_key_map(potential_north[index], Vector2i(0, -1))
-		return true
+		return lock_key_map(potential_north[index], Vector2i(0, -1))
 	index -= potential_north.size()
 		
 	if index < potential_south.size():
-		lock_key_map(potential_south[index], Vector2i(0, 1))
-		return true
+		return lock_key_map(potential_south[index], Vector2i(0, 1))
 		
 	assert(false)
-	return false
+	return empty_array
 
-func mutate_map_extrude(rnd : RandomNumberGenerator) -> bool:
+func generate_mutate_map_extrude(rnd : RandomNumberGenerator) -> MapChangeSet:
 	var potential_east : Array[Room]
 	var potential_west : Array[Room]
 	var potential_north : Array[Room]
@@ -363,31 +369,27 @@ func mutate_map_extrude(rnd : RandomNumberGenerator) -> bool:
 			if is_empty_room(room.x, room.y + 1) && is_empty_room(room.east.x, room.east.y + 1):
 				potential_south.append(room)
 	var count : int = potential_east.size() + potential_west.size() + potential_north.size() + potential_south.size()
+	var empty_array : MapChangeSet = null
 	if count == 0:
-		print("Failed to extrude")
-		return false
+		return empty_array
 	var index : int = rnd.randi_range(0, count - 1)
 	if index < potential_east.size():
-		extrude_map(potential_east[index], potential_east[index].north, Vector2i(1, 0))
-		return true
+		return extrude_map(potential_east[index], potential_east[index].north, Vector2i(1, 0))
 	index -= potential_east.size()
 	
 	if index < potential_west.size():
-		extrude_map(potential_west[index], potential_west[index].north, Vector2i(-1, 0))
-		return true
+		return extrude_map(potential_west[index], potential_west[index].north, Vector2i(-1, 0))
 	index -= potential_west.size()
 	
 	if index < potential_north.size():
-		extrude_map(potential_north[index], potential_north[index].east, Vector2i(0, -1))
-		return true
+		return extrude_map(potential_north[index], potential_north[index].east, Vector2i(0, -1))
 	index -= potential_north.size()
 		
 	if index < potential_south.size():
-		extrude_map(potential_south[index], potential_south[index].east, Vector2i(0, 1))
-		return true
+		return extrude_map(potential_south[index], potential_south[index].east, Vector2i(0, 1))
 		
 	assert(false)
-	return false
+	return empty_array
 
 func get_next_room(room : Room) -> Room:
 	for iter : Room in rooms:
@@ -397,7 +399,7 @@ func get_next_room(room : Room) -> Room:
 	assert(false)
 	return null
 
-func lock_key_map(room : Room, dir : Vector2i) -> void:
+func lock_key_map(room : Room, dir : Vector2i) -> MapChangeSet:
 	room.AddLock(get_next_room(room))
 	var new_room : Room = Room.CreateKeyRoom(room, dir, self)
 	connect_rooms(room, new_room)
@@ -408,11 +410,13 @@ func lock_key_map(room : Room, dir : Vector2i) -> void:
 		room.south = new_room
 		new_room.north = room
 	rooms.append(new_room)
-	room.ClearFromMaps(%TerrainMap, %ObjectMap)
-	new_room.ApplyToMaps(%TerrainMap, %ObjectMap)
-	room.ApplyToMaps(%TerrainMap, %ObjectMap)
+	var ret_val : MapChangeSet = MapChangeSet.new()
+	room.ClearFromMaps(ret_val)
+	new_room.ApplyToMaps(ret_val)
+	room.ApplyToMaps(ret_val)
+	return ret_val
 	
-func extrude_map(room_a : Room, room_b : Room, dir : Vector2i) -> void:
+func extrude_map(room_a : Room, room_b : Room, dir : Vector2i) -> MapChangeSet:
 	var new_room_a : Room = Room.CreateRoom(room_a.x + dir.x, room_a.y + dir.y, self, null, Room.RoomType.UNDEFINED)
 	var new_room_b : Room = Room.CreateRoom(room_b.x + dir.x, room_b.y + dir.y, self, null, Room.RoomType.UNDEFINED)
 	if room_a.north == room_b:
@@ -452,33 +456,37 @@ func extrude_map(room_a : Room, room_b : Room, dir : Vector2i) -> void:
 	rooms.append(new_room_b)
 	connect_rooms(room_a, new_room_a)
 	connect_rooms(room_b, new_room_b)
-	room_a.ClearFromMaps(%TerrainMap, %ObjectMap)
-	room_b.ClearFromMaps(%TerrainMap, %ObjectMap)
-	room_a.ApplyToMaps(%TerrainMap, %ObjectMap)
-	room_b.ApplyToMaps(%TerrainMap, %ObjectMap)
-	new_room_a.ApplyToMaps(%TerrainMap, %ObjectMap)
-	new_room_b.ApplyToMaps(%TerrainMap, %ObjectMap)
+	
+	var ret_val : MapChangeSet = MapChangeSet.new()
+	room_a.ClearFromMaps(ret_val)
+	room_b.ClearFromMaps(ret_val)
+	room_a.ApplyToMaps(ret_val)
+	room_b.ApplyToMaps(ret_val)
+	new_room_a.ApplyToMaps(ret_val)
+	new_room_b.ApplyToMaps(ret_val)
+	return ret_val
 
-func mutate_map_extend() -> void:
+func generate_mutate_map_extend() -> MapChangeSet:
 	var drc : DirectionRoomCollection = generate_direction_room_collection(Vector2i.ZERO)
 	var pre_empty_rooms : Array[Room]
 	var result : DirectionRoomCollection
 	var move_direction : Vector2i
+	var ret_val : MapChangeSet = MapChangeSet.new()
 	if drc.is_east_least():
 		move_direction = Vector2i(1, 0)
-		result = move(drc.easts, move_direction)
+		result = move(drc.easts, move_direction, ret_val)
 		pre_empty_rooms = result.easts
 	elif drc.is_north_least():
 		move_direction = Vector2i(0, -1)
-		result = move(drc.norths, move_direction)
+		result = move(drc.norths, move_direction, ret_val)
 		pre_empty_rooms = result.norths
 	elif drc.is_west_least():
 		move_direction = Vector2i(-1, 0)
-		result = move(drc.wests, move_direction)
+		result = move(drc.wests, move_direction, ret_val)
 		pre_empty_rooms = result.wests
 	else: # south
 		move_direction = Vector2i(0, 1)
-		result = move(drc.souths, move_direction)
+		result = move(drc.souths, move_direction, ret_val)
 		pre_empty_rooms = result.souths
 
 	for room : Room in pre_empty_rooms:
@@ -497,7 +505,6 @@ func mutate_map_extend() -> void:
 			room.west = new_room
 			old_dest.east = new_room
 			new_room.FixParenting(room, old_dest)
-
 		elif move_direction.y > 0:
 			var old_dest : Room = room.south
 			new_room.north = room
@@ -512,9 +519,9 @@ func mutate_map_extend() -> void:
 			room.north = new_room
 			old_dest.south = new_room
 			new_room.FixParenting(room, old_dest)
-
-		new_room.ApplyToMaps(%TerrainMap, %ObjectMap)
+		new_room.ApplyToMaps(ret_val)
 		rooms.append(new_room)
+	return ret_val
 
 func set_gameplay_active(active : bool) -> void:
 	is_gameplay_active = active

@@ -41,13 +41,6 @@ var has_entered : bool = false
 var has_woken : bool = false
 var has_spawned : bool = false
 
-# TODO: Make global
-var atlas_source_id_wall : int = 0
-var atlas_source_id_other : int = 1
-var atlas_coords_other_floor : Vector2i = Vector2i(0, 0)
-var atlas_coords_other_firepit : Vector2i = Vector2i(2, 0)
-var atlas_coords_other_lastroom : Vector2i = Vector2i(1, 0)
-
 enum RoomType {
 	UNDEFINED,
 	Empty,
@@ -411,7 +404,7 @@ func LockRemoved() -> void:
 	assert(lock != null)
 	lock = null
 
-func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
+func ApplyToMaps(map_change_set : MapChangeSet) -> void:
 	var rnd : RandomNumberGenerator = RandomNumberGenerator.new()
 	rnd.seed = id
 	var baseX : int = x * size
@@ -419,134 +412,138 @@ func ApplyToMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
 	var width : int = 4 if room_type == RoomType.Narrow else 1
 	for dx in range(0, size):
 		for dy in range(0, size):
-			apply_floor(terrain, baseX + dx, baseY + dy, rnd)
+			apply_floor(map_change_set, baseX + dx, baseY + dy, rnd)
 	for w in range(0, width):
 		for i in range(0, size):
-			apply_wall(terrain, baseX + i, baseY + w, rnd)
-			apply_wall(terrain, baseX + i, baseY + size - (1 + w), rnd)
+			apply_wall(map_change_set, baseX + i, baseY + w, rnd)
+			apply_wall(map_change_set, baseX + i, baseY + size - (1 + w), rnd)
 			if i >= width and i <= (size - (1 + width)):
-				apply_wall(terrain, baseX + w, baseY + i, rnd)
-				apply_wall(terrain, baseX + size - (1 + w), baseY + i, rnd)
+				apply_wall(map_change_set, baseX + w, baseY + i, rnd)
+				apply_wall(map_change_set, baseX + size - (1 + w), baseY + i, rnd)
 		if north != null:
-			apply_floor(terrain, baseX + 7, baseY + w, rnd)
+			apply_floor(map_change_set, baseX + 7, baseY + w, rnd)
 		if west != null:
-			apply_floor(terrain, baseX + w, baseY + 7, rnd)
+			apply_floor(map_change_set, baseX + w, baseY + 7, rnd)
 		if south != null:
-			apply_floor(terrain, baseX + 7, baseY + size - (1 + w), rnd)
+			apply_floor(map_change_set, baseX + 7, baseY + size - (1 + w), rnd)
 		if east != null:
-			apply_floor(terrain, baseX + size - (1 + w), baseY + 7, rnd)
+			apply_floor(map_change_set, baseX + size - (1 + w), baseY + 7, rnd)
 
 	match room_type:
 		RoomType.Wall:
 			if north == null:
 				for dx in range(6,9):
 					for dy in range(1,12):
-						apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+						apply_wall(map_change_set, baseX + dx, baseY + dy, rnd)
 			elif south == null:
 				for dx in range(6,9):
 					for dy in range(3,14):
-						apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+						apply_wall(map_change_set, baseX + dx, baseY + dy, rnd)
 			elif east == null:
 				for dy in range(6,9):
 					for dx in range(3,14):
-						apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+						apply_wall(map_change_set, baseX + dx, baseY + dy, rnd)
 			elif west == null:
 				for dy in range(6,9):
 					for dx in range(1,12):
-						apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+						apply_wall(map_change_set, baseX + dx, baseY + dy, rnd)
 		RoomType.Loop:
 			for dx in range(3,12):
 				for dy in range(3,12):
-					apply_wall(terrain, baseX + dx, baseY + dy, rnd)
+					apply_wall(map_change_set, baseX + dx, baseY + dy, rnd)
 		RoomType.Diamond:
 			for dx in range(1, 6):
 				for dy in range(1, 7 - dx):
-					apply_wall(terrain, baseX + dx, baseY + dy, rnd)
-					apply_wall(terrain, baseX + size - (1 + dx), baseY + dy, rnd)
-					apply_wall(terrain, baseX + dx, baseY + size - (1 + dy), rnd)
-					apply_wall(terrain, baseX + size - (1 + dx), baseY + size - (1 + dy), rnd)
+					apply_wall(map_change_set, baseX + dx, baseY + dy, rnd)
+					apply_wall(map_change_set, baseX + size - (1 + dx), baseY + dy, rnd)
+					apply_wall(map_change_set, baseX + dx, baseY + size - (1 + dy), rnd)
+					apply_wall(map_change_set, baseX + size - (1 + dx), baseY + size - (1 + dy), rnd)
 		RoomType.LastRoom:
 			for ox in range(baseX + 5, baseX + size - 5):
 				for oy in range(baseY + 5, baseY + size - 5):
-					terrain.set_cell(Vector2i(ox, oy), atlas_source_id_other, atlas_coords_other_lastroom)
+					map_change_set.set_exit(ox, oy)
 		RoomType.FinalRoom:
 			urist = urist_scene.instantiate()
 			var our_center_pos : Vector2 = play_state.get_room_central_pos(x, y)
 			urist.position = our_center_pos
 			play_state.add_child(urist)
 		RoomType.BigPilar:
-			apply_pillar(terrain, baseX + 4, baseY + 4, rnd)
-			apply_pillar(terrain, baseX + 9, baseY + 4, rnd)
-			apply_pillar(terrain, baseX + 4, baseY + 9, rnd)
-			apply_pillar(terrain, baseX + 9, baseY + 9, rnd)
+			apply_pillar(map_change_set, baseX + 4, baseY + 4, rnd)
+			apply_pillar(map_change_set, baseX + 9, baseY + 4, rnd)
+			apply_pillar(map_change_set, baseX + 4, baseY + 9, rnd)
+			apply_pillar(map_change_set, baseX + 9, baseY + 9, rnd)
 		RoomType.ManyPilars:
-			apply_pillar(terrain, baseX + 2, baseY + 2, rnd)
-			apply_pillar(terrain, baseX + 2, baseY + 11, rnd)
-			apply_pillar(terrain, baseX + 5, baseY + 5, rnd)
-			apply_pillar(terrain, baseX + 8, baseY + 8, rnd)
-			apply_pillar(terrain, baseX + 5, baseY + 8, rnd)
-			apply_pillar(terrain, baseX + 8, baseY + 5, rnd)
-			apply_pillar(terrain, baseX + 11, baseY + 2, rnd)
-			apply_pillar(terrain, baseX + 11, baseY + 11, rnd)
+			apply_pillar(map_change_set, baseX + 2, baseY + 2, rnd)
+			apply_pillar(map_change_set, baseX + 2, baseY + 11, rnd)
+			apply_pillar(map_change_set, baseX + 5, baseY + 5, rnd)
+			apply_pillar(map_change_set, baseX + 8, baseY + 8, rnd)
+			apply_pillar(map_change_set, baseX + 5, baseY + 8, rnd)
+			apply_pillar(map_change_set, baseX + 8, baseY + 5, rnd)
+			apply_pillar(map_change_set, baseX + 11, baseY + 2, rnd)
+			apply_pillar(map_change_set, baseX + 11, baseY + 11, rnd)
 		RoomType.BigFirepit:
 			for ox in range(baseX + 4, baseX + size - 4):
 				for oy in range(baseY + 4, baseY + size - 4):
-					apply_firepit(terrain, ox, oy)
+					apply_firepit(map_change_set, ox, oy)
 		RoomType.ManyFirepits:
 			for dx in range(2, 6):
 				for dy in range(2, 6):
-					apply_firepit(terrain, baseX + dx, baseY + dy)
-					apply_firepit(terrain, baseX + dx, baseY + size - (1 + dy))
-					apply_firepit(terrain, baseX + size - (1 + dx), baseY + dy)
-					apply_firepit(terrain, baseX + size - (1 + dx), baseY + size - (1 + dy))
+					apply_firepit(map_change_set, baseX + dx, baseY + dy)
+					apply_firepit(map_change_set, baseX + dx, baseY + size - (1 + dy))
+					apply_firepit(map_change_set, baseX + size - (1 + dx), baseY + dy)
+					apply_firepit(map_change_set, baseX + size - (1 + dx), baseY + size - (1 + dy))
 		RoomType.Arena:
 			for i in range(1, 4):
 				if north != null:
-					apply_wall(terrain, baseX + 6, baseY + i, rnd)
-					apply_wall(terrain, baseX + 8, baseY + i, rnd)
+					apply_wall(map_change_set, baseX + 6, baseY + i, rnd)
+					apply_wall(map_change_set, baseX + 8, baseY + i, rnd)
 				else:
-					apply_wall(terrain, baseX + 5 + i, baseY + 2, rnd)
+					apply_wall(map_change_set, baseX + 5 + i, baseY + 2, rnd)
 				if west != null:
-					apply_wall(terrain, baseX + i, baseY + 6, rnd)
-					apply_wall(terrain, baseX + i, baseY + 8, rnd)
+					apply_wall(map_change_set, baseX + i, baseY + 6, rnd)
+					apply_wall(map_change_set, baseX + i, baseY + 8, rnd)
 				else:
-					apply_wall(terrain, baseX + 2, baseY + 5 + i, rnd)
+					apply_wall(map_change_set, baseX + 2, baseY + 5 + i, rnd)
 				if south != null:
-					apply_wall(terrain, baseX + 6, baseY + size - (1 + i), rnd)
-					apply_wall(terrain, baseX + 8, baseY + size - (1 + i), rnd)
+					apply_wall(map_change_set, baseX + 6, baseY + size - (1 + i), rnd)
+					apply_wall(map_change_set, baseX + 8, baseY + size - (1 + i), rnd)
 				else:
-					apply_wall(terrain, baseX + 5 + i, baseY + size - 3, rnd)
+					apply_wall(map_change_set, baseX + 5 + i, baseY + size - 3, rnd)
 				if east != null:
-					apply_wall(terrain, baseX + size - (1 + i), baseY + 6, rnd)
-					apply_wall(terrain, baseX + size - (1 + i), baseY + 8, rnd)
+					apply_wall(map_change_set, baseX + size - (1 + i), baseY + 6, rnd)
+					apply_wall(map_change_set, baseX + size - (1 + i), baseY + 8, rnd)
 				else:
-					apply_wall(terrain, baseX + size - 3, baseY + 5 + i, rnd)
+					apply_wall(map_change_set, baseX + size - 3, baseY + 5 + i, rnd)
 		RoomType.Crenelations:
 			for i in [4,6,8,10]:
 				for j in range(1,3):
-					apply_wall(terrain, baseX + i, baseY + j, rnd)
-					apply_wall(terrain, baseX + j, baseY + i, rnd)
-					apply_wall(terrain, baseX + i, baseY + size - (1 + j), rnd)
-					apply_wall(terrain, baseX + size - (1 + j), baseY + i, rnd)
+					apply_wall(map_change_set, baseX + i, baseY + j, rnd)
+					apply_wall(map_change_set, baseX + j, baseY + i, rnd)
+					apply_wall(map_change_set, baseX + i, baseY + size - (1 + j), rnd)
+					apply_wall(map_change_set, baseX + size - (1 + j), baseY + i, rnd)
 
-func apply_pillar(terrain : TileMapLayer, px : int, py : int, rnd : RandomNumberGenerator) -> void:
-	terrain.set_cell(Vector2i(px, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
-	terrain.set_cell(Vector2i(px, py + 1), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
-	terrain.set_cell(Vector2i(px + 1, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
-	terrain.set_cell(Vector2i(px + 1, py + 1), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
+func apply_pillar(map_change_set : MapChangeSet, px : int, py : int, rnd : RandomNumberGenerator) -> void:
+	map_change_set.set_wall(px, py, rnd)
+	map_change_set.set_wall(px, py + 1, rnd)
+	map_change_set.set_wall(px + 1, py, rnd)
+	map_change_set.set_wall(px + 1, py + 1, rnd)
+	#terrain.set_cell(Vector2i(px, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
+	#terrain.set_cell(Vector2i(px, py + 1), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
+	#terrain.set_cell(Vector2i(px + 1, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
+	#terrain.set_cell(Vector2i(px + 1, py + 1), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
 
-func apply_wall(terrain : TileMapLayer, px : int, py : int, rnd : RandomNumberGenerator) -> void:
-	terrain.set_cell(Vector2i(px, py), atlas_source_id_wall, Vector2i(rnd.randi() % 16, 0))
+func apply_wall(map_change_set : MapChangeSet, px : int, py : int, rnd : RandomNumberGenerator) -> void:
+	map_change_set.set_wall(px, py, rnd)
 
-func apply_firepit(terrain : TileMapLayer, px : int, py : int) -> void:
-	terrain.set_cell(Vector2i(px, py), atlas_source_id_other, atlas_coords_other_firepit)
+func apply_firepit(map_change_set : MapChangeSet, px : int, py : int) -> void:
+	map_change_set.set_firepit(px, py)
 	
-func apply_floor(terrain : TileMapLayer, px : int, py : int, _rnd : RandomNumberGenerator) -> void:
-	terrain.set_cell(Vector2i(px, py), atlas_source_id_other, atlas_coords_other_floor)
+func apply_floor(map_change_set : MapChangeSet, px : int, py : int, _rnd : RandomNumberGenerator) -> void:
+	map_change_set.set_floor(px, py)
 
-func ClearFromMaps(terrain : TileMapLayer, _objects : TileMapLayer) -> void:
+func ClearFromMaps(map_change_set : MapChangeSet) -> void:
 	var baseX : int = x * size
 	var baseY : int = y * size
 	for ox in range(baseX, baseX + size):
 		for oy in range(baseY, baseY + size):
-			terrain.set_cell(Vector2i(ox, oy))
+			map_change_set.clear_cell(ox, oy)

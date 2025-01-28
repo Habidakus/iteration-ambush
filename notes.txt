@@ -25,7 +25,7 @@ TODO:
 	- if a mutation can't be slotted, make sure it's random roll continues to climb until it can be slotted (although some mutations should start at a lower roll)
 
 Bugs:
-	- fix lock being left in a wall when paths move
+	- fix lock being left in a wall when paths move (Seed: 706, 7 waves to go)
 	- scythes not spawning when ghost is close?
 	- Urist shows up when picking mods at the end of the penultimate level
 
