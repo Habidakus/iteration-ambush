@@ -74,8 +74,8 @@ radius = 11.3154
 height = 56.5771
 
 [node name="Player" type="CharacterBody2D"]
-collision_layer = 4
-collision_mask = 11
+collision_layer = 36
+collision_mask = 43
 motion_mode = 1
 wall_min_slide_angle = 0.0
 platform_on_leave = 2

@@ -1,0 +1,1 @@
+class_name Portcullis extends StaticBody2D

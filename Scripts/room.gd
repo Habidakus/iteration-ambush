@@ -18,6 +18,11 @@ var fire_damage : float = 20.0
 var room_mods : Array[RoomMod]
 var unspent_difficulty : int = 1
 
+var portcullis_scene : Resource = preload("res://Scene/portcullis.tscn")
+var has_jailer : bool = false
+var jailers : Array[Enemy]
+var portcullises : Array[Portcullis]
+
 var dagger_thrower_reload : float = -1
 var dagger_thrower_damage : float = -1
 var dagger_thrower_distance : float = -1
@@ -359,7 +364,7 @@ func Spawn(rnd : RandomNumberGenerator) -> void:
 		lock = lock_scene.instantiate()
 		var our_center_pos : Vector2 = play_state.get_room_central_pos(x, y)
 		var locked_room_center_pos : Vector2 = play_state.get_room_central_pos(room_lock_blocks.x, room_lock_blocks.y)
-		lock.position = our_center_pos + (locked_room_center_pos - our_center_pos).normalized() * 64 * 7
+		lock.position = our_center_pos + (locked_room_center_pos - our_center_pos).normalized() * 64 * size / 2.0
 		lock.init(self)
 		play_state.add_child(lock)
 	
@@ -384,10 +389,43 @@ func Spawn(rnd : RandomNumberGenerator) -> void:
 			var enemy : Enemy = enemy_scene.instantiate()
 			enemy.position = GetSafeEnemyPlacement(rnd)
 			enemy.init(id, play_state.get_player().get_shot_damage(), self)
+			#print(str(self) + " has spawned " + str(enemy))
 			play_state.add_child(enemy)
 			enemies.append(enemy)
 	
 	has_spawned = true
+
+var jail_radius : float = 64 * (size - 3.1) / 2.0
+var jail_radius_squared : float = jail_radius * jail_radius 
+func is_player_inside_portcullis(player : Player) -> bool:
+	var player_dist_to_center_squared : float = player.position.distance_squared_to(play_state.get_room_central_pos(x, y))
+	return player_dist_to_center_squared < jail_radius_squared
+
+func create_portcullis(dir : Vector2) -> void:
+	var portcullis : Portcullis = portcullis_scene.instantiate()
+	portcullis.position = play_state.get_room_central_pos(x, y) + dir * 64 * (size - 2) / 2.0
+	#portcullis.init(id, play_state.get_player().get_shot_damage(), self)
+	play_state.add_child(portcullis)
+	portcullises.append(portcullis)
+
+func register_jailer(jailer : Enemy) -> void:
+	if jailers.is_empty():
+		if north != null:
+			create_portcullis(Vector2.UP)
+		if south != null:
+			create_portcullis(Vector2.DOWN)
+		if west != null:
+			create_portcullis(Vector2.LEFT)
+		if east != null:
+			create_portcullis(Vector2.RIGHT)
+	jailers.append(jailer)
+	
+func unregister_jailer(jailer : Enemy) -> void:
+	jailers.erase(jailer)
+	if jailers.is_empty():
+		for portcullis : Portcullis in portcullises:
+			portcullis.queue_free()
+		portcullises.clear()
 
 func has_dagger_thrower() -> bool:
 	return dagger_thrower_reload > 0

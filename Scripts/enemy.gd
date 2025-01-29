@@ -14,6 +14,8 @@ var player_shot_damage : float = 101
 var self_damage_multiple : float = 5.0
 var teleport_cooldown : float = -1.0
 var time_to_next_teleport : float = 10.0
+var jailer : bool = false
+var current_jail_room : Room = null
 
 const BASE_HEALTH = 100.0 / 1.25
 const BASE_SPEED = 300.0 / 1.25
@@ -43,6 +45,9 @@ func take_damage(dmg : float) -> void:
 		return
 	
 	audio_player.stop()
+
+	if current_jail_room != null:
+		current_jail_room.unregister_jailer(self)
 
 	room.StopTracking(self)
 	var explosion : CPUParticles2D = explosion_scene.instantiate()
@@ -84,14 +89,26 @@ func init(_seed : int, _player_shot_damage : float, _room : Room) -> void:
 	#self.scale /= scale_mod
 	if health > player_shot_damage:
 		(find_child("HealthSprite") as Sprite2D).visible = true
-	if ram_damage > BASE_RAM_DAMAGE:
-		color_when_spent = Color(1, 0, 0)
-		if teleport_cooldown > 0:
-			color_when_charged = Color(1, 0, 1)
-		else:
-			color_when_charged = Color(1, 0, 0)
-	elif teleport_cooldown > 0:
-		color_when_charged = Color(0, 0, 1)
+	if jailer:
+		color_when_spent = Color(0, 1, 0)
+		color_when_charged = Color(0, 1, 0)
+		if ram_damage > BASE_RAM_DAMAGE:
+			color_when_spent = Color(1, 1, 0)
+			if teleport_cooldown > 0:
+				color_when_charged = Color(0.5, 1, 1)
+			else:
+				color_when_charged = Color(1, 1, 0)
+		elif teleport_cooldown > 0:
+			color_when_charged = Color(0, 1, 1)
+	else:
+		if ram_damage > BASE_RAM_DAMAGE:
+			color_when_spent = Color(1, 0, 0)
+			if teleport_cooldown > 0:
+				color_when_charged = Color(1, 0, 1)
+			else:
+				color_when_charged = Color(1, 0, 0)
+		elif teleport_cooldown > 0:
+			color_when_charged = Color(0, 0, 1)
 	modulate = color_when_charged
 
 func _to_string() -> String:
@@ -108,6 +125,8 @@ func _to_string() -> String:
 		ret_val += " def=" + str(5.0 / self_damage_multiple)
 	if teleport_cooldown > 0:
 		ret_val += " teleporting"
+	if jailer:
+		ret_val += " jailer"
 		
 	return ret_val
 
@@ -232,3 +251,11 @@ func _physics_process(delta: float) -> void:
 			col_bullet.collide_with_enemy(self, collision.get_position())
 	elif audio_player.playing:
 		audio_player.stop()
+	
+	if jailer && current_jail_room == null:
+		var current_room : Room = room.play_state.get_room_from_pos(position)
+		var player_room : Room = room.play_state.get_room_from_pos(player.position)
+		if current_room == player_room:
+			if current_room.is_player_inside_portcullis(player):
+				current_room.register_jailer(self)
+				current_jail_room = current_room

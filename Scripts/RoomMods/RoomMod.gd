@@ -11,6 +11,7 @@ enum Mod {
 	Shrink = 5,
 	Teleporter = 6,
 	DaggerThrower = 7,
+	Jailer = 8,
 }
 
 static var unspent_points : Dictionary
@@ -25,6 +26,7 @@ static func SelectThreeMods(rnd : RandomNumberGenerator, room : Room) -> Array[R
 		[rnd.randf(), Mod.Shrink],
 		[rnd.randf_range(0, 0.75), Mod.Teleporter],
 		[rnd.randf(), Mod.DaggerThrower],
+		[rnd.randf(), Mod.Jailer],
 	]
 	for key in unspent_points:
 		for i in range(0, possible.size()):
@@ -54,6 +56,7 @@ static func CreateMod(modEnum : Mod) -> RoomMod:
 		Mod.Shrink: return RoomMod_Shrink.new()
 		Mod.Teleporter: return RoomMod_Teleporter.new()
 		Mod.DaggerThrower: return RoomMod_DaggerThrower.new()
+		Mod.Jailer: return RoomMod_Jailer.new()
 	assert(false)
 	return null
 

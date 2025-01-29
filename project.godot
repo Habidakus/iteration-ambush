@@ -71,6 +71,7 @@ fire_guns={
 2d_physics/layer_3="Player Bodies"
 2d_physics/layer_4="Enemy Bullets"
 2d_physics/layer_5="Player Bullets"
+2d_physics/layer_6="Portcullis"
 
 [rendering]
 
