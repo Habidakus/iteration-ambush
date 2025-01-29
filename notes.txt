@@ -26,13 +26,11 @@ Bugs:
 	- scythes not spawning when ghost is close?
 
 Potential power ups:
-	- only wake monsters behind locks after the lock is destroyed
 	- repulsor field that is used once per loop
 	- switch room hazards to boons
 	- more weapon upgrade variations
 
 Jam Feedback:
-	- don't let ghosts camp doors
 	- better counters for the teleporting ghosts
 	- maybe give ghosts more HP and let the hero fire faster? Gives the player more agency
 	- different enemies

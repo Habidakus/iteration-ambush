@@ -216,9 +216,13 @@ func FixParenting(possible_parent_a : Room, possible_parent_b : Room) -> void:
 	if possible_parent_a.parent_room == possible_parent_b:
 		parent_room = possible_parent_b
 		possible_parent_a.parent_room = self
+		if possible_parent_b.room_lock_blocks == possible_parent_a:
+			possible_parent_b.room_lock_blocks = self
 	elif possible_parent_b.parent_room == possible_parent_a:
 		parent_room = possible_parent_a
 		possible_parent_b.parent_room = self
+		if possible_parent_a.room_lock_blocks == possible_parent_b:
+			possible_parent_a.room_lock_blocks = self
 	else:
 		assert(false)
 
@@ -240,6 +244,7 @@ func CanAddLock() -> bool:
 
 func AddLock(next_room : Room) -> void:
 	room_lock_blocks = next_room
+	assert(room_lock_blocks.parent_room == self)
 
 func ResetRoom() -> void:
 	has_entered = false
@@ -288,7 +293,7 @@ func UpdatePlayerInRoom(rnd : RandomNumberGenerator) -> void:
 	if has_entered == true:
 		return
 	
-	#print("Entered room ID: " + str(id))
+	#print("Entered " + str(self))
 
 	play_state.player_entered_room_for_first_time(self)
 	has_entered = true
@@ -308,12 +313,19 @@ func WakeUp(rnd : RandomNumberGenerator) -> void:
 	if has_woken:
 		return
 
+	if parent_room != null:
+		if parent_room.room_lock_blocks == self && parent_room.lock != null:
+			if play_state.is_player_quiet():
+				#print("Not waking up enemies in " + str(self) + ", player is quiet")
+				return
+			#print("Waking up enemies in " + str(self) + ", player is noisy")
+
+	#print("Woke " + str(self))
+	has_woken = true
+	
 	enemy_count = 1.0
 	for mod : RoomMod in room_mods:
 		mod.apply_to_room(self)
-
-	#print("Woke room ID: " + str(id))
-	has_woken = true
 	
 	Spawn(rnd)
 
@@ -334,7 +346,8 @@ func Spawn(rnd : RandomNumberGenerator) -> void:
 	if has_spawned:
 		return
 
-	#print("Spawn room ID: " + str(id))
+	#print("Spawn " + str(self))
+	
 	if room_type == RoomType.FinalRoom:
 		urist = urist_scene.instantiate()
 		var our_center_pos : Vector2 = play_state.get_room_central_pos(x, y)
@@ -375,6 +388,9 @@ func Spawn(rnd : RandomNumberGenerator) -> void:
 			enemies.append(enemy)
 	
 	has_spawned = true
+
+func has_dagger_thrower() -> bool:
+	return dagger_thrower_reload > 0
 
 func AnyEnemiesHere(pos : Vector2) -> bool:
 	for enemy: Enemy in enemies:
@@ -435,8 +451,11 @@ func RespawnLockEnemies() -> void:
 		enemy.wake(play_state.get_player())
 
 func LockRemoved() -> void:
+	assert(room_lock_blocks != null)
 	assert(lock != null)
 	lock = null
+	assert(room_lock_blocks.parent_room == self)
+	room_lock_blocks.WakeUp(play_state.build_rnd)
 
 func ApplyToMaps(map_change_set : MapChangeSet) -> void:
 	var rnd : RandomNumberGenerator = RandomNumberGenerator.new()

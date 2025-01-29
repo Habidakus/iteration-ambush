@@ -43,7 +43,7 @@ func init(_player : Player, thrower : DaggerThrower) -> void:
 func collide_with_player(_player: Player, _col_glob_pos : Vector2) -> void:
 	if is_dead:
 		return
-	_player.take_damage(damage, true)
+	_player.take_damage(damage / _player.arrow_resistance, true)
 	is_dead = true
 	queue_free()
 

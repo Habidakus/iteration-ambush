@@ -153,9 +153,24 @@ func get_room_difficulty_increase() -> int:
 		Difficulty.Hard: return 3
 	assert(false)
 	return 5
-	
+
+func is_there_a_dagger_thrower() -> bool:
+	for room : Room in rooms:
+		if room.has_dagger_thrower():
+			return true
+	return false
+
+func is_there_locked_room() -> bool:
+	for room : Room in rooms:
+		if room.key_id != -1:
+			return true
+	return false
+
 func player_entered_room_for_first_time(_room : Room) -> void:
 	pass
+
+func is_player_quiet() -> bool:
+	return get_player().quiet_locks
 
 func enter_state() -> void:
 	super.enter_state()

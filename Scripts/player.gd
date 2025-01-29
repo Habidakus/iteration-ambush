@@ -10,10 +10,12 @@ const INITIAL_MAX_HEALTH = 100.0
 const INITIAL_BULLET_LIFETIME = 0.75
 const INITIAL_BULLET_SPEED = 400
 const INITIAL_FIRE_RESISTANCE = 1.0
+const INITIAL_ARROW_RESISTANCE = 1.0
 
 var our_momentum : Vector2
 var has_cleats : bool = false
 var fire_resistance : float = INITIAL_FIRE_RESISTANCE
+var arrow_resistance : float = INITIAL_ARROW_RESISTANCE
 var fire_cooldown : float = 0
 var fire_cooldown_max : float = INITIAL_MAX_COOLDOWN
 var has_regeneration : bool = false
@@ -34,6 +36,7 @@ var ui_timer_color_good : Color = Color.from_string("#00ff3b", Color.GREEN)
 var ui_timer_color_ok : Color = Color.YELLOW
 var ui_timer_color_bad : Color = Color.RED
 var show_blood_option : bool = true
+var quiet_locks : bool = false
 var level_timer : float = 0
 var level_time_expected : float = 60.0
 var owned_keys : Array[int]
@@ -98,6 +101,8 @@ func init_brand_new_game(play_state : PlayState) -> void:
 	bullet_lifetime = INITIAL_BULLET_LIFETIME
 	bullet_speed = INITIAL_BULLET_SPEED
 	fire_resistance = INITIAL_FIRE_RESISTANCE
+	arrow_resistance = INITIAL_ARROW_RESISTANCE
+	quiet_locks = false
 	has_regeneration = false
 	has_cleats = false
 	set_health_bar()
