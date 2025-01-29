@@ -5,7 +5,7 @@ Location of some MIT notes:
 	https://github.com/gleitz/midi-js-soundfonts/tree/gh-pages/MusyngKite
 
 TODO:
-	- add portcullis artwork & sound, possibly two portcullis types (NorthSouth and EastWest)
+	- do portcullis block scythes?
 	- monsters can't travel faster than current player max?
 	- give t-port ghosts 10 different possible locations, and have them pick the one that's the same distance from the player, but farthest from the dagger
 	- Have only two monster power-ups per room

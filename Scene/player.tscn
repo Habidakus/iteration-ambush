@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cb6e0fesdu8rd"]
+[gd_scene load_steps=25 format=3 uid="uid://cb6e0fesdu8rd"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_lncui"]
 [ext_resource type="AudioStream" uid="uid://5cd86l3jwhhl" path="res://Sound/equip01.wav" id="2_rg562"]
@@ -20,6 +20,7 @@
 [ext_resource type="AudioStream" uid="uid://b6upq8lr6b3fa" path="res://Sound/UI_Pickup03.wav" id="10_g0058"]
 [ext_resource type="AudioStream" uid="uid://bje8mxd64khtf" path="res://Sound/UI_Fire02_looping.wav" id="11_wiqsd"]
 [ext_resource type="Texture2D" uid="uid://c2mshadwpkxar" path="res://Art/Coins.png" id="13_7r5g6"]
+[ext_resource type="AudioStream" uid="uid://ba7vwqq0se07t" path="res://Sound/Bolt_02.wav" id="21_mb48a"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_wyvt7"]
 playback_mode = 1
@@ -184,4 +185,10 @@ bus = &"FX"
 bus = &"FX"
 
 [node name="AudioStreamPlayer_Fire" type="AudioStreamPlayer" parent="."]
+bus = &"FX"
+
+[node name="AudioStreamPlayer_Portcullis" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("21_mb48a")
+volume_db = -16.0
+pitch_scale = 0.13
 bus = &"FX"

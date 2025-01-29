@@ -49,6 +49,7 @@ var hand_size : int = 2
 var state_play : PlayState = null
 var lock_audio_player : AudioStreamPlayer
 var firepit_audio_player : AudioStreamPlayer
+var portcullis_audio_player : AudioStreamPlayer
 var firepit_sound_continue : float = 0
 
 var bullet_simple_scene : Resource = preload("res://Scene/simple_bullet.tscn")
@@ -67,6 +68,8 @@ func _ready() -> void:
 	assert(lock_audio_player)
 	firepit_audio_player = find_child("AudioStreamPlayer_Fire") as AudioStreamPlayer
 	assert(firepit_audio_player)
+	portcullis_audio_player = find_child("AudioStreamPlayer_Portcullis") as AudioStreamPlayer
+	assert(portcullis_audio_player)
 
 	ui_timer_color = find_child("TimerColor") as ColorRect
 	assert(ui_timer_color)
@@ -85,6 +88,10 @@ func _ready() -> void:
 func defered_init() -> void:
 	ui_current_health_max_width = (find_child("MaxHealth") as ColorRect).custom_minimum_size.x
 	set_health_bar()
+
+func play_portcullis_sound() -> void:
+	# TODO: Delay by portcullis tween length?
+	portcullis_audio_player.play()
 
 func current_bullet_speed() -> float:
 	return bullet_speed

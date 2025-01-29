@@ -256,6 +256,10 @@ func _physics_process(delta: float) -> void:
 		var current_room : Room = room.play_state.get_room_from_pos(position)
 		var player_room : Room = room.play_state.get_room_from_pos(player.position)
 		if current_room == player_room:
-			if current_room.is_player_inside_portcullis(player):
-				current_room.register_jailer(self)
-				current_jail_room = current_room
+			#if current_room.is_player_inside_portcullis(player):
+			#	if player_room.north != null:
+			#		print("SAME_ROOM - In range")
+			current_room.register_jailer(self)
+			current_jail_room = current_room
+			#elif player_room.north != null:
+			#	print("SAME_ROOM - Not in range")

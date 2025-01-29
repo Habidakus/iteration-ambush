@@ -18,7 +18,8 @@ var fire_damage : float = 20.0
 var room_mods : Array[RoomMod]
 var unspent_difficulty : int = 1
 
-var portcullis_scene : Resource = preload("res://Scene/portcullis.tscn")
+var portcullis_EW_scene : Resource = preload("res://Scene/portcullisEW.tscn")
+var portcullis_NS_scene : Resource = preload("res://Scene/portcullisNS.tscn")
 var has_jailer : bool = false
 var jailers : Array[Enemy]
 var portcullises : Array[Portcullis]
@@ -395,16 +396,20 @@ func Spawn(rnd : RandomNumberGenerator) -> void:
 	
 	has_spawned = true
 
-var jail_radius : float = 64 * (size - 3.1) / 2.0
+var jail_radius : float = 64 * (size - 1.1) / 2.0
 var jail_radius_squared : float = jail_radius * jail_radius 
 func is_player_inside_portcullis(player : Player) -> bool:
 	var player_dist_to_center_squared : float = player.position.distance_squared_to(play_state.get_room_central_pos(x, y))
 	return player_dist_to_center_squared < jail_radius_squared
 
 func create_portcullis(dir : Vector2) -> void:
-	var portcullis : Portcullis = portcullis_scene.instantiate()
-	portcullis.position = play_state.get_room_central_pos(x, y) + dir * 64 * (size - 2) / 2.0
-	#portcullis.init(id, play_state.get_player().get_shot_damage(), self)
+	var portcullis : Portcullis
+	if dir == Vector2.UP || dir == Vector2.DOWN:
+		portcullis = portcullis_NS_scene.instantiate()
+	elif dir == Vector2.RIGHT || dir == Vector2.LEFT:
+		portcullis = portcullis_EW_scene.instantiate()
+	portcullis.position = play_state.get_room_central_pos(x, y) + dir * 64 * size / 2.0
+	portcullis.dir = dir
 	play_state.add_child(portcullis)
 	portcullises.append(portcullis)
 
@@ -418,13 +423,14 @@ func register_jailer(jailer : Enemy) -> void:
 			create_portcullis(Vector2.LEFT)
 		if east != null:
 			create_portcullis(Vector2.RIGHT)
+		play_state.get_player().play_portcullis_sound()
 	jailers.append(jailer)
 	
 func unregister_jailer(jailer : Enemy) -> void:
 	jailers.erase(jailer)
 	if jailers.is_empty():
 		for portcullis : Portcullis in portcullises:
-			portcullis.queue_free()
+			portcullis.remove()
 		portcullises.clear()
 
 func has_dagger_thrower() -> bool:

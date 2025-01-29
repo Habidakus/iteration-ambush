@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://dea2e3bhoffek"]
+
+[ext_resource type="Script" path="res://Scripts/portcullis.gd" id="1_7gc3n"]
+[ext_resource type="Texture2D" uid="uid://d134b0ymvb723" path="res://Art/Jail_02.png" id="2_cy8od"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jlec2"]
+size = Vector2(58, 56)
+
+[node name="Portcullis" type="StaticBody2D"]
+collision_layer = 32
+collision_mask = 32
+script = ExtResource("1_7gc3n")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 28)
+rotation = -1.5708
+texture = ExtResource("2_cy8od")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 28)
+shape = SubResource("RectangleShape2D_jlec2")
