@@ -1,15 +1,21 @@
-[gd_scene load_steps=8 format=3 uid="uid://b8ex4fliy2aaq"]
+[gd_scene load_steps=10 format=3 uid="uid://b8ex4fliy2aaq"]
 
 [ext_resource type="Script" path="res://Scripts/simple_bullet.gd" id="1_vuk8w"]
 [ext_resource type="Texture2D" uid="uid://cvr0qs533t64i" path="res://Art/Scythe01.png" id="2_d66dd"]
 [ext_resource type="AudioStream" uid="uid://uvqcb5aw2uru" path="res://Scene/scythe_hit_wall_sounds.tres" id="2_vooyr"]
 [ext_resource type="AudioStream" uid="uid://deymai2tbp5yd" path="res://Scene/ghost_death_sounds.tres" id="3_k46yy"]
+[ext_resource type="AudioStream" uid="uid://bsg0c6hfjkxll" path="res://Sound/UristHit_01.wav" id="5_drgg7"]
 [ext_resource type="AudioStream" uid="uid://d2pjwgohf1lrr" path="res://Sound/UI_powerup01.wav" id="14_7d8p2"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_2yhg0"]
 playback_mode = 1
 streams_count = 1
 stream_0/stream = ExtResource("14_7d8p2")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_kem6g"]
+playback_mode = 1
+streams_count = 1
+stream_0/stream = ExtResource("5_drgg7")
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hcdmw"]
 radius = 9.0
@@ -22,6 +28,7 @@ script = ExtResource("1_vuk8w")
 hit_wall_sounds = ExtResource("2_vooyr")
 hit_enemy_sounds = ExtResource("3_k46yy")
 hit_shield_sounds = SubResource("AudioStreamRandomizer_2yhg0")
+hit_urist_sounds = SubResource("AudioStreamRandomizer_kem6g")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-2, 0)

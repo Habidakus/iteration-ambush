@@ -13,6 +13,7 @@ var explosion_scene : Resource = preload("res://Scene/wall_hit_vfx.tscn")
 @export var hit_wall_sounds : AudioStreamRandomizer
 @export var hit_enemy_sounds : AudioStreamRandomizer
 @export var hit_shield_sounds : AudioStreamRandomizer
+@export var hit_urist_sounds : AudioStreamRandomizer
 
 var player : Player = null
 
@@ -82,6 +83,17 @@ func _physics_process(delta : float) -> void:
 		var tml : TileMapLayer = collider as TileMapLayer
 		if tml != null:
 			die(col_glob_pos, hit_wall_sounds, -10)
+			return
+		
+		# TODO : if we ever need to hit the portcullis, it's bitmask 32
+		#var portcullis : Portcullis = collider as Portcullis
+		#if portcullis != null:
+			#die(col_glob_pos, hit_wall_sounds, -5)
+			#return
+		
+		var urist : Urist = collider as Urist
+		if urist != null:
+			die(col_glob_pos, hit_urist_sounds, 0)
 			return
 
 		var o : Object = collider as Object
