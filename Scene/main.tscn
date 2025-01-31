@@ -199,7 +199,8 @@ theme_override_font_sizes/font_size = 52
 text = "Godot 4
 Audacity
 Wavosaur
-Gimp"
+Gimp
+Piskel"
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/MenuStateMachine/State_Tools/CanvasLayer/GridContainer"]
 layout_mode = 2
