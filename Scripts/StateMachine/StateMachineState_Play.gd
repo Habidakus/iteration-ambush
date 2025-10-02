@@ -129,7 +129,7 @@ func trigger_player_location_events(player_loc : Vector2, delta : float) -> void
 		if last_room_player_was_in.x == grid_x && last_room_player_was_in.y == grid_y:
 			last_room_player_was_in.UpdatePlayerInRoom(build_rnd)
 			return
-			
+
 	for room : Room in rooms:
 		if room.x == grid_x && room.y == grid_y:
 			room.UpdatePlayerInRoom(build_rnd)
